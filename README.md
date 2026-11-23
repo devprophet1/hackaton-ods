@@ -131,6 +131,10 @@ Todo se ejecuta desde la raíz del repositorio, en tu máquina.
 
 La configuración está en [vercel.json](vercel.json): preset Vite, región `pdx1`, `maxDuration` de 300 s para la función y rewrites de `/api/*` a Express y del resto a `index.html`. Las subidas a la base de conocimiento tienen un máximo de 4 MB (el límite de Vercel es 4,5 MB).
 
+## Privacidad (demo y producción)
+
+La demo usa **solo datos ficticios**. El análisis de apoyo con IA del panel no envía el alias, el teléfono ni la dirección: solo el relato y datos del caso. Es orientativo y no se guarda. Antes de usar Rimay con datos reales falta: ocultar teléfonos, DNI, correos y direcciones dentro del relato antes de enviarlo al modelo, usar proveedores de IA que no guarden la información y avisarlo en el panel (ver la sección 15 del spec).
+
 ## Cuenta de demostración
 
 Una sola cuenta con acceso al panel `/admin` y un solo rol (`admin`, que hace todo: seguimiento de estado y derivación, notas, mostrar contacto, análisis de apoyo, dashboard y base de conocimiento):

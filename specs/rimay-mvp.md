@@ -562,7 +562,8 @@ Trabajar hito por hito. Al terminar cada uno, comprobar su criterio de «listo»
 
 - Nombre: ya existe un proyecto llamado RIMAY de la Universidad del Pacífico (2025, inclusión lingüística con IA). Evaluar «Rimay VES» o «Rimay Warmi».
 - Validar traducciones con hablantes nativos.
-- Completar el nombre del equipo e integrantes.
+- ~~Completar el nombre del equipo e integrantes.~~ Hecho: MJM Group.
+- **Privacidad del análisis de apoyo (antes de usar datos reales):** la demo usa datos ficticios. El análisis no envía alias, teléfono ni dirección, pero sí el relato libre. Para producción: ocultar en el relato teléfonos, DNI, correos y direcciones antes de enviarlo al modelo, usar solo proveedores de IA que no guarden ni entrenen con los datos (revisar la configuración por petición de OpenRouter) y avisar en el panel que el relato se envía a un modelo de IA. Revisar el cumplimiento de la Ley N.º 29733 (protección de datos personales).
 - Definir qué institución operaría el panel en producción (presentarlo como convenio a futuro).
 
 ---
