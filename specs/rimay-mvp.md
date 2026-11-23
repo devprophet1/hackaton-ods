@@ -472,7 +472,7 @@ Replicar `specs/maquetas/admin.html` conectado a la API. Rutas: `/admin/login`, 
 
 ## 11. README (obligatorio por las bases)
 
-Debe incluir: nombre del equipo e integrantes (dejar `[Nombre del equipo]` y `[Integrantes]` para completar), descripción de la solución, ODS 5, tecnologías, arquitectura, instrucciones de instalación (Supabase, variables de entorno, migraciones, `seed`, `kb:seed`, `npm run dev`), los pasos exactos de despliegue en Vercel (sección 16), cuentas de demostración y un guion corto de la demo.
+Debe incluir: nombre del equipo e integrantes (MJM Group: Carlos Javier Majerhua Nuñez, Jhair Nina Meza y Marcos Lazo Rodriguez), descripción de la solución, ODS 5, tecnologías, arquitectura, instrucciones de instalación (Supabase, variables de entorno, migraciones, `seed`, `kb:seed`, `npm run dev`), los pasos exactos de despliegue en Vercel (sección 16), cuentas de demostración y un guion corto de la demo.
 
 Variables de entorno (`.env.example` en la raíz; en Vercel se cargan en el proyecto). Ninguna lleva prefijo `VITE_`: el frontend no necesita secretos.
 ```

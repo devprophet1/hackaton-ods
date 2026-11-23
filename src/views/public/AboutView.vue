@@ -15,6 +15,7 @@ const words = [
   ['Yuspagara', 'Aimara', 'Gracias'],
   ['Arsuña / Parlaña', 'Aimara', 'Hablar'],
 ];
+const team = ['Carlos Javier Majerhua Nuñez', 'Jhair Nina Meza', 'Marcos Lazo Rodriguez'];
 </script>
 
 <template>
@@ -26,7 +27,10 @@ const words = [
         <div v-for="[title, text] in values" :key="title"><h3>{{ t(title) }}</h3><p>{{ t(text) }}</p></div>
       </div>
       <h3>{{ t('El equipo') }}</h3>
-      <p>[Nombre del equipo]: [Integrante 1], [Integrante 2], [Integrante 3].</p>
+      <p><strong translate="no">MJM Group</strong></p>
+      <ul class="team">
+        <li v-for="name in team" :key="name" translate="no">{{ name }}</li>
+      </ul>
       <h3>{{ t('Aliados') }}</h3>
       <p>{{ t('Buscamos trabajar con el Centro de Emergencia Mujer, la Municipalidad de Villa El Salvador y organizaciones locales para atender los casos que llegan a Rimay.') }}</p>
       <h3>{{ t('Palabras en quechua y aimara') }}</h3>

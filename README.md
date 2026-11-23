@@ -1,6 +1,6 @@
 # Rimay
 
-**Equipo:** [Nombre del equipo] · **Integrantes:** [Integrantes]
+**Equipo:** MJM Group · **Integrantes:** Carlos Javier Majerhua Nuñez, Jhair Nina Meza y Marcos Lazo Rodriguez
 
 Rimay («hablar» en quechua) es una plataforma web para el desafío **Prevención de violencia (ODS 5: igualdad de género)** del HackODS UA 2026. Permite reportar casos de violencia en Villa El Salvador de forma segura, recibir orientación inmediata de un asistente con RAG y, si la persona lo pide, ser contactada por una institución aliada que hace el seguimiento desde un panel `/admin`.
 
