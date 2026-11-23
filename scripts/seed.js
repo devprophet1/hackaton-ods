@@ -68,12 +68,12 @@ async function main() {
   const anonHours = [3, 8, 20, 26, 30, 44, 50, 54, 70, 75, 80, 98, 100, 104, 120, 126, 130, 140, 150, 160];
   const ANON = anonTypes.map((t, i) => ({ code: 'RI-9' + String(i).padStart(5, '0'), type: t, created: anonHours[i] }));
 
-  const codes = [...CASES.map((c) => c.code), ...ANON.map((a) => a.code)];
-  ok(await db().from('reports').delete().in('code', codes), 'limpiar seed');
+  // Borra solo los datos de demostración (is_demo = true); persons, eventos y consentimientos caen en cascada.
+  ok(await db().from('reports').delete().eq('is_demo', true), 'limpiar datos de demo');
 
   for (const c of CASES) {
     const r = ok(await db().from('reports').insert({
-      code: c.code, is_anonymous: false, device_safe: 'si', danger: c.risk ? 'si' : 'no', has_risk: c.risk,
+      code: c.code, is_demo: true, is_anonymous: false, device_safe: 'si', danger: c.risk ? 'si' : 'no', has_risk: c.risk,
       violence_types: c.types, place: c.place, support_types: c.support, status: c.status, derived_to: c.derived || null,
       assigned_to: c.assigned, first_contact_at: c.firstContact ? ago(c.firstContact) : null, created_at: ago(c.created),
     }).select('id').single(), 'caso ' + c.code);
@@ -87,7 +87,7 @@ async function main() {
   console.log(`✓ ${CASES.length} casos con contacto`);
 
   const anonRows = ok(await db().from('reports').insert(ANON.map((a) => ({
-    code: a.code, is_anonymous: true, device_safe: 'si', danger: 'no', violence_types: [a.type], created_at: ago(a.created),
+    code: a.code, is_demo: true, is_anonymous: true, device_safe: 'si', danger: 'no', violence_types: [a.type], created_at: ago(a.created),
   }))).select('id'), 'anónimos');
   ok(await db().from('case_events').insert(anonRows.map((r) => ({ report_id: r.id, event_type: 'creado', detail: 'Reporte recibido.' }))), 'eventos anónimos');
   ok(await db().from('consents').insert(anonRows.map((r) => ({ report_id: r.id, purpose: 'registro_reporte', granted: true }))), 'consentimientos anónimos');

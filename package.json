@@ -16,7 +16,8 @@
     "start": "node --env-file-if-exists=.env server.js",
     "seed": "node --env-file-if-exists=.env scripts/seed.js",
     "seed:users": "node --env-file-if-exists=.env scripts/seed.js",
-    "kb:seed": "node --env-file-if-exists=.env scripts/kb-seed.js"
+    "kb:seed": "node --env-file-if-exists=.env scripts/kb-seed.js",
+    "kb:test": "node --env-file-if-exists=.env scripts/kb-test.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.2",

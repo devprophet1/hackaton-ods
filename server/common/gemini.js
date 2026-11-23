@@ -4,17 +4,23 @@ import { HttpError } from './errors.js';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
 const DIM = 768;
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Reintenta ante saturación temporal de Gemini (429/503): hasta 3 intentos.
 async function call(path, body) {
   if (!config.geminiKey) throw new HttpError(503, 'Falta configurar GEMINI_API_KEY en el servidor.');
-  const res = await fetch(BASE + path, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': config.geminiKey },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(60_000),
-  });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new HttpError(502, 'Error de Gemini: ' + (json.error?.message || res.status));
-  return json;
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch(BASE + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': config.geminiKey },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(60_000),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (res.ok) return json;
+    if ((res.status === 429 || res.status === 503) && attempt < 3) { await sleep(1500 * attempt); continue; }
+    throw new HttpError(502, 'Error de Gemini: ' + (json.error?.message || res.status));
+  }
 }
 
 // gemini-embedding-001 a 768 dimensiones: Google pide normalizar el vector.
