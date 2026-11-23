@@ -546,6 +546,7 @@ Verificado en la documentación de Vercel el 23/11/2026.
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "regions": ["pdx1"],
   "functions": {
     "api/index.js": { "maxDuration": 300 }
   },
@@ -557,6 +558,8 @@ Verificado en la documentación de Vercel el 23/11/2026.
 ```
 
 - Los archivos estáticos de `dist/` se sirven antes que los rewrites; todo lo demás que no sea `/api/*` va a `index.html` para que Vue Router resuelva la ruta al recargar.
+- `regions: ["pdx1"]` fija la región de la función (Portland, EE. UU.).
+- `/` y `/admin/*` caen en el rewrite a `index.html`; `/api/*` va a la función.
 - Express monta los módulos bajo `/api/...` y conserva la ruta original de la petición.
 - `express.static` no se usa en producción (Vercel lo ignora); en local tampoco hace falta porque Vite sirve el frontend.
 
