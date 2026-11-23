@@ -4,13 +4,11 @@ import { ref } from 'vue';
 export const TYPE_LABEL = { fisica: 'Física', psicologica: 'Psicológica', sexual: 'Sexual', economica: 'Económica o patrimonial', no_se: 'No sé identificarla' };
 export const SUPPORT_LABEL = { psico: 'Psicológico', legal: 'Legal', medico: 'Médico', info: 'Información general' };
 export const METHOD_LABEL = { sms: 'Mensaje de texto', whatsapp: 'WhatsApp', llamada: 'Llamada' };
-export const STATUS_OPTIONS = [
-  ['pendiente', 'Pendiente'], ['contactado', 'Contactado'], ['derivado_cem', 'Derivado al CEM'],
-  ['derivado_comisaria', 'Derivado a comisaría'], ['cerrado', 'Cerrado'],
-];
+export const STATUS_OPTIONS = [['pendiente', 'Pendiente'], ['contactado', 'Contactado'], ['derivado', 'Derivado'], ['cerrado', 'Cerrado']];
+export const DERIVED_OPTIONS = [['policia', 'Policía'], ['cem', 'CEM'], ['otra', 'Otra entidad']];
 // Insignia corta como en la maqueta: 0 Pendiente, 1 Contactado, 2 Derivado, 3 Cerrado.
 export const statusBadge = (s) => {
-  const i = { pendiente: 0, contactado: 1, derivado_cem: 2, derivado_comisaria: 2, cerrado: 3 }[s] ?? 0;
+  const i = { pendiente: 0, contactado: 1, derivado: 2, cerrado: 3 }[s] ?? 0;
   return { cls: 'badge st-' + i, label: ['Pendiente', 'Contactado', 'Derivado', 'Cerrado'][i] };
 };
 

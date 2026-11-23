@@ -49,22 +49,31 @@ async function main() {
   for (const u of USERS) ids.push(await ensureUser(u));
   const staff = { admin: ids[0], lucia: ids[1], sofia: ids[2] };
 
+  // Seguimiento sin asignación: estado, quién contacta (contact) y derivación (derived/entity). Nombres ficticios.
   const CASES = [
     { code: 'RI-482193', alias: 'Rosa', risk: true, types: ['psicologica', 'fisica'], place: 'Vivienda', support: ['legal', 'psico'],
-      method: 'sms', value: '987654821', schedule: 'Lunes a viernes, 9 a 11 a. m.', status: 'pendiente', assigned: null, created: 2,
+      method: 'sms', value: '987654821', schedule: 'Lunes a viernes, 9 a 11 a. m.', status: 'pendiente', created: 2,
+      description: 'Mi pareja me grita, me revisa el celular y ayer me empujó. Tengo miedo de que vuelva a pasar.',
       events: [[2, null, 'creado', 'Reporte recibido. Marcó peligro inmediato.']] },
     { code: 'RI-590012', alias: 'Ana', risk: false, types: ['economica'], place: 'Vivienda', support: ['legal'],
-      method: 'llamada', value: '912334106', schedule: 'Tardes, de 3 a 5 p. m.', status: 'pendiente', assigned: staff.lucia, created: 5,
-      events: [[5, null, 'creado', 'Reporte recibido.'], [4, staff.admin, 'asignado', 'Asignado a Lucía Ramos.']] },
+      method: 'llamada', value: '912334106', schedule: 'Tardes, de 3 a 5 p. m.', status: 'pendiente', created: 5,
+      events: [[5, null, 'creado', 'Reporte recibido.']] },
     { code: 'RI-305774', alias: 'Flor', risk: false, types: ['psicologica'], place: 'Espacio público', support: ['psico'],
-      method: 'whatsapp', value: '955210377', schedule: 'Noches, de 8 a 9 p. m.', status: 'contactado', assigned: staff.admin, created: 30, firstContact: 27,
-      events: [[30, null, 'creado', 'Reporte recibido.'], [27, staff.admin, 'estado', 'Estado: Contactado. Acordó llamada de seguimiento.']] },
+      method: 'whatsapp', value: '955210377', schedule: 'Noches, de 8 a 9 p. m.', status: 'contactado', created: 30, firstContact: 27,
+      contact: 'Lic. Ana Torres, psicóloga del CEM',
+      events: [[30, null, 'creado', 'Reporte recibido.'], [27, staff.admin, 'estado', 'Contactado. Contacto: Lic. Ana Torres, psicóloga del CEM (Administradora Rimay)']] },
     { code: 'RI-118450', alias: 'M.', risk: true, types: ['fisica', 'psicologica'], place: 'Vivienda', support: ['legal'],
-      method: 'sms', value: '944501238', schedule: 'Mañanas, de 8 a 10 a. m.', status: 'derivado_comisaria', derived: 'comisaria', assigned: staff.lucia, created: 50, firstContact: 49,
-      events: [[50, null, 'creado', 'Reporte recibido. Marcó peligro inmediato.'], [49, staff.lucia, 'estado', 'Estado: Contactado (Lucía Ramos).'], [46, staff.lucia, 'estado', 'Estado: Derivado a comisaría (Lucía Ramos).']] },
+      method: 'sms', value: '944501238', schedule: 'Mañanas, de 8 a 10 a. m.', status: 'derivado', derived: 'policia', created: 50, firstContact: 49,
+      contact: 'Lic. Jorge Quispe, trabajador social',
+      events: [[50, null, 'creado', 'Reporte recibido. Marcó peligro inmediato.'], [49, staff.admin, 'estado', 'Contactado. Contacto: Lic. Jorge Quispe, trabajador social (Administradora Rimay)'], [46, staff.admin, 'estado', 'Derivado a Policía. Contacto: Lic. Jorge Quispe, trabajador social (Administradora Rimay)']] },
     { code: 'RI-776301', alias: 'K.', risk: false, types: ['psicologica'], place: 'Internet o redes sociales', support: ['psico', 'info'],
-      method: 'whatsapp', value: '933118640', schedule: 'Fines de semana', status: 'cerrado', derived: 'cem', assigned: staff.sofia, created: 96, firstContact: 90,
-      events: [[96, null, 'creado', 'Reporte recibido.'], [90, staff.sofia, 'estado', 'Estado: Contactado (Sofía Huamán).'], [80, staff.sofia, 'estado', 'Estado: Derivado al CEM (Sofía Huamán).'], [40, staff.sofia, 'estado', 'Estado: Cerrado. Recibe atención en el CEM.']] },
+      method: 'whatsapp', value: '933118640', schedule: 'Fines de semana', status: 'cerrado', derived: 'cem', created: 96, firstContact: 90,
+      contact: 'Abg. Lucía Paredes, abogada del CEM',
+      events: [[96, null, 'creado', 'Reporte recibido.'], [90, staff.admin, 'estado', 'Contactado. Contacto: Abg. Lucía Paredes, abogada del CEM (Administradora Rimay)'], [80, staff.admin, 'estado', 'Derivado a CEM. Contacto: Abg. Lucía Paredes, abogada del CEM (Administradora Rimay)'], [40, staff.admin, 'estado', 'Cerrado. Contacto: Abg. Lucía Paredes, abogada del CEM (Administradora Rimay)']] },
+    { code: 'RI-640827', alias: 'Lidia', risk: false, types: ['psicologica', 'economica'], place: 'Vivienda', support: ['info', 'psico'],
+      method: 'whatsapp', value: '966420915', schedule: 'Martes y jueves, de 10 a 12 m.', status: 'derivado', derived: 'otra', entity: 'DEMUNA de Villa El Salvador', created: 70, firstContact: 66,
+      contact: 'Lic. Rocío Huamaní, trabajadora social',
+      events: [[70, null, 'creado', 'Reporte recibido.'], [66, staff.admin, 'estado', 'Contactado. Contacto: Lic. Rocío Huamaní, trabajadora social (Administradora Rimay)'], [60, staff.admin, 'estado', 'Derivado a DEMUNA de Villa El Salvador. Contacto: Lic. Rocío Huamaní, trabajadora social (Administradora Rimay)']] },
   ];
 
   // 20 anónimos: física 4, psicológica 9, sexual 2, económica 3, no sé 2; repartidos en los últimos 7 días.
@@ -81,8 +90,9 @@ async function main() {
   for (const c of CASES) {
     const r = ok(await db().from('reports').insert({
       code: c.code, is_demo: true, is_anonymous: false, device_safe: 'si', danger: c.risk ? 'si' : 'no', has_risk: c.risk,
-      violence_types: c.types, place: c.place, support_types: c.support, status: c.status, derived_to: c.derived || null,
-      assigned_to: c.assigned, first_contact_at: c.firstContact ? ago(c.firstContact) : null, created_at: ago(c.created),
+      violence_types: c.types, place: c.place, description: c.description || null, support_types: c.support, status: c.status,
+      derived_to: c.derived || null, derived_entity: c.entity || null, contact_person: c.contact || null,
+      first_contact_at: c.firstContact ? ago(c.firstContact) : null, created_at: ago(c.created),
     }).select('id').single(), 'caso ' + c.code);
     ok(await db().from('persons').insert({ report_id: r.id, alias: c.alias, contact_method: c.method, contact_value: c.value, safe_schedule: c.schedule }), 'persona');
     ok(await db().from('case_events').insert(c.events.map(([h, actor, type, detail]) => ({ report_id: r.id, actor_id: actor, event_type: type, detail, created_at: ago(h) }))), 'eventos');

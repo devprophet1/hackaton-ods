@@ -14,7 +14,7 @@ export async function dashboard() {
     ? contacted.reduce((s, r) => s + (new Date(r.first_contact_at) - new Date(r.created_at)), 0) / contacted.length / HOUR
     : 0;
 
-  const byStatus = { pendiente: 0, contactado: 0, derivado_cem: 0, derivado_comisaria: 0, cerrado: 0 };
+  const byStatus = { pendiente: 0, contactado: 0, derivado: 0, cerrado: 0 };
   cases.forEach((r) => { byStatus[r.status] = (byStatus[r.status] || 0) + 1; });
 
   const byViolenceType = { fisica: 0, psicologica: 0, sexual: 0, economica: 0, no_se: 0 };
@@ -35,7 +35,8 @@ export async function dashboard() {
     last7Days: days.map((date) => ({ date, total: perDay[date] })),
     derivations: {
       cem: cases.filter((r) => r.derived_to === 'cem').length,
-      comisaria: cases.filter((r) => r.derived_to === 'comisaria').length,
+      policia: cases.filter((r) => r.derived_to === 'policia').length,
+      otra: cases.filter((r) => r.derived_to === 'otra').length,
     },
     overdueRisk: cases.filter((r) => r.has_risk && r.status === 'pendiente' && Date.now() - new Date(r.created_at) > HOUR).length,
   };

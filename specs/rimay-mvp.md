@@ -144,9 +144,11 @@ create table reports (
   description text,
   support_types text[] default '{}',             -- psico, legal, medico, info
   status text not null default 'pendiente'
-    check (status in ('pendiente','contactado','derivado_cem','derivado_comisaria','cerrado')),
-  derived_to text check (derived_to in ('cem','comisaria')), -- se conserva aunque luego se cierre (dashboard «Derivaciones»)
-  assigned_to uuid references staff(id),
+    check (status in ('pendiente','contactado','derivado','cerrado')),            -- migración 000011 (antes: derivado_cem, derivado_comisaria)
+  derived_to text check (derived_to in ('cem','policia','otra')), -- se conserva aunque luego se cierre (dashboard «Derivaciones»)
+  derived_entity text,       -- nombre de la entidad cuando derived_to = 'otra' (migración 000011)
+  contact_person text,       -- quién contacta a la persona (migración 000011)
+  assigned_to uuid references staff(id),  -- sin uso desde la migración 000011 (no hay asignación a personal)
   first_contact_at timestamptz,
   created_at timestamptz default now()
 );
@@ -233,7 +235,7 @@ group by t;
 
 **Seed (`npm run seed` → `scripts/seed.js`, idempotente, usa la `service_role key`):**
 - Se hace en Node y no en `seed.sql` porque los casos dependen de los usuarios de Auth y `supabase db push` no ejecuta el seed en el proyecto remoto.
-- **Un solo rol, `admin`** (migración `20261123000010_rol_unico_admin.sql`: todo `staff` pasa a `admin` y el check de `role` solo acepta `'admin'`). Una sola cuenta con acceso al panel: `admin@rimay.pe` («Administradora Rimay»), contraseña `rimay2026`. Si existe la cuenta antigua `coordinadora@rimay.pe`, el seed le cambia el correo (conserva su id y sus casos asignados). Lucía Ramos (`gestora@rimay.pe`) y Sofía Huamán siguen en `staff` como `admin` para poder asignarles casos, pero con la cuenta bloqueada (sin login).
+- **Un solo rol, `admin`** (migración `20261123000010_rol_unico_admin.sql`: todo `staff` pasa a `admin` y el check de `role` solo acepta `'admin'`). Una sola cuenta con acceso al panel: `admin@rimay.pe` («Administradora Rimay»), contraseña `rimay2026`. Si existe la cuenta antigua `coordinadora@rimay.pe`, el seed le cambia el correo (conserva su id y sus casos asignados). Lucía Ramos (`gestora@rimay.pe`) y Sofía Huamán siguen en `staff` como `admin`, con la cuenta bloqueada (sin login). Desde la migración 000011 no hay asignación de casos a personal.
 - Insertar los 5 casos de demostración de la maqueta del admin (Rosa, Ana, Flor, M., K.) con sus eventos, y unos 20 reportes anónimos distribuidos por tipo para el dashboard.
 - Todos los datos de seed son ficticios.
 
@@ -300,14 +302,13 @@ Ver sección 9 para la lógica.
 | --- | --- | --- |
 | POST | `/auth/login` | `{ email, password }` → `{ token, user: { id, fullName, role } }` (Supabase `signInWithPassword`) |
 | GET | `/auth/me` | Usuario actual |
-| GET | `/staff` | Lista de personal para asignar |
-| GET | `/cases?filter=all\|risk\|pending\|mine\|unassigned\|closed` | Bandeja. Solo reportes **no anónimos**. Orden: riesgo activo primero, luego por estado, luego más reciente. El contacto viene **enmascarado** (`••• ••• 821`) |
+| GET | `/cases?filter=all\|risk\|pending\|contacted\|derived\|closed` | Bandeja. Solo reportes **no anónimos**. Orden: riesgo pendiente primero, luego riesgo activo, luego por estado, luego más reciente. Cada caso trae `contactPerson`, `derivedTo`, `derivedEntity` y `derivedName` (CEM, Policía o el nombre de la entidad). El contacto viene **enmascarado** (`••• ••• 821`) |
 | GET | `/cases/:id` | Detalle con eventos (contacto enmascarado) |
 | POST | `/cases/:id/contact-access` | Devuelve el contacto completo y registra evento `acceso_contacto` |
-| PATCH | `/cases/:id/assign` | `{ staffId \| null }` → evento `asignado` |
-| PATCH | `/cases/:id/status` | `{ status }` → evento `estado`; si pasa de `pendiente` a otro estado y `first_contact_at` es null, se completa |
+| PATCH | `/cases/:id/follow-up` | `{ status, contactPerson, derivedTo, derivedEntity }` → **un solo** evento `estado`, por ejemplo «Derivado a CEM. Contacto: Lic. Ana Torres (Administradora Rimay)». Estados: `pendiente`, `contactado`, `derivado`, `cerrado`. `contactPerson` se guarda si el estado no es pendiente; `derivedTo` (`cem`, `policia`, `otra`) y `derivedEntity` (solo con `otra`), si es derivado. Si pasa de `pendiente` a otro estado y `first_contact_at` es null, se completa |
+| POST | `/cases/:id/analysis` | **Análisis de apoyo (IA)** bajo demanda: `{ analysis, sources, generatedAt }` con secciones Resumen, Señales de atención, Opciones sugeridas y A tener en cuenta. Usa los datos del caso (sin alias ni número de contacto) y la guía de la base de conocimiento. No se guarda. Orientativo: no es un diagnóstico clínico ni califica el riesgo; la decisión es del equipo |
 | POST | `/cases/:id/notes` | `{ text }` → evento `nota` |
-| GET | `/stats/dashboard` | `{ activeCases, activeRisk, avgHoursToFirstContact, derived, byStatus, byViolenceType, last7Days, derivations: { cem, comisaria }, overdueRisk }` |
+| GET | `/stats/dashboard` | `{ activeCases, activeRisk, avgHoursToFirstContact, derived, byStatus, byViolenceType, last7Days, derivations: { cem, policia, otra }, overdueRisk }` |
 | GET | `/kb/documents` | Lista de documentos |
 | POST | `/kb/documents` | Multipart (campo `file`), archivo `.md` o `.txt`, **máximo 4 MB** (límite de cuerpo de Vercel: 4,5 MB). Simplificación para la demo: la ingesta se hace completa dentro de la misma petición (cabe en los 300 s de `maxDuration`) y responde `201` con el documento `procesado`; mientras tanto el panel muestra «Procesando…». PDF queda fuera (TODO) |
 | POST | `/kb/search` | `{ query }` → top 3 fragmentos con similitud (para «Probar búsqueda») |
@@ -464,8 +465,8 @@ Archivos: `ley-30364.md`, `linea-100-chat-100.md`, `como-denunciar.md` (título 
 Replicar `specs/maquetas/admin.html` conectado a la API. Rutas: `/admin/login`, `/admin/casos`, `/admin/dashboard`, `/admin/conocimiento` (`/admin` redirige a `/admin/casos`). Todas se cargan con `() => import(...)` para que el código y el CSS del panel queden en chunks aparte. Un guard de Vue Router exige token en las rutas del panel (salvo login); si no hay token, o la API responde 401, se borra la sesión y se redirige a `/admin/login`. El panel no muestra «Salir rápido» (no es para víctimas).
 
 - **Login:** correo y contraseña → `POST /api/auth/login`. El composable `useAuth` guarda el token y el usuario en `sessionStorage`. Mostrar la cuenta de demostración (`admin@rimay.pe`) en la pantalla. El panel no distingue roles: donde se muestra el rol dice «Administradora». «Cerrar sesión» borra la sesión.
-- **Casos:** filtros (Todos, Con riesgo, Pendientes, Mis casos, Sin asignar, Cerrados); alerta roja de `overdueRisk` con «Ver ahora»; contador de riesgo en el menú; detalle con contacto enmascarado y botón «Mostrar» (`contact-access`), primer mensaje neutro sugerido (distinto si el medio es llamada), asignación, estado, notas e historial. Refrescar la bandeja cada 30 segundos.
-- **Dashboard:** indicadores y gráficos de `GET /stats/dashboard`, con barras en CSS como en la maqueta.
+- **Casos:** sin asignación a personal (un solo rol). Filtros: Todos, Con riesgo, Pendientes, Contactados, Derivados y Cerrados. En cada tarjeta, debajo del tipo de violencia, «Contacto: <persona>» o «Derivado a: <CEM / Policía / entidad>». Alerta roja de `overdueRisk` con «Ver ahora»; contador de riesgo en el menú. Detalle: contacto enmascarado y botón «Mostrar» (`contact-access`), primer mensaje neutro sugerido (distinto si el medio es llamada), **Análisis de apoyo** (botón «Generar análisis»), seguimiento con selector de estado (4 opciones), «¿Quién la contacta?» si no es pendiente, «Derivado a» (Policía, CEM, Otra entidad + nombre) si es derivado y botón «Guardar cambios» (un solo evento), notas e historial. Refrescar la bandeja cada 30 segundos.
+- **Dashboard:** indicadores y gráficos de `GET /stats/dashboard`, con barras en CSS como en la maqueta. Derivaciones: CEM, Policía y Otras entidades. El tiempo hasta el primer contacto se mide cuando el caso pasa de Pendiente a otro estado.
 - **Base de conocimiento:** tabla de documentos, subida de archivos con estado «Procesando…» que se actualiza consultando cada 3 segundos, y «Probar búsqueda» con `POST /kb/search`.
 
 ---
@@ -550,7 +551,7 @@ Trabajar hito por hito. Al terminar cada uno, comprobar su criterio de «listo»
 2. Continúa, desactiva el anonimato, elige «solo mensaje, de 9 a 11 a. m.» y envía.
 3. Pregunta al asistente «¿Necesito un abogado para denunciar?» y recibe una respuesta con fuente.
 4. Se cambia al panel `/admin/login` como administradora (`admin@rimay.pe`): el caso de María aparece primero, marcado con riesgo.
-5. La administradora muestra el contacto (queda registrado), lo marca como contactado y lo deriva al CEM; el dashboard se actualiza.
+5. La administradora muestra el contacto (queda registrado), genera el análisis de apoyo, lo pasa a Contactado indicando quién la contacta y luego lo deriva al CEM; el historial y el dashboard se actualizan.
 6. Cierre: «Salir rápido» y el selector de quechua y aimara.
 
 ---

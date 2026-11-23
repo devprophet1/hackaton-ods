@@ -26,9 +26,9 @@ const typeBars = computed(() => s.value && bars(Object.entries(s.value.byViolenc
 const statusBars = computed(() => {
   if (!s.value) return [];
   const b = s.value.byStatus;
-  return bars([['Pendiente', b.pendiente], ['Contactado', b.contactado], ['Derivado', b.derivado_cem + b.derivado_comisaria], ['Cerrado', b.cerrado]]);
+  return bars([['Pendiente', b.pendiente], ['Contactado', b.contactado], ['Derivado', b.derivado], ['Cerrado', b.cerrado]]);
 });
-const derivBars = computed(() => s.value && bars([['Centro de Emergencia Mujer', s.value.derivations.cem], ['Comisaría', s.value.derivations.comisaria]]));
+const derivBars = computed(() => s.value && bars([['CEM', s.value.derivations.cem], ['Policía', s.value.derivations.policia], ['Otras entidades', s.value.derivations.otra]]));
 const week = computed(() => {
   if (!s.value) return [];
   const max = Math.max(1, ...s.value.last7Days.map((d) => d.total));
@@ -72,7 +72,7 @@ const week = computed(() => {
         <div class="card">
           <h3>Derivaciones</h3>
           <div class="bars"><div v-for="b in derivBars" :key="b.k"><span>{{ b.k }}</span><span><i :style="{ width: b.w }"></i></span><b>{{ b.v }}</b></div></div>
-          <p class="note">Una derivación se registra al cambiar el estado a «Derivado al CEM» o «Derivado a comisaría».</p>
+          <p class="note">Una derivación se registra al guardar el estado «Derivado» con la entidad elegida (CEM, Policía u otra).</p>
         </div>
       </div>
     </template>

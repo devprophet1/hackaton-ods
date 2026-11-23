@@ -84,24 +84,46 @@ await step('El reporte aparece primero en /api/cases con riesgo', async () => {
   return `${cases[0].code} · ${cases[0].alias} · ${cases[0].contact.masked}`;
 });
 
-await step('Mostrar contacto, asignar, «contactado» y nota → historial', async () => {
+let afterContact;
+await step('Mostrar contacto y pasar a «Contactado» con persona de contacto', async () => {
   const c = await api('POST', `/cases/${caseId}/contact-access`);
   assert(c.value === '987654321', 'contacto incorrecto');
-  const me = (await api('GET', '/auth/me')).user;
-  await api('PATCH', `/cases/${caseId}/assign`, { staffId: me.id });
-  await api('PATCH', `/cases/${caseId}/status`, { status: 'contactado' });
-  const d = await api('POST', `/cases/${caseId}/notes`, { text: 'Primer contacto por SMS en horario seguro.' });
-  const types = d.events.map((e) => e.type);
-  for (const t of ['creado', 'acceso_contacto', 'asignado', 'estado', 'nota']) assert(types.includes(t), `falta el evento ${t}`);
-  assert(d.status === 'contactado' && d.assignedTo?.id === me.id, 'estado o asignación sin cambiar');
-  return `historial: ${types.join(' → ')}`;
+  const d = await api('PATCH', `/cases/${caseId}/follow-up`, { status: 'contactado', contactPerson: 'Lic. Ana Torres, psicóloga (prueba)' });
+  assert(d.status === 'contactado' && d.contactPerson === 'Lic. Ana Torres, psicóloga (prueba)', 'estado o persona sin guardar');
+  assert(d.events[0].detail.startsWith('Contactado. Contacto: Lic. Ana Torres'), 'evento: ' + d.events[0].detail);
+  const { cases } = await api('GET', '/cases?filter=contacted');
+  assert(cases.some((x) => x.id === caseId && x.contactPerson), 'no aparece en «Contactados»');
+  afterContact = await api('GET', '/stats/dashboard');
+  assert(afterContact.byStatus.contactado === before.byStatus.contactado + 1, 'contactado no subió');
+  assert(afterContact.byStatus.pendiente === before.byStatus.pendiente - 1, 'pendiente no bajó');
+  return `evento: «${d.events[0].detail}»`;
 });
 
-await step('El dashboard cambia', async () => {
+await step('Derivar a «Otra entidad» con nombre, nota e historial', async () => {
+  const d = await api('PATCH', `/cases/${caseId}/follow-up`, { status: 'derivado', derivedTo: 'otra', derivedEntity: 'Casa de Acogida Esperanza (prueba)', contactPerson: 'Lic. Ana Torres, psicóloga (prueba)' });
+  assert(d.status === 'derivado' && d.derivedTo === 'otra' && d.derivedName === 'Casa de Acogida Esperanza (prueba)', 'derivación sin guardar');
+  assert(d.events[0].detail.startsWith('Derivado a Casa de Acogida Esperanza (prueba). Contacto: Lic. Ana Torres'), 'evento: ' + d.events[0].detail);
+  const n = await api('POST', `/cases/${caseId}/notes`, { text: 'Se coordinó la derivación por teléfono.' });
+  const types = n.events.map((e) => e.type);
+  for (const t of ['creado', 'acceso_contacto', 'estado', 'nota']) assert(types.includes(t), `falta el evento ${t}`);
+  const { cases } = await api('GET', '/cases?filter=derived');
+  const card = cases.find((x) => x.id === caseId);
+  assert(card?.derivedName === 'Casa de Acogida Esperanza (prueba)', 'la bandeja no muestra la entidad');
+  return `evento: «${d.events[0].detail}» · historial: ${types.join(' → ')}`;
+});
+
+await step('El dashboard cambia (estado y derivaciones a otras entidades)', async () => {
   const after = await api('GET', '/stats/dashboard');
-  assert(after.byStatus.contactado === before.byStatus.contactado + 1, 'contactado no subió');
+  assert(after.byStatus.derivado === before.byStatus.derivado + 1, 'derivado no subió');
   assert(after.byStatus.pendiente === before.byStatus.pendiente - 1, 'pendiente no bajó');
-  return `pendiente ${before.byStatus.pendiente}→${after.byStatus.pendiente} · contactado ${before.byStatus.contactado}→${after.byStatus.contactado} · horas a primer contacto ${before.avgHoursToFirstContact}→${after.avgHoursToFirstContact}`;
+  assert(after.derivations.otra === before.derivations.otra + 1, 'otras entidades no subió');
+  return `pendiente ${before.byStatus.pendiente}→${after.byStatus.pendiente} · derivado ${before.byStatus.derivado}→${after.byStatus.derivado} · otras entidades ${before.derivations.otra}→${after.derivations.otra} · horas a primer contacto ${before.avgHoursToFirstContact}→${after.avgHoursToFirstContact}`;
+});
+
+await step('Análisis de apoyo (IA) del caso', async () => {
+  const a = await api('POST', `/cases/${caseId}/analysis`);
+  assert(a.analysis && /Resumen/i.test(a.analysis) && /Opciones/i.test(a.analysis), 'análisis sin secciones');
+  return `${a.analysis.length} caracteres · guía: ${a.sources.join(', ') || '(ninguna)'}`;
 });
 
 await step('Subir un .md a la base de conocimiento → procesado', async () => {

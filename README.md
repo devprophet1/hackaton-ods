@@ -9,7 +9,7 @@ Rimay («hablar» en quechua) es una plataforma web para el desafío **Prevenci�
 - **Web pública:** inicio, «Cómo funciona», «Infórmate», reporte en 3 pasos, preguntas frecuentes, «Nosotros», asistente flotante y selector de idioma (español, quechua y aimara; traducciones preliminares).
 - **Seguridad de la víctima:** botón «Salir rápido» siempre visible (también con Esc tres veces), anónimo por defecto, ningún campo obligatorio, nunca se pide DNI y nada del reporte se guarda en el navegador.
 - **Asistente con RAG:** responde con documentos oficiales (OpenRouter + pgvector) y detecta frases de riesgo antes de llamar al modelo.
-- **Panel `/admin`:** bandeja de casos con riesgo primero, contacto enmascarado con acceso registrado, asignación, estados, notas, dashboard y base de conocimiento.
+- **Panel `/admin`:** bandeja de casos con riesgo primero, contacto enmascarado con acceso registrado, seguimiento (Pendiente, Contactado, Derivado a CEM / Policía / otra entidad, Cerrado) con quién contacta a la persona, análisis de apoyo con IA para decidir el siguiente paso, notas, dashboard y base de conocimiento.
 
 ## Tecnologías y arquitectura
 
@@ -132,13 +132,13 @@ La configuración está en [vercel.json](vercel.json): preset Vite, región `pdx
 
 ## Cuenta de demostración
 
-Una sola cuenta con acceso al panel `/admin` y un solo rol (`admin`, que hace todo: asignar, cambiar estado, notas, mostrar contacto, dashboard y base de conocimiento):
+Una sola cuenta con acceso al panel `/admin` y un solo rol (`admin`, que hace todo: seguimiento de estado y derivación, notas, mostrar contacto, análisis de apoyo, dashboard y base de conocimiento):
 
 | Rol | Correo | Contraseña |
 | --- | --- | --- |
 | Administradora (Administradora Rimay) | `admin@rimay.pe` | `rimay2026` |
 
-Lucía Ramos y Sofía Huamán aparecen como personal para asignar casos, pero sus cuentas están bloqueadas y no pueden entrar al panel.
+Lucía Ramos y Sofía Huamán siguen en la tabla `staff` con la cuenta bloqueada (no entran al panel).
 
 Todos los datos de demostración son ficticios.
 
@@ -148,5 +148,5 @@ Todos los datos de demostración son ficticios.
 2. Continúa, desactiva el anonimato, elige «Mensaje de texto», de 9 a 11 a. m., y envía.
 3. Pregunta al asistente «¿Necesito un abogado para denunciar?» y recibe una respuesta con fuente.
 4. Se cambia a `/admin/login` como administradora (`admin@rimay.pe`): el caso de María aparece primero, marcado con riesgo.
-5. La administradora muestra el contacto (queda registrado), lo marca como contactado y lo deriva al CEM; el dashboard se actualiza.
+5. La administradora muestra el contacto (queda registrado), genera el análisis de apoyo, lo pasa a Contactado indicando quién la contacta y luego lo deriva al CEM; el historial y el dashboard se actualizan.
 6. Cierre: «Salir rápido» y el selector de quechua y aimara.

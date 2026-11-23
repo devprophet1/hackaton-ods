@@ -126,4 +126,17 @@
   .badge.urg{ display:inline-flex; align-items:center; gap:4px; }
   .reveal{ display:inline-flex; align-items:center; gap:4px; vertical-align:middle; }
   .lbl-ico{ display:inline-flex; align-items:center; gap:6px; }
+
+  /* Seguimiento y análisis de apoyo */
+  .case .card-line{ display:block; color:var(--ink); font-weight:600; }
+  .follow{ border:1px solid var(--line); border-radius:14px; padding:16px; margin:0 0 16px; }
+  .follow .btn{ margin-top:4px; }
+  .analysis{ border:1px dashed var(--line); border-radius:14px; padding:14px 16px; margin:0 0 16px; }
+  .analysis .row{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .analysis .muted{ margin:8px 0 0; }
+  .analysis-body{ margin-top:10px; font-size:.93rem; }
+  .analysis-body h4{ font-family:var(--body); font-size:.85rem; font-weight:700; margin:12px 0 4px; text-transform:none; }
+  .analysis-body p{ margin:0 0 6px; color:var(--ink); max-width:none; }
+  .analysis-body ul{ margin:0 0 6px; padding-left:20px; }
+  .analysis-body .src{ margin-top:8px; color:var(--ink-quiet); font-size:.78rem; }
 }

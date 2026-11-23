@@ -42,7 +42,8 @@ Plataforma de prevención de violencia (ODS 5) para el HackODS UA 2026. Se prese
 
 ## Panel: cuenta única
 - Un solo rol, `admin`. Única cuenta con acceso al panel: `admin@rimay.pe` / `rimay2026` («Administradora Rimay»).
-- Lucía Ramos y Sofía Huamán siguen en `staff` para asignar casos, con la cuenta bloqueada.
+- Lucía Ramos y Sofía Huamán siguen en `staff` con la cuenta bloqueada. No hay asignación de casos a personal: el seguimiento es estado + «¿Quién la contacta?» + derivación (CEM, Policía u otra entidad).
+- El «Análisis de apoyo» (IA) del panel es orientativo: nunca envía al modelo el alias ni el número de contacto, no se guarda y no califica el riesgo ni hace diagnóstico clínico.
 - No reintroducir roles distintos (coordinadora, gestora) en código, textos ni datos.
 - `npm run kb:seed` → ingesta los documentos de `knowledge/`.
 - Despliegue: automático en Vercel con cada push a `main` (ver README).

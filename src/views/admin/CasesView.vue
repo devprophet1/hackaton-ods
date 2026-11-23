@@ -1,26 +1,43 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue';
-import { TriangleAlert, Eye, UserPlus, StickyNote } from 'lucide-vue-next';
+import { TriangleAlert, Eye, StickyNote, Save, Sparkles, BookOpen } from 'lucide-vue-next';
 import { useAuth } from '../../composables/useAuth.js';
 import AppIcon from '../../components/AppIcon.vue';
-import { TYPE_LABEL, SUPPORT_LABEL, METHOD_LABEL, STATUS_OPTIONS, statusBadge, fmt, ago, labels, riskPending } from '../../composables/adminLabels.js';
+import { TYPE_LABEL, SUPPORT_LABEL, METHOD_LABEL, STATUS_OPTIONS, DERIVED_OPTIONS, statusBadge, fmt, ago, labels, riskPending } from '../../composables/adminLabels.js';
 
 const { authApi } = useAuth();
-const FILTERS = [['all', 'Todos'], ['risk', 'Con riesgo'], ['pending', 'Pendientes'], ['mine', 'Mis casos'], ['unassigned', 'Sin asignar'], ['closed', 'Cerrados']];
+const FILTERS = [['all', 'Todos'], ['risk', 'Con riesgo'], ['pending', 'Pendientes'], ['contacted', 'Contactados'], ['derived', 'Derivados'], ['closed', 'Cerrados']];
 
 const filter = ref('all');
 const cases = ref([]);
 const overdue = ref([]);
 const selectedId = ref(null);
 const detail = ref(null);
-const staff = ref([]);
 const revealed = reactive({}); // contactos mostrados en esta sesión (solo en memoria)
 const note = ref('');
 const error = ref('');
+const saving = ref(false);
+// Formulario de seguimiento (estado, quién contacta y derivación).
+const form = reactive({ status: 'pendiente', contactPerson: '', derivedTo: 'cem', derivedEntity: '' });
+// Análisis de apoyo (IA): solo en memoria, por caso.
+const analyses = reactive({});
+const analyzing = ref(false);
 let timer;
 
 const open = (c) => c.hasRisk && c.status !== 'cerrado';
 const methodLabel = computed(() => METHOD_LABEL[detail.value?.contact.method] || 'Contacto');
+const needsContact = computed(() => form.status !== 'pendiente');
+const isDerived = computed(() => form.status === 'derivado');
+
+// Línea de la tarjeta: «Derivado a: …» o «Contacto: …».
+const cardLine = (c) => (c.status === 'derivado' && c.derivedName ? `Derivado a: ${c.derivedName}` : c.status !== 'pendiente' && c.contactPerson ? `Contacto: ${c.contactPerson}` : '');
+
+function fillForm(d) {
+  form.status = d.status;
+  form.contactPerson = d.contactPerson || '';
+  form.derivedTo = d.derivedTo || 'cem';
+  form.derivedEntity = d.derivedEntity || '';
+}
 
 async function loadList() {
   try {
@@ -30,15 +47,19 @@ async function loadList() {
     riskPending.value = r.summary.riskPending;
     error.value = '';
     if (!cases.value.find((c) => c.id === selectedId.value)) selectedId.value = cases.value[0]?.id || null;
-    await loadDetail();
+    await loadDetail(true);
   } catch (err) {
     error.value = err.message;
   }
 }
 
-async function loadDetail() {
+// keepForm: al refrescar no se pisa lo que la persona está escribiendo en el mismo caso.
+async function loadDetail(keepForm = false) {
   if (!selectedId.value) { detail.value = null; return; }
-  detail.value = await authApi('/cases/' + selectedId.value);
+  const d = await authApi('/cases/' + selectedId.value);
+  const changed = detail.value?.id !== d.id;
+  detail.value = d;
+  if (changed || !keepForm) fillForm(d);
 }
 
 function select(id) {
@@ -60,31 +81,57 @@ function seeNow() {
   loadList();
 }
 
-async function act(fn) {
-  try { detail.value = await fn(); await loadList(); } catch (err) { error.value = err.message; }
-}
-
 async function reveal() {
   const id = detail.value.id;
   try {
     revealed[id] = (await authApi(`/cases/${id}/contact-access`, { method: 'POST' })).value;
-    await loadDetail();
+    await loadDetail(true);
   } catch (err) { error.value = err.message; }
 }
 
-const assign = (e) => act(() => authApi(`/cases/${detail.value.id}/assign`, { method: 'PATCH', body: { staffId: e.target.value || null } }));
-const setStatus = (e) => act(() => authApi(`/cases/${detail.value.id}/status`, { method: 'PATCH', body: { status: e.target.value } }));
+async function saveFollowUp() {
+  saving.value = true;
+  try {
+    const body = { status: form.status, contactPerson: form.contactPerson, derivedTo: form.derivedTo, derivedEntity: form.derivedEntity };
+    detail.value = await authApi(`/cases/${detail.value.id}/follow-up`, { method: 'PATCH', body });
+    fillForm(detail.value);
+    await loadList();
+  } catch (err) { error.value = err.message; }
+  saving.value = false;
+}
+
 async function saveNote() {
   const text = note.value.trim();
   if (!text) return;
-  await act(() => authApi(`/cases/${detail.value.id}/notes`, { method: 'POST', body: { text } }));
-  note.value = '';
+  try {
+    detail.value = await authApi(`/cases/${detail.value.id}/notes`, { method: 'POST', body: { text } });
+    note.value = '';
+  } catch (err) { error.value = err.message; }
 }
 
-onMounted(async () => {
+// Divide el análisis en títulos («Resumen:»), listas («- …») y párrafos. Sin HTML del modelo.
+function analysisBlocks(textValue) {
+  const out = [];
+  for (const line of String(textValue || '').split('\n').map((l) => l.trim()).filter(Boolean)) {
+    if (/^[-•]\s+/.test(line)) {
+      const item = line.replace(/^[-•]\s+/, '');
+      if (out.at(-1)?.type === 'list') out.at(-1).items.push(item); else out.push({ type: 'list', items: [item] });
+    } else if (/^[A-ZÁÉÍÓÚÑ][^.]{2,40}:$/.test(line)) out.push({ type: 'h', text: line.slice(0, -1) });
+    else out.push({ type: 'p', text: line });
+  }
+  return out;
+}
+
+async function analyze() {
+  const id = detail.value.id;
+  analyzing.value = true;
+  try { analyses[id] = await authApi(`/cases/${id}/analysis`, { method: 'POST' }); } catch (err) { error.value = err.message; }
+  analyzing.value = false;
+}
+
+onMounted(() => {
   loadList();
-  try { staff.value = await authApi('/staff'); } catch { /* el selector queda vacío */ }
-  timer = setInterval(loadList, 30_000); // refresco de la bandeja
+  timer = setInterval(() => { if (!saving.value) loadList(); }, 30_000); // refresco de la bandeja
 });
 onBeforeUnmount(() => clearInterval(timer));
 </script>
@@ -94,7 +141,7 @@ onBeforeUnmount(() => clearInterval(timer));
     <div class="head">
       <div>
         <h2>Casos</h2>
-        <p>Reportes con datos de contacto. Los de riesgo aparecen primero.</p>
+        <p>Reportes con datos de contacto. Los de riesgo pendientes aparecen primero.</p>
       </div>
       <span class="tag">Datos de demostración</span>
     </div>
@@ -116,7 +163,8 @@ onBeforeUnmount(() => clearInterval(timer));
           <button class="case" :class="{ urgent: open(c) }" type="button" :aria-current="c.id === selectedId" @click="select(c.id)">
             <div class="row"><strong>{{ c.alias }}</strong><span :class="statusBadge(c.status).cls">{{ statusBadge(c.status).label }}</span></div>
             <div class="row"><small>{{ labels(c.violenceTypes, TYPE_LABEL) }}</small><span v-if="open(c)" class="badge urg"><AppIcon :icon="TriangleAlert" :size="14" />Riesgo</span></div>
-            <small>{{ c.assignedTo?.fullName || 'Sin asignar' }}  |  {{ ago(c.createdAt) }}</small>
+            <small v-if="cardLine(c)" class="card-line">{{ cardLine(c) }}</small>
+            <small>{{ ago(c.createdAt) }}</small>
           </button>
         </li>
       </ul>
@@ -143,6 +191,8 @@ onBeforeUnmount(() => clearInterval(timer));
               <button v-if="!revealed[detail.id]" class="reveal" type="button" @click="reveal"><AppIcon :icon="Eye" />Mostrar</button>
             </dd>
             <dt>Horario seguro</dt><dd>{{ detail.contact.safeSchedule }}</dd>
+            <template v-if="detail.status !== 'pendiente' && detail.contactPerson"><dt>Quién la contacta</dt><dd>{{ detail.contactPerson }}</dd></template>
+            <template v-if="detail.status === 'derivado' && detail.derivedName"><dt>Derivado a</dt><dd>{{ detail.derivedName }}</dd></template>
           </dl>
 
           <div class="script">
@@ -152,21 +202,51 @@ onBeforeUnmount(() => clearInterval(timer));
               : 'Hola, te escribimos por tu consulta. ¿Es un buen momento para conversar?' }}
           </div>
 
-          <div class="grid2">
-            <div class="field" style="margin:0;">
-              <label for="assign" class="lbl-ico"><AppIcon :icon="UserPlus" />Asignado a</label>
-              <select id="assign" :value="detail.assignedTo?.id || ''" @change="assign">
-                <option value="">Sin asignar</option>
-                <option v-for="s in staff" :key="s.id" :value="s.id">{{ s.fullName }}</option>
-              </select>
+          <!-- Análisis de apoyo (IA): orientativo, la decisión es del equipo -->
+          <div class="analysis">
+            <div class="row">
+              <b class="lbl-ico"><AppIcon :icon="Sparkles" />Análisis de apoyo</b>
+              <button class="btn ghost small" type="button" :disabled="analyzing" @click="analyze">
+                {{ analyzing ? 'Analizando…' : analyses[detail.id] ? 'Volver a analizar' : 'Generar análisis' }}
+              </button>
             </div>
-            <div class="field" style="margin:0;">
-              <label for="status">Estado</label>
-              <select id="status" :value="detail.status" @change="setStatus">
-                <option v-for="[v, label] in STATUS_OPTIONS" :key="v" :value="v">{{ label }}</option>
-              </select>
+            <p v-if="!analyses[detail.id] && !analyzing" class="muted">Resume el caso, señala lo que requiere atención y sugiere opciones con la guía de Rimay. Es orientativo: la decisión es del equipo.</p>
+            <div v-if="analyses[detail.id]" class="analysis-body">
+              <template v-for="(bl, i) in analysisBlocks(analyses[detail.id].analysis)" :key="i">
+                <h4 v-if="bl.type === 'h'">{{ bl.text }}</h4>
+                <ul v-else-if="bl.type === 'list'"><li v-for="(it, j) in bl.items" :key="j">{{ it }}</li></ul>
+                <p v-else>{{ bl.text }}</p>
+              </template>
+              <small v-if="analyses[detail.id].sources.length" class="src lbl-ico"><AppIcon :icon="BookOpen" :size="14" />Guía usada: {{ analyses[detail.id].sources.join(', ') }}</small>
             </div>
           </div>
+
+          <!-- Seguimiento: estado, quién contacta y derivación -->
+          <form class="follow" @submit.prevent="saveFollowUp">
+            <div class="grid2">
+              <div class="field" style="margin:0;">
+                <label for="status">Estado</label>
+                <select id="status" v-model="form.status">
+                  <option v-for="[v, label] in STATUS_OPTIONS" :key="v" :value="v">{{ label }}</option>
+                </select>
+              </div>
+              <div v-if="isDerived" class="field" style="margin:0;">
+                <label for="derivedTo">Derivado a</label>
+                <select id="derivedTo" v-model="form.derivedTo">
+                  <option v-for="[v, label] in DERIVED_OPTIONS" :key="v" :value="v">{{ label }}</option>
+                </select>
+              </div>
+            </div>
+            <div v-if="isDerived && form.derivedTo === 'otra'" class="field">
+              <label for="derivedEntity">Nombre de la entidad</label>
+              <input id="derivedEntity" v-model="form.derivedEntity" class="text" type="text" autocomplete="off" placeholder="Por ejemplo, DEMUNA de Villa El Salvador…">
+            </div>
+            <div v-if="needsContact" class="field">
+              <label for="contactPerson">¿Quién la contacta?</label>
+              <input id="contactPerson" v-model="form.contactPerson" class="text" type="text" autocomplete="off" placeholder="Por ejemplo, Lic. Ana Torres, psicóloga del CEM…">
+            </div>
+            <button class="btn" type="submit" :disabled="saving"><AppIcon :icon="Save" />{{ saving ? 'Guardando…' : 'Guardar cambios' }}</button>
+          </form>
 
           <textarea v-model="note" placeholder="Nota interna del seguimiento" aria-label="Nota interna"></textarea>
           <button class="btn ghost" type="button" style="margin-top:10px;" @click="saveNote"><AppIcon :icon="StickyNote" />Guardar nota</button>
