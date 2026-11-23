@@ -29,7 +29,7 @@ function toCase(r) {
   return {
     id: r.id,
     code: r.code,
-    alias: p.alias || 'Anonimo ' + r.id,
+    alias: p.alias || 'Anonimo ' + r.code,
     hasRisk: r.has_risk,
     status: r.status,
     violenceTypes: r.violence_types || [],
