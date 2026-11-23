@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rimay — Panel de aliados</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%23FFD95A%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF; --surface:#FAF8F2; --ink:#2F2F2F; --ink-quiet:#6B6B6B;
+    --yellow:#FFD95A; --yellow-soft:#FFF4CC; --on-yellow:#2F2F2F; --gold:#9A7712;
+    --line:#E8E4D8; --danger:#C2412D; --danger-soft:#FBE9E5; --ok:#2F7A4A; --ok-soft:#E3F2E8;
+    --display:"Lora", Georgia, serif; --body:"Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1E1E1C; --surface:#262522; --ink:#F2EFE6; --ink-quiet:#ABA79D; --gold:#FFD95A;
+      --yellow-soft:#3A3420; --line:#3A3833; --danger:#EE8B78; --danger-soft:#3B2420; --ok:#7CCB97; --ok-soft:#1F3326;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1E1E1C; --surface:#262522; --ink:#F2EFE6; --ink-quiet:#ABA79D; --gold:#FFD95A;
+    --yellow-soft:#3A3420; --line:#3A3833; --danger:#EE8B78; --danger-soft:#3B2420; --ok:#7CCB97; --ok-soft:#1F3326;
+    color-scheme: dark;
+  }
+  :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+  *,*::before,*::after{ box-sizing:inherit; }
+  html,body{ height:100%; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--body); line-height:1.55; }
+  h1,h2,h3{ font-family:var(--display); font-weight:500; margin:0 0 .4em; line-height:1.2; }
+  p{ margin:0 0 1em; color:var(--ink-quiet); }
+  button, input, select, textarea{ font:inherit; color:inherit; }
+  button{ cursor:pointer; }
+  :focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+  [hidden]{ display:none !important; }
+
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:10px 22px; border-radius:4px 20px 4px 20px; border:2px solid var(--yellow); background:var(--yellow); color:var(--on-yellow); font-weight:700; letter-spacing:.06em; text-transform:uppercase; font-size:.78rem; }
+  .btn.ghost{ background:transparent; border-color:var(--line); color:var(--ink); }
+  .field{ display:grid; gap:6px; margin-bottom:14px; }
+  .field label{ font-weight:600; font-size:.9rem; }
+  input.text, select, textarea{ width:100%; border:1.5px solid var(--line); border-radius:10px; background:var(--bg); padding:11px 14px; font-size:.95rem; }
+  textarea{ min-height:70px; resize:vertical; }
+  .logo{ display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:600; font-size:1.2rem; }
+
+  /* Login */
+  .login{ min-height:100%; display:grid; place-items:center; padding:24px; background:var(--surface); }
+  .login-card{ width:min(420px, 100%); background:var(--bg); border:1px solid var(--line); border-radius:6px 28px 6px 28px; padding:32px; }
+  .login-card h1{ font-size:1.7rem; margin-top:18px; }
+  .error{ color:var(--danger); font-size:.88rem; min-height:1.2em; margin:-4px 0 10px; }
+  .demo{ margin-top:20px; background:var(--yellow-soft); border-radius:10px; padding:12px 14px; font-size:.85rem; }
+  .demo b{ display:block; margin-bottom:4px; }
+  .demo code{ font-size:.85rem; }
+
+  /* App shell */
+  .app{ display:grid; grid-template-columns:240px 1fr; min-height:100%; }
+  .side{ border-right:1px solid var(--line); padding:24px 18px; display:flex; flex-direction:column; gap:28px; background:var(--surface); }
+  .side nav{ display:grid; gap:4px; }
+  .side nav button{ text-align:left; background:none; border:0; padding:11px 14px; border-radius:4px 16px 4px 16px; font-weight:600; display:flex; justify-content:space-between; align-items:center; }
+  .side nav button[aria-current="page"]{ background:var(--yellow); color:var(--on-yellow); }
+  .side nav .count{ font-size:.75rem; background:var(--danger); color:#fff; border-radius:999px; padding:1px 8px; }
+  .user{ margin-top:auto; font-size:.88rem; }
+  .user strong{ display:block; }
+  .user span{ color:var(--ink-quiet); display:block; margin-bottom:10px; }
+  .content{ padding:32px 36px 60px; min-width:0; }
+  .head{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:22px; }
+  .head h2{ font-size:2rem; margin:0; }
+  .head p{ margin:4px 0 0; }
+  .tag{ display:inline-block; font-size:.75rem; font-weight:700; background:var(--yellow-soft); border:1px solid var(--yellow); border-radius:999px; padding:3px 10px; }
+
+  /* Cases */
+  .warn{ display:flex; gap:12px; align-items:center; border-left:6px solid var(--danger); background:var(--danger-soft); border-radius:4px 18px 4px 18px; padding:14px 18px; margin-bottom:18px; color:var(--ink); }
+  .warn button{ margin-left:auto; background:none; border:0; text-decoration:underline; font-weight:700; color:var(--danger); }
+  .filters{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .chip{ border:1.5px solid var(--line); background:var(--bg); border-radius:999px; padding:7px 16px; font-weight:600; font-size:.85rem; min-height:38px; }
+  .chip[aria-pressed="true"]{ background:var(--yellow); border-color:var(--yellow); color:var(--on-yellow); }
+  .board{ display:grid; grid-template-columns:360px 1fr; gap:22px; align-items:start; }
+  .cases{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+  .case{ width:100%; text-align:left; border:1px solid var(--line); background:var(--bg); border-radius:4px 18px 4px 18px; padding:14px 16px; display:grid; gap:6px; }
+  .case.urgent{ border-left:6px solid var(--danger); }
+  .case[aria-current="true"]{ border-color:var(--yellow); background:var(--yellow-soft); }
+  .row{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .case strong{ font-family:var(--display); font-weight:500; font-size:1.05rem; }
+  .case small, .muted{ color:var(--ink-quiet); font-size:.8rem; }
+  .badge{ font-size:.72rem; font-weight:700; border-radius:999px; padding:3px 10px; white-space:nowrap; border:1px solid var(--line); }
+  .badge.urg{ background:var(--danger-soft); color:var(--danger); border-color:var(--danger); }
+  .badge.st-0{ background:var(--yellow-soft); border-color:var(--yellow); }
+  .badge.st-1{ background:var(--surface); }
+  .badge.st-2{ background:var(--ok-soft); color:var(--ok); border-color:var(--ok); }
+  .badge.st-3{ color:var(--ink-quiet); }
+  .detail{ border:1px solid var(--line); border-radius:6px 26px 6px 26px; padding:24px; }
+  .detail h3{ font-size:1.5rem; margin:0; }
+  .facts{ display:grid; grid-template-columns:150px 1fr; gap:10px 16px; margin:18px 0; font-size:.93rem; }
+  .facts dt{ color:var(--ink-quiet); }
+  .facts dd{ margin:0; font-weight:600; }
+  .reveal{ background:none; border:0; padding:0 0 0 8px; text-decoration:underline; font-size:.85rem; color:var(--gold); font-weight:700; }
+  .script{ background:var(--surface); border-left:6px solid var(--yellow); padding:12px 16px; margin:0 0 18px; font-size:.93rem; }
+  .script b{ display:block; font-size:.78rem; color:var(--ink-quiet); margin-bottom:4px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+  .timeline{ list-style:none; padding:0; margin:20px 0 0; border-top:1px solid var(--line); }
+  .timeline li{ padding:10px 0; border-bottom:1px solid var(--line); font-size:.88rem; display:grid; grid-template-columns:120px 1fr; gap:12px; }
+  .timeline time{ color:var(--ink-quiet); }
+  .empty{ border:1.5px dashed var(--line); border-radius:12px; padding:24px; text-align:center; color:var(--ink-quiet); }
+
+  /* Dashboard */
+  .kpis{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px; margin-bottom:24px; }
+  .kpi{ border:1px solid var(--line); border-radius:4px 20px 4px 20px; padding:18px; }
+  .kpi b{ display:block; font-family:var(--display); font-weight:500; font-size:2.1rem; line-height:1.1; }
+  .kpi span{ font-size:.85rem; color:var(--ink-quiet); }
+  .kpi.alert b{ color:var(--danger); }
+  .panels{ display:grid; grid-template-columns:1.2fr 1fr; gap:18px; }
+  .card{ border:1px solid var(--line); border-radius:6px 24px 6px 24px; padding:20px 22px; }
+  .card h3{ font-size:1.2rem; }
+  .bars{ display:grid; gap:10px; margin-top:12px; }
+  .bars div{ display:grid; grid-template-columns:170px 1fr 34px; gap:10px; align-items:center; font-size:.88rem; }
+  .bars i{ display:block; height:12px; background:var(--yellow); border-radius:0 6px 6px 0; }
+  .bars b{ text-align:right; }
+  .cols{ display:flex; align-items:flex-end; gap:10px; height:160px; margin-top:14px; border-bottom:1px solid var(--line); }
+  .cols div{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:4px; font-size:.78rem; }
+  .cols i{ display:block; width:100%; max-width:38px; background:var(--yellow); border-radius:6px 6px 0 0; }
+  .cols-labels{ display:flex; gap:10px; margin-top:6px; }
+  .cols-labels span{ flex:1; text-align:center; font-size:.75rem; color:var(--ink-quiet); }
+  .note{ font-size:.8rem; color:var(--ink-quiet); margin-top:14px; }
+
+  /* Knowledge base */
+  .upload{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; border:1.5px dashed var(--line); border-radius:14px; padding:18px; margin-bottom:18px; }
+  .upload p{ margin:0; flex:1; min-width:220px; }
+  .tbl-wrap{ overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; font-size:.92rem; min-width:560px; }
+  th, td{ text-align:left; padding:12px 10px; border-bottom:1px solid var(--line); }
+  th{ font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-quiet); }
+  .st-ok{ color:var(--ok); font-weight:700; }
+  .st-wait{ color:var(--gold); font-weight:700; }
+  .search{ display:flex; gap:10px; margin:12px 0; }
+  .hits{ display:grid; gap:10px; }
+  .hit{ border:1px solid var(--line); border-left:6px solid var(--yellow); border-radius:4px 16px 4px 16px; padding:12px 16px; font-size:.9rem; }
+  .hit .row{ font-size:.78rem; color:var(--ink-quiet); margin-bottom:4px; }
+
+  @media (max-width:1100px){ .kpis{ grid-template-columns:repeat(2, minmax(0,1fr)); } .panels, .board{ grid-template-columns:1fr; } }
+  @media (max-width:760px){
+    .app{ grid-template-columns:1fr; }
+    .side{ border-right:0; border-bottom:1px solid var(--line); padding:14px 16px; gap:12px; }
+    .side nav{ display:flex; overflow-x:auto; }
+    .side nav button{ white-space:nowrap; }
+    .user{ margin-top:0; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .user span{ margin:0; }
+    .content{ padding:22px 16px 48px; }
+    .facts{ grid-template-columns:1fr; gap:2px; }
+    .facts dd{ margin-bottom:10px; }
+    .grid2{ grid-template-columns:1fr; }
+    .bars div{ grid-template-columns:120px 1fr 30px; }
+    .timeline li{ grid-template-columns:1fr; gap:2px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login" id="login">
+  <form class="login-card" onsubmit="doLogin(event)">
+    <div class="logo">
+      <svg width="38" height="35" viewBox="0 0 130 120" aria-hidden="true"><circle cx="64" cy="60" r="32" fill="#FFD95A"/><path d="M48 16.9 A46 46 0 0 0 48 103.1" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round"/><path d="M99.2 30.4 A46 46 0 0 1 99.2 89.6" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg>
+      Rimay
+    </div>
+    <h1>Panel de aliados</h1>
+    <p>Acceso para el personal de instituciones aliadas.</p>
+    <div class="field">
+      <label for="email">Correo</label>
+      <input class="text" id="email" type="email" autocomplete="username" placeholder="nombre@rimay.pe">
+    </div>
+    <div class="field">
+      <label for="pass">Contraseña</label>
+      <input class="text" id="pass" type="password" autocomplete="current-password">
+    </div>
+    <p class="error" id="loginError" role="alert"></p>
+    <button class="btn" type="submit" style="width:100%;">Ingresar</button>
+    <div class="demo">
+      <b>Cuentas de demostración</b>
+      Coordinadora: <code>coordinadora@rimay.pe</code><br>
+      Gestora: <code>gestora@rimay.pe</code><br>
+      Contraseña: <code>rimay2026</code>
+    </div>
+  </form>
+</div>
+
+<!-- APP -->
+<div class="app" id="app" hidden>
+  <aside class="side">
+    <div class="logo">
+      <svg width="34" height="31" viewBox="0 0 130 120" aria-hidden="true"><circle cx="64" cy="60" r="32" fill="#FFD95A"/><path d="M48 16.9 A46 46 0 0 0 48 103.1" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round"/><path d="M99.2 30.4 A46 46 0 0 1 99.2 89.6" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg>
+      Rimay
+    </div>
+    <nav aria-label="Módulos">
+      <button data-mod="cases" aria-current="page" onclick="showMod('cases')">Casos <span class="count" id="navRisk" hidden></span></button>
+      <button data-mod="dash" onclick="showMod('dash')">Dashboard</button>
+      <button data-mod="kb" onclick="showMod('kb')">Base de conocimiento</button>
+    </nav>
+    <div class="user">
+      <div><strong id="userName"></strong><span id="userRole"></span></div>
+      <button class="btn ghost" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <!-- CASES -->
+    <section id="mod-cases">
+      <div class="head">
+        <div>
+          <h2>Casos</h2>
+          <p>Reportes con datos de contacto. Los de riesgo aparecen primero.</p>
+        </div>
+        <span class="tag">Datos de demostración</span>
+      </div>
+      <div class="warn" id="riskWarn" hidden></div>
+      <div class="filters" id="filters"></div>
+      <div class="board">
+        <ul class="cases" id="caseList"></ul>
+        <div class="detail" id="caseDetail"></div>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="mod-dash" hidden>
+      <div class="head">
+        <div>
+          <h2>Dashboard</h2>
+          <p>Cómo estamos respondiendo a los casos del distrito.</p>
+        </div>
+        <span class="tag">Datos de demostración</span>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="panels">
+        <div class="card">
+          <h3>Tipos de violencia reportados</h3>
+          <p class="muted">Incluye reportes anónimos y con contacto.</p>
+          <div class="bars" id="typeBars"></div>
+        </div>
+        <div class="card">
+          <h3>Reportes en los últimos 7 días</h3>
+          <div class="cols" id="weekCols"></div>
+          <div class="cols-labels" id="weekLabels"></div>
+        </div>
+        <div class="card">
+          <h3>Casos por estado</h3>
+          <div class="bars" id="statusBars"></div>
+        </div>
+        <div class="card">
+          <h3>Derivaciones</h3>
+          <div class="bars" id="derivBars"></div>
+          <p class="note">Una derivación se registra cuando la gestora cambia el estado a «Derivado al CEM» o «Derivado a comisaría».</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- KNOWLEDGE BASE -->
+    <section id="mod-kb" hidden>
+      <div class="head">
+        <div>
+          <h2>Base de conocimiento</h2>
+          <p>Documentos oficiales que usa el asistente para responder.</p>
+        </div>
+      </div>
+      <div class="upload">
+        <p>Sube un PDF, TXT o Markdown. Se divide en fragmentos, se generan sus embeddings y se guardan en Supabase.</p>
+        <label class="btn" for="fileIn">Subir documento</label>
+        <input id="fileIn" type="file" accept=".pdf,.txt,.md" hidden onchange="uploadDoc(this)">
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Documento</th><th>Fuente</th><th>Fragmentos</th><th>Estado</th><th>Actualizado</th></tr></thead>
+          <tbody id="docRows"></tbody>
+        </table>
+      </div>
+      <div class="card" style="margin-top:24px;">
+        <h3>Probar búsqueda</h3>
+        <p class="muted">Escribe una pregunta como lo haría una usuaria y revisa qué fragmentos recupera el asistente.</p>
+        <form class="search" onsubmit="searchKb(event)">
+          <input class="text" id="kbQuery" type="text" placeholder="Por ejemplo: ¿necesito un abogado para denunciar?" aria-label="Pregunta de prueba">
+          <button class="btn" type="submit">Buscar</button>
+        </form>
+        <div class="hits" id="hits"></div>
+        <p class="note">Búsqueda simulada por palabras clave. En la versión real usa similitud de embeddings con pgvector.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+/* ---------- Data ---------- */
+const USERS = {
+  'coordinadora@rimay.pe': { name:'Carmen Flores', role:'Coordinadora' },
+  'gestora@rimay.pe': { name:'Lucía Ramos', role:'Gestora de casos' }
+};
+const PASSWORD = 'rimay2026';
+const STAFF = ['Carmen Flores', 'Lucía Ramos', 'Sofía Huamán'];
+const STATUS = ['Pendiente', 'Contactado', 'Derivado', 'Cerrado'];
+const SUPPORT = { psico:'Psicológico', legal:'Legal', medico:'Médico', info:'Información general' };
+const H = 3600 * 1000, now = Date.now();
+let user = null, filter = 'all', selectedId = null;
+const revealed = new Set();
+
+let cases = [
+  { id:'RI-482193', alias:'Rosa', urgent:true, types:['Psicológica','Física'], place:'Vivienda', support:['legal','psico'], medio:'Mensaje de texto', numero:'987 654 821', horario:'Lunes a viernes, 9 a 11 a. m.', status:0, assigned:null, created:now - 2*H, firstContact:null, deriv:null,
+    events:[{ t:now - 2*H, text:'Reporte recibido. Marcó peligro inmediato.' }] },
+  { id:'RI-590012', alias:'Ana', urgent:false, types:['Económica o patrimonial'], place:'Vivienda', support:['legal'], medio:'Llamada', numero:'912 334 106', horario:'Tardes, de 3 a 5 p. m.', status:0, assigned:'Lucía Ramos', created:now - 5*H, firstContact:null, deriv:null,
+    events:[{ t:now - 5*H, text:'Reporte recibido.' }, { t:now - 4*H, text:'Asignado a Lucía Ramos.' }] },
+  { id:'RI-305774', alias:'Flor', urgent:false, types:['Psicológica'], place:'Espacio público', support:['psico'], medio:'WhatsApp', numero:'955 210 377', horario:'Noches, de 8 a 9 p. m.', status:1, assigned:'Carmen Flores', created:now - 30*H, firstContact:now - 27*H, deriv:null,
+    events:[{ t:now - 30*H, text:'Reporte recibido.' }, { t:now - 27*H, text:'Estado: Contactado. Acordó llamada de seguimiento.' }] },
+  { id:'RI-118450', alias:'M.', urgent:true, types:['Física','Psicológica'], place:'Vivienda', support:['legal'], medio:'Mensaje de texto', numero:'944 501 238', horario:'Mañanas, de 8 a 10 a. m.', status:2, assigned:'Lucía Ramos', created:now - 50*H, firstContact:now - 49*H, deriv:'Comisaría',
+    events:[{ t:now - 50*H, text:'Reporte recibido. Marcó peligro inmediato.' }, { t:now - 49*H, text:'Estado: Contactado.' }, { t:now - 46*H, text:'Estado: Derivado a comisaría.' }] },
+  { id:'RI-776301', alias:'K.', urgent:false, types:['Psicológica'], place:'Internet o redes sociales', support:['psico','info'], medio:'WhatsApp', numero:'933 118 640', horario:'Fines de semana', status:3, assigned:'Sofía Huamán', created:now - 96*H, firstContact:now - 90*H, deriv:'CEM',
+    events:[{ t:now - 96*H, text:'Reporte recibido.' }, { t:now - 90*H, text:'Estado: Contactado.' }, { t:now - 80*H, text:'Estado: Derivado al CEM.' }, { t:now - 40*H, text:'Estado: Cerrado. Recibe atención en el CEM.' }] }
+];
+const anonTypes = { 'Física':4, 'Psicológica':9, 'Sexual':2, 'Económica o patrimonial':3, 'No sé identificarla':2 };
+const week = [3, 5, 2, 6, 4, 7, 5];
+
+let docs = [
+  { name:'Ley N.º 30364 (resumen oficial)', source:'MIMP', chunks:42, status:'ok', updated:now - 72*H },
+  { name:'Línea 100 y Chat 100', source:'MIMP, nota de prensa', chunks:8, status:'ok', updated:now - 30*H },
+  { name:'Cómo presentar una denuncia', source:'Guía interna Rimay', chunks:12, status:'ok', updated:now - 30*H },
+  { name:'Plan de seguridad', source:'Guía interna Rimay', chunks:9, status:'ok', updated:now - 20*H }
+];
+const FRAGMENTS = [
+  { doc:'Cómo presentar una denuncia', text:'La denuncia puede presentarse de forma verbal o escrita en cualquier comisaría o ante la Fiscalía. No se necesita abogado.', k:['denuncia','denunciar','abogado','comisaría','comisaria','fiscalía'] },
+  { doc:'Ley N.º 30364 (resumen oficial)', text:'La ley reconoce cuatro tipos de violencia: física, psicológica, sexual y económica o patrimonial.', k:['tipos','violencia','ley','psicológica','física','sexual','económica'] },
+  { doc:'Ley N.º 30364 (resumen oficial)', text:'Se pueden dictar medidas de protección, como el retiro del agresor del domicilio o la prohibición de acercarse a la víctima.', k:['medidas','protección','agresor','casa','vivienda','acercarse'] },
+  { doc:'Línea 100 y Chat 100', text:'La Línea 100 brinda orientación gratuita y confidencial las 24 horas, en español, quechua y aimara. El Chat 100 está en chat100.warminan.gob.pe.', k:['línea','linea','100','chat','ayuda','quechua','aimara','gratis'] },
+  { doc:'Plan de seguridad', text:'Acordar una palabra clave con una persona de confianza permite pedir ayuda sin que otros lo noten.', k:['seguridad','plan','palabra','clave','confianza','peligro'] },
+  { doc:'Plan de seguridad', text:'Dejar una copia de documentos, llaves y algo de dinero con alguien de confianza ayuda a salir rápido si la situación empeora.', k:['documentos','llaves','dinero','salir','irme'] }
+];
+
+/* ---------- Helpers ---------- */
+const $ = id => document.getElementById(id);
+function el(tag, cls, text){ const e = document.createElement(tag); if(cls) e.className = cls; if(text !== undefined) e.textContent = text; return e; }
+const fmt = t => new Date(t).toLocaleString('es-PE', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+const ago = t => { const h = Math.round((Date.now() - t) / H); return h < 1 ? 'hace menos de 1 hora' : h === 1 ? 'hace 1 hora' : 'hace ' + h + ' horas'; };
+const isRiskOverdue = c => c.urgent && c.status === 0 && Date.now() - c.created > H;
+
+/* ---------- Login ---------- */
+function doLogin(e){
+  e.preventDefault();
+  const email = $('email').value.trim().toLowerCase();
+  const pass = $('pass').value;
+  if(!USERS[email] || pass !== PASSWORD){ $('loginError').textContent = 'Correo o contraseña incorrectos. Usa una cuenta de demostración.'; return; }
+  user = USERS[email];
+  $('loginError').textContent = '';
+  $('userName').textContent = user.name;
+  $('userRole').textContent = user.role;
+  $('login').hidden = true;
+  $('app').hidden = false;
+  showMod('cases');
+}
+function logout(){
+  user = null; $('pass').value = '';
+  $('app').hidden = true; $('login').hidden = false;
+}
+
+function showMod(m){
+  ['cases','dash','kb'].forEach(x => $('mod-' + x).hidden = x !== m);
+  document.querySelectorAll('.side nav button').forEach(b => b.setAttribute('aria-current', b.dataset.mod === m ? 'page' : 'false'));
+  if(m === 'cases') renderCases();
+  if(m === 'dash') renderDash();
+  if(m === 'kb') renderKb();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- Cases ---------- */
+const FILTERS = [['all','Todos'], ['risk','Con riesgo'], ['pending','Pendientes'], ['mine','Mis casos'], ['unassigned','Sin asignar'], ['closed','Cerrados']];
+function visibleCases(){
+  const list = cases.filter(c => ({
+    all: c.status < 3, risk: c.urgent && c.status < 3, pending: c.status === 0,
+    mine: c.assigned === user.name && c.status < 3, unassigned: !c.assigned && c.status < 3, closed: c.status === 3
+  })[filter]);
+  return list.sort((a, b) => (b.urgent && b.status < 3) - (a.urgent && a.status < 3) || a.status - b.status || b.created - a.created);
+}
+
+function renderCases(){
+  const overdue = cases.filter(isRiskOverdue);
+  const warn = $('riskWarn');
+  warn.hidden = !overdue.length;
+  warn.innerHTML = '';
+  if(overdue.length){
+    warn.append(el('span', '', overdue.length === 1
+      ? '1 caso con riesgo lleva más de 1 hora sin contacto.'
+      : overdue.length + ' casos con riesgo llevan más de 1 hora sin contacto.'));
+    const b = el('button', '', 'Ver ahora');
+    b.onclick = () => { filter = 'risk'; selectedId = overdue[0].id; renderCases(); };
+    warn.append(b);
+  }
+  const navRisk = $('navRisk');
+  const riskOpen = cases.filter(c => c.urgent && c.status === 0).length;
+  navRisk.hidden = !riskOpen; navRisk.textContent = riskOpen;
+
+  const f = $('filters'); f.innerHTML = '';
+  FILTERS.forEach(([k, label]) => {
+    const b = el('button', 'chip', label);
+    b.setAttribute('aria-pressed', filter === k);
+    b.onclick = () => { filter = k; selectedId = null; renderCases(); };
+    f.append(b);
+  });
+
+  const list = visibleCases();
+  if(!list.find(c => c.id === selectedId)) selectedId = list[0] ? list[0].id : null;
+  const ul = $('caseList'); ul.innerHTML = '';
+  if(!list.length) ul.append(el('li', 'empty', 'No hay casos con este filtro.'));
+  list.forEach(c => {
+    const li = el('li');
+    const b = el('button', 'case' + (c.urgent && c.status < 3 ? ' urgent' : ''));
+    b.setAttribute('aria-current', c.id === selectedId);
+    b.onclick = () => { selectedId = c.id; renderCases(); };
+    const r1 = el('div', 'row'); r1.append(el('strong', '', c.alias), el('span', 'badge st-' + c.status, STATUS[c.status]));
+    const r2 = el('div', 'row'); r2.append(el('small', '', c.types.join(', ')));
+    if(c.urgent && c.status < 3) r2.append(el('span', 'badge urg', 'Riesgo'));
+    b.append(r1, r2, el('small', '', (c.assigned || 'Sin asignar') + '  |  ' + ago(c.created)));
+    li.append(b); ul.append(li);
+  });
+  renderDetail();
+}
+
+function renderDetail(){
+  const d = $('caseDetail'); d.innerHTML = '';
+  const c = cases.find(x => x.id === selectedId);
+  if(!c){ d.append(el('p', 'muted', 'Selecciona un caso para ver el detalle.')); return; }
+
+  const head = el('div', 'row');
+  head.append(el('h3', '', c.alias));
+  const badges = el('div'); badges.style.cssText = 'display:flex; gap:6px; flex-wrap:wrap;';
+  if(c.urgent && c.status < 3) badges.append(el('span', 'badge urg', 'Marcó peligro inmediato'));
+  badges.append(el('span', 'badge st-' + c.status, STATUS[c.status]));
+  head.append(badges);
+  d.append(head, el('small', 'muted', c.id + '  |  recibido ' + fmt(c.created)));
+
+  const dl = el('dl', 'facts');
+  const contact = el('dd');
+  const shown = revealed.has(c.id);
+  contact.append(document.createTextNode(c.medio + ': ' + (shown ? c.numero : '••• ••• ' + c.numero.slice(-3))));
+  if(!shown){
+    const rb = el('button', 'reveal', 'Mostrar');
+    rb.onclick = () => { revealed.add(c.id); c.events.push({ t:Date.now(), text:'Datos de contacto vistos por ' + user.name + '.' }); renderDetail(); };
+    contact.append(rb);
+  }
+  [['Tipo de violencia', c.types.join(', ')], ['Lugar', c.place], ['Apoyo pedido', c.support.map(s => SUPPORT[s]).join(', ')]]
+    .forEach(([k, v]) => dl.append(el('dt', '', k), el('dd', '', v)));
+  dl.append(el('dt', '', 'Contacto'), contact, el('dt', '', 'Horario seguro'), el('dd', '', c.horario));
+  d.append(dl);
+
+  const script = el('div', 'script');
+  script.append(el('b', '', 'Primer mensaje sugerido (neutro)'));
+  script.append(document.createTextNode(c.medio === 'Llamada'
+    ? 'Hola, te llamo por tu consulta. ¿Puedes hablar ahora con tranquilidad?'
+    : 'Hola, te escribimos por tu consulta. ¿Es un buen momento para conversar?'));
+  d.append(script);
+
+  const grid = el('div', 'grid2');
+  const fa = el('div', 'field'); fa.style.margin = '0';
+  fa.append(el('label', '', 'Asignado a'));
+  const sa = el('select'); sa.setAttribute('aria-label', 'Asignar caso');
+  ['Sin asignar', ...STAFF].forEach(n => { const o = el('option', '', n); o.value = n === 'Sin asignar' ? '' : n; sa.append(o); });
+  sa.value = c.assigned || '';
+  sa.onchange = () => { c.assigned = sa.value || null; c.events.push({ t:Date.now(), text: c.assigned ? 'Asignado a ' + c.assigned + '.' : 'Caso sin asignar.' }); renderCases(); };
+  fa.append(sa);
+
+  const fs = el('div', 'field'); fs.style.margin = '0';
+  fs.append(el('label', '', 'Estado'));
+  const ss = el('select'); ss.setAttribute('aria-label', 'Cambiar estado');
+  ['Pendiente', 'Contactado', 'Derivado al CEM', 'Derivado a comisaría', 'Cerrado'].forEach((s, i) => { const o = el('option', '', s); o.value = i; ss.append(o); });
+  ss.value = c.status === 3 ? 4 : c.status === 2 ? (c.deriv === 'Comisaría' ? 3 : 2) : c.status;
+  ss.onchange = () => {
+    const i = Number(ss.value);
+    c.status = i === 4 ? 3 : Math.min(i, 2);
+    if(i === 2) c.deriv = 'CEM';
+    if(i === 3) c.deriv = 'Comisaría';
+    if(c.status >= 1 && !c.firstContact) c.firstContact = Date.now();
+    c.events.push({ t:Date.now(), text:'Estado: ' + ss.options[i].text + ' (' + user.name + ').' });
+    renderCases();
+  };
+  fs.append(ss);
+  grid.append(fa, fs);
+  d.append(grid);
+
+  const note = el('textarea'); note.placeholder = 'Nota interna del seguimiento'; note.setAttribute('aria-label', 'Nota interna');
+  const save = el('button', 'btn ghost', 'Guardar nota'); save.style.marginTop = '10px';
+  save.onclick = () => { const t = note.value.trim(); if(!t) return; c.events.push({ t:Date.now(), text:'Nota de ' + user.name + ': ' + t }); renderDetail(); };
+  d.append(note, save);
+
+  const tl = el('ul', 'timeline');
+  [...c.events].reverse().forEach(ev => { const li = el('li'); li.append(el('time', '', fmt(ev.t)), el('span', '', ev.text)); tl.append(li); });
+  d.append(tl);
+}
+
+/* ---------- Dashboard ---------- */
+function bars(target, data){
+  const box = $(target); box.innerHTML = '';
+  const max = Math.max(1, ...data.map(d => d[1]));
+  data.forEach(([k, v]) => {
+    const row = el('div'); const bar = el('i'); bar.style.width = (v / max * 100) + '%';
+    const wrap = el('span'); wrap.append(bar);
+    row.append(el('span', '', k), wrap, el('b', '', String(v)));
+    box.append(row);
+  });
+}
+function renderDash(){
+  const active = cases.filter(c => c.status < 3);
+  const risk = active.filter(c => c.urgent);
+  const contacted = cases.filter(c => c.firstContact);
+  const avg = contacted.length ? contacted.reduce((s, c) => s + (c.firstContact - c.created), 0) / contacted.length / H : 0;
+  const kp = $('kpis'); kp.innerHTML = '';
+  [[active.length, 'Casos activos', false], [risk.length, 'Con riesgo activos', risk.length > 0], [avg.toFixed(1) + ' h', 'Promedio hasta el primer contacto', false], [cases.filter(c => c.deriv).length, 'Casos derivados', false]]
+    .forEach(([v, l, a]) => { const k = el('div', 'kpi' + (a ? ' alert' : '')); k.append(el('b', '', String(v)), el('span', '', l)); kp.append(k); });
+
+  const types = { ...anonTypes };
+  cases.forEach(c => c.types.forEach(t => types[t] = (types[t] || 0) + 1));
+  bars('typeBars', Object.entries(types).sort((a, b) => b[1] - a[1]));
+  bars('statusBars', STATUS.map((s, i) => [s, cases.filter(c => c.status === i).length]));
+  bars('derivBars', [['Centro de Emergencia Mujer', cases.filter(c => c.deriv === 'CEM').length], ['Comisaría', cases.filter(c => c.deriv === 'Comisaría').length]]);
+
+  const cols = $('weekCols'), labels = $('weekLabels'); cols.innerHTML = ''; labels.innerHTML = '';
+  const max = Math.max(...week);
+  week.forEach((v, i) => {
+    const day = new Date(Date.now() - (6 - i) * 24 * H).toLocaleDateString('es-PE', { weekday:'short' });
+    const c = el('div'); const bar = el('i'); bar.style.height = (v / max * 100) + '%';
+    c.append(el('span', '', String(v)), bar); cols.append(c);
+    labels.append(el('span', '', day));
+  });
+}
+
+/* ---------- Knowledge base ---------- */
+function renderKb(){
+  const tb = $('docRows'); tb.innerHTML = '';
+  docs.forEach(d => {
+    const tr = el('tr');
+    const st = el('td', d.status === 'ok' ? 'st-ok' : 'st-wait', d.status === 'ok' ? 'Procesado' : 'Procesando…');
+    tr.append(el('td', '', d.name), el('td', '', d.source), el('td', '', d.status === 'ok' ? String(d.chunks) : '—'), st, el('td', '', fmt(d.updated)));
+    tb.append(tr);
+  });
+}
+function uploadDoc(input){
+  const f = input.files[0]; if(!f) return;
+  const doc = { name:f.name, source:'Subido por ' + user.name, chunks:0, status:'wait', updated:Date.now() };
+  docs.unshift(doc); renderKb();
+  setTimeout(() => { doc.status = 'ok'; doc.chunks = Math.max(3, Math.round(f.size / 1500)); doc.updated = Date.now(); renderKb(); }, 2200);
+  input.value = '';
+}
+function searchKb(e){
+  e.preventDefault();
+  const q = $('kbQuery').value.toLowerCase().trim();
+  const box = $('hits'); box.innerHTML = '';
+  if(!q){ box.append(el('p', 'muted', 'Escribe una pregunta para probar.')); return; }
+  const scored = FRAGMENTS.map(f => ({ f, s: f.k.filter(k => q.includes(k)).length }))
+    .filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3);
+  if(!scored.length){ box.append(el('p', 'muted', 'No se encontraron fragmentos relevantes. El asistente derivaría a la Línea 100.')); return; }
+  scored.forEach(({ f, s }) => {
+    const h = el('div', 'hit');
+    const r = el('div', 'row'); r.append(el('span', '', f.doc), el('span', '', 'Similitud ' + Math.min(0.95, 0.62 + s * 0.11).toFixed(2)));
+    h.append(r, document.createTextNode(f.text));
+    box.append(h);
+  });
+}
+</script>
+</body>
+</html>
