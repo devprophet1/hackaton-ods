@@ -1993,5 +1993,61 @@
     "es": "te lleva a Google si alguien se acerca.",
     "qu": "Sichus pipas asuykamun chayqa Google nisqaman apasunki.",
     "ay": "Sichus maynix jak'achaschi ukhaxa, Google ukar apätam."
+  },
+  {
+    "id": 286,
+    "contexto": "Tooltip del número 105",
+    "es": "Policía Nacional del Perú (PNP): emergencias y riesgo inmediato.",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 287,
+    "contexto": "Tooltip del número 100",
+    "es": "Línea 100 del Ministerio de la Mujer (MIMP): orientación gratuita y confidencial ante la violencia, las 24 horas, en español, quechua y aimara.",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 288,
+    "contexto": "Tooltip del número 106",
+    "es": "SAMU (Servicio de Atención Móvil de Urgencia): emergencias médicas.",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 289,
+    "contexto": "Tooltip del número 113",
+    "es": "Línea 113 Salud del Ministerio de Salud (Minsa), opción 5: salud mental y psicología, gratuita, las 24 horas.",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 290,
+    "contexto": "Tooltip del Chat 100",
+    "es": "Chat 100 del Ministerio de la Mujer (MIMP): orientación por escrito, gratuita y confidencial.",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 291,
+    "contexto": "Reporte, paso 2: campo opcional de dirección (etiqueta)",
+    "es": "Dirección (opcional)",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 292,
+    "contexto": "Reporte, paso 2: ayuda del campo de dirección",
+    "es": "Escríbela solo si te parece seguro darla. Solo la verá el equipo de apoyo.",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 293,
+    "contexto": "Reporte, paso 2: ejemplo del campo de dirección",
+    "es": "Por ejemplo, sector, grupo, manzana y lote",
+    "qu": "",
+    "ay": ""
   }
 ]

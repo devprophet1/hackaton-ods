@@ -9,6 +9,7 @@ import { api } from '../../composables/useApi.js';
 import { draft, resetDraft } from '../../composables/useReportDraft.js';
 import AppAlert from '../../components/AppAlert.vue';
 import AppIcon from '../../components/AppIcon.vue';
+import EmergencyLink from '../../components/EmergencyLink.vue';
 
 const go = useGo();
 const step = ref(1);
@@ -46,7 +47,7 @@ async function submit() {
     description: draft.description,
     supportTypes: draft.support,
   };
-  if (!draft.anon) body.contact = { alias: draft.alias, method: draft.medio, value: draft.numero, safeSchedule: draft.horario };
+  if (!draft.anon) body.contact = { alias: draft.alias, method: draft.medio, value: draft.numero, safeSchedule: draft.horario, address: draft.direccion };
   try {
     const r = await api('/reports', { method: 'POST', body });
     const medio = MEDIOS.find(([v]) => v === draft.medio)[1];
@@ -113,15 +114,15 @@ async function submit() {
         <AppAlert v-if="draft.danger === 'si'" :title="t('Tu seguridad es lo primero')">
           {{ t('Busca ayuda inmediata. Puedes volver a este reporte más tarde.') }}
           <template #actions>
-            <a class="btn" href="tel:105">{{ t('Llamar al 105') }}</a>
-            <a class="btn ghost" href="tel:100">{{ t('Línea 100') }}</a>
+            <EmergencyLink to="105" class="btn">{{ t('Llamar al 105') }}</EmergencyLink>
+            <EmergencyLink to="100" class="btn ghost">{{ t('Línea 100') }}</EmergencyLink>
           </template>
         </AppAlert>
         <AppAlert v-if="draft.danger === 'no_se'" variant="warn" :title="t('Habla con una especialista')">
           {{ t('Si no sabes si corres peligro, la Línea 100 puede ayudarte a evaluar tu situación. Es gratuita, atiende las 24 horas y también puedes escribir por el Chat 100.') }}
           <template #actions>
-            <a class="btn" href="tel:100">{{ t('Llamar a la Línea 100') }}</a>
-            <a class="btn ghost" href="https://chat100.warminan.gob.pe" target="_blank" rel="noopener">{{ t('Escribir al Chat 100') }}</a>
+            <EmergencyLink to="100" class="btn">{{ t('Llamar a la Línea 100') }}</EmergencyLink>
+            <EmergencyLink to="chat" class="btn ghost">{{ t('Escribir al Chat 100') }}</EmergencyLink>
             <button class="btn ghost" type="button" @click="openChat">{{ t('Hablar con el asistente') }}</button>
           </template>
         </AppAlert>
@@ -165,6 +166,11 @@ async function submit() {
             <label for="horario">{{ t('Horario seguro para contactarte') }}</label>
             <input id="horario" v-model="draft.horario" class="text" type="text" :placeholder="t('Por ejemplo, lunes a viernes de 9 a 11 a. m.')">
           </div>
+          <div class="field" style="margin:14px 0 0;">
+            <label for="direccion">{{ t('Dirección (opcional)') }}</label>
+            <p class="hint" style="margin:0 0 4px;">{{ t('Escríbela solo si te parece seguro darla. Solo la verá el equipo de apoyo.') }}</p>
+            <input id="direccion" v-model="draft.direccion" class="text" type="text" autocomplete="off" :placeholder="t('Por ejemplo, sector, grupo, manzana y lote')">
+          </div>
         </div>
 
         <fieldset class="q">
@@ -205,7 +211,7 @@ async function submit() {
           {{ error }} Lo que escribiste sigue aquí. Si necesitas ayuda ahora, llama a la Línea 100 (gratuita, las 24 horas).
           <template #actions>
             <button class="btn" type="button" :disabled="sending" @click="submit">Reintentar</button>
-            <a class="btn ghost" href="tel:100">{{ t('Llamar a la Línea 100') }}</a>
+            <EmergencyLink to="100" class="btn ghost">{{ t('Llamar a la Línea 100') }}</EmergencyLink>
           </template>
         </AppAlert>
         <div class="nav-steps">

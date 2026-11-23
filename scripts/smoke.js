@@ -48,7 +48,7 @@ await step('Reporte con contacto y peligro inmediato', async () => {
   const r = await api('POST', '/reports', {
     isAnonymous: false, deviceSafe: 'si', danger: 'si', violenceTypes: ['fisica', 'psicologica'], place: 'Vivienda',
     supportTypes: ['legal', 'psico'],
-    contact: { alias: 'María (prueba)', method: 'sms', value: '987654321', safeSchedule: 'Lunes a viernes, 9 a 11 a. m.' },
+    contact: { alias: 'María (prueba)', method: 'sms', value: '987654321', safeSchedule: 'Lunes a viernes, 9 a 11 a. m.', address: 'Sector 2, grupo 5, Mz. B, Lt. 7 (prueba)' },
   });
   assert(/^RI-\d{6}$/.test(r.code), 'código inválido');
   reportCode = r.code;
@@ -88,6 +88,7 @@ let afterContact;
 await step('Mostrar contacto y pasar a «Contactado» con persona de contacto', async () => {
   const c = await api('POST', `/cases/${caseId}/contact-access`);
   assert(c.value === '987654321', 'contacto incorrecto');
+  assert(c.address === 'Sector 2, grupo 5, Mz. B, Lt. 7 (prueba)', 'dirección incorrecta');
   const d = await api('PATCH', `/cases/${caseId}/follow-up`, { status: 'contactado', contactPerson: 'Lic. Ana Torres, psicóloga (prueba)' });
   assert(d.status === 'contactado' && d.contactPerson === 'Lic. Ana Torres, psicóloga (prueba)', 'estado o persona sin guardar');
   assert(d.events[0].detail.startsWith('Contactado. Contacto: Lic. Ana Torres'), 'evento: ' + d.events[0].detail);

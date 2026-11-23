@@ -8,6 +8,8 @@ import { useGo } from '../../composables/useGo.js';
 import LangSwitch from '../../components/LangSwitch.vue';
 import AppCard from '../../components/AppCard.vue';
 import AppIcon from '../../components/AppIcon.vue';
+import EmergencyLink from '../../components/EmergencyLink.vue';
+import { EMERGENCY } from '../../composables/emergencyInfo.js';
 
 const { lang, t } = useI18n();
 const go = useGo();
@@ -28,7 +30,7 @@ const topics = [
       <div>
         <LangSwitch class="hero-lang" />
         <p class="hello">{{ t('Hola. Este es un espacio seguro y confidencial.') }}</p>
-        <div v-if="langNote" class="lang-note">{{ langNote }}<a href="tel:100">{{ t('Llamar al 100') }}</a></div>
+        <div v-if="langNote" class="lang-note">{{ langNote }}<EmergencyLink to="100">{{ t('Llamar al 100') }}</EmergencyLink></div>
         <p v-if="lang !== 'es'" class="prelim">Traducción preliminar, pendiente de validar con hablantes nativos.</p>
         <h1>{{ t('Una voz segura para quien vive violencia en Villa El Salvador') }}</h1>
         <p class="lede">{{ t('Reporta un caso sin dar tu nombre y recibe orientación psicológica y legal inmediata. Si lo deseas, una persona del equipo de apoyo te contactará de forma segura.') }}</p>
@@ -55,8 +57,8 @@ const topics = [
         <h3>{{ t('Línea 100') }}</h3>
         <p>{{ t('Orientación gratuita y confidencial del Ministerio de la Mujer, en español, quechua y aimara.') }}</p>
         <div style="display:flex; flex-wrap:wrap; gap:18px;">
-          <a href="tel:100" class="ico-link"><AppIcon :icon="Phone" />{{ t('Llamar') }}</a>
-          <a href="https://chat100.warminan.gob.pe" target="_blank" rel="noopener" class="ico-link"><AppIcon :icon="MessageCircle" />{{ t('Escribir al Chat 100') }}</a>
+          <EmergencyLink to="100" class="ico-link"><AppIcon :icon="Phone" />{{ t('Llamar') }}</EmergencyLink>
+          <EmergencyLink to="chat" class="ico-link"><AppIcon :icon="MessageCircle" />{{ t('Escribir al Chat 100') }}</EmergencyLink>
         </div>
       </aside>
     </div>
@@ -64,7 +66,7 @@ const topics = [
     <section class="need" aria-labelledby="needTitle">
       <h2 id="needTitle">{{ t('¿Qué necesitas ahora?') }}</h2>
       <div class="need-grid">
-        <AppCard danger :icon="Siren" href="tel:105" :title="t('Estoy en peligro ahora')" :text="t('Llama a la Policía. No necesitas llenar nada antes.')" :go="t('Llamar al 105')" />
+        <AppCard danger :icon="Siren" href="tel:105" :tip="t(EMERGENCY[105].tip)" :title="t('Estoy en peligro ahora')" :text="t('Llama a la Policía. No necesitas llenar nada antes.')" :go="t('Llamar al 105')" />
         <AppCard :icon="FileText" :title="t('Quiero contar lo que pasa')" :text="t('Anónimo y a tu ritmo, en tres pasos.')" :go="t('Reportar un caso')" @select="go('/reportar')" />
         <AppCard :icon="MessageCircle" :title="t('Tengo dudas sobre qué hacer')" :text="t('El asistente te orienta al instante, sin registrarte.')" :go="t('Abrir el asistente')" @select="openChat" />
         <AppCard :icon="HeartHandshake" :title="t('Quiero ayudar a alguien')" :text="t('Qué decir y qué evitar si alguien cercano vive violencia.')" :go="t('Ver la guía')" @select="go('/informate', 'ayudar')" />
@@ -85,7 +87,7 @@ const topics = [
       <h2>{{ t('Canales oficiales') }}</h2>
       <div class="channel-row">
         <div>{{ t('Línea 100') }}<small>MIMP</small></div>
-        <div><a href="https://chat100.warminan.gob.pe" target="_blank" rel="noopener" style="text-decoration:none;">Chat 100</a><small>{{ t('Atención en línea') }}</small></div>
+        <div><EmergencyLink to="chat" style="text-decoration:none;">Chat 100</EmergencyLink><small>{{ t('Atención en línea') }}</small></div>
         <div>{{ t('Centro de Emergencia Mujer') }}<small>{{ t('Atención presencial') }}</small></div>
         <div>{{ t('Central Única de Denuncias') }}<small>Mininter</small></div>
         <div>{{ t('Policía 105') }}<small>{{ t('Emergencias') }}</small></div>

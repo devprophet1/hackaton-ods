@@ -241,6 +241,18 @@
 
   .team{ margin:0 0 1em; padding-left:20px; color:var(--ink-quiet); }
   .team li{ margin:4px 0; }
+
+  /* Tooltips de los canales de emergencia: a qué entidad pertenece cada número (mouse o teclado). */
+  .has-tip{ position:relative; }
+  .has-tip::after{ content:attr(data-tip); position:absolute; left:50%; top:calc(100% + 8px); transform:translateX(-50%);
+    width:max-content; max-width:min(280px, 80vw); padding:8px 12px; border-radius:8px; border:1px solid var(--line);
+    background:#2F2F2F; color:#FFFFFF; font-family:var(--body); font-size:.8rem; font-weight:600; line-height:1.4;
+    letter-spacing:0; text-transform:none; text-align:left; white-space:normal; box-shadow:0 8px 20px rgba(0,0,0,.2);
+    z-index:40; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .12s; }
+  .has-tip[data-tip-pos="top"]::after{ top:auto; bottom:calc(100% + 8px); }
+  .has-tip:hover::after, .has-tip:focus-visible::after{ opacity:1; visibility:visible; }
+  @media (hover:none){ .has-tip::after{ display:none; } }
+  @media (prefers-reduced-motion: reduce){ .has-tip::after{ transition:none; } }
   .tip .tip-short{ display:none; }
 
   @media (max-width:980px){

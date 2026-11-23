@@ -38,6 +38,7 @@ export async function createReport(body = {}) {
       contact_method: pick(c.method, ['sms', 'whatsapp', 'llamada']),
       contact_value: text(c.value, 40),
       safe_schedule: text(c.safeSchedule, 200),
+      address: text(c.address, 200), // opcional
     }));
   }
   check(await db().from('case_events').insert({

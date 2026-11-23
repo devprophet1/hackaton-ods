@@ -165,6 +165,7 @@ create table persons (
   contact_method text check (contact_method in ('sms','whatsapp','llamada')),
   contact_value text,
   safe_schedule text,
+  address text,            -- opcional (migración 000012); oculta en el panel hasta «Mostrar»
   created_at timestamptz default now()
 );
 ```
@@ -263,7 +264,7 @@ Base: `/api`. Respuestas en JSON. Errores con `{ "message": "…" }` en español
   "place": "Vivienda",
   "description": "",
   "supportTypes": ["legal", "psico"],
-  "contact": { "alias": "Rosa", "method": "sms", "value": "987654821", "safeSchedule": "Lunes a viernes, 9 a 11 a. m." }
+  "contact": { "alias": "Rosa", "method": "sms", "value": "987654821", "safeSchedule": "Lunes a viernes, 9 a 11 a. m.", "address": "" }
 }
 ```
 - `contact` se ignora si `isAnonymous` es `true`.
@@ -304,7 +305,7 @@ Ver sección 9 para la lógica.
 | GET | `/auth/me` | Usuario actual |
 | GET | `/cases?filter=all\|risk\|pending\|contacted\|derived\|closed` | Bandeja. Solo reportes **no anónimos**. Orden: riesgo pendiente primero, luego riesgo activo, luego por estado, luego más reciente. Cada caso trae `contactPerson`, `derivedTo`, `derivedEntity` y `derivedName` (CEM, Policía o el nombre de la entidad). El contacto viene **enmascarado** (`••• ••• 821`) |
 | GET | `/cases/:id` | Detalle con eventos (contacto enmascarado) |
-| POST | `/cases/:id/contact-access` | Devuelve el contacto completo y registra evento `acceso_contacto` |
+| POST | `/cases/:id/contact-access` | Devuelve el contacto completo y la dirección opcional (`{ value, address }`) y registra evento `acceso_contacto`. El detalle del caso solo indica `contact.hasAddress` |
 | PATCH | `/cases/:id/follow-up` | `{ status, contactPerson, derivedTo, derivedEntity }` → **un solo** evento `estado`, por ejemplo «Derivado a CEM. Contacto: Lic. Ana Torres (Administradora Rimay)». Estados: `pendiente`, `contactado`, `derivado`, `cerrado`. `contactPerson` se guarda si el estado no es pendiente; `derivedTo` (`cem`, `policia`, `otra`) y `derivedEntity` (solo con `otra`), si es derivado. Si pasa de `pendiente` a otro estado y `first_contact_at` es null, se completa |
 | POST | `/cases/:id/analysis` | **Análisis de apoyo (IA)** bajo demanda: `{ analysis, sources, generatedAt }` con secciones Resumen, Señales de atención, Opciones sugeridas y A tener en cuenta. Usa los datos del caso (sin alias ni número de contacto) y la guía de la base de conocimiento. No se guarda. Orientativo: no es un diagnóstico clínico ni califica el riesgo; la decisión es del equipo |
 | POST | `/cases/:id/notes` | `{ text }` → evento `nota` |
@@ -344,6 +345,7 @@ Cualquier otra ruta pública redirige a `/`. El CSS de la maqueta se reutiliza t
 
 ### Elementos globales
 - Franja superior: «¿Estás en peligro ahora?» + `tel:105`, `tel:100` y enlace al Chat 100 (`https://chat100.warminan.gob.pe`, `target="_blank" rel="noopener"`).
+- **Tooltips de los canales de emergencia** (`EmergencyLink.vue` y `src/composables/emergencyInfo.js`): cada enlace a 105, 100, 106, 113 o el Chat 100 indica a qué entidad pertenece (105: Policía Nacional del Perú; 100 y Chat 100: Ministerio de la Mujer, MIMP; 106: SAMU; 113: Línea 113 Salud del Minsa, opción 5). Aparecen con el mouse o el foco del teclado, los lectores de pantalla los leen como parte del enlace y en pantallas táctiles no se muestran. El `href` y el texto de cada enlace no cambian. Solo datos de la sección 12.
 - Cabecera: logo, navegación (Inicio, Cómo funciona, Infórmate, Reportar, Preguntas), botón «Menú» y botón «Salir rápido».
 - Aviso amarillo bajo la cabecera explicando «Salir rápido», con botón «Entendido».
 - Menú lateral: secciones, accesibilidad (tamaño de texto Normal/Grande; idioma Español/Quechua/Aimara) y enlace a `/admin/`.
@@ -367,7 +369,7 @@ Paso 1, reglas de los avisos:
 
 Ningún aviso bloquea continuar.
 
-Paso 2: switch «Enviar de forma anónima» (activado por defecto). Si se desactiva, mostrar alias, medio seguro (Mensaje de texto / WhatsApp / Llamada), número y horario seguro. Tipos de violencia (multiselección, Ley N.º 30364), lugar, descripción opcional.
+Paso 2: switch «Enviar de forma anónima» (activado por defecto). Si se desactiva, mostrar alias, medio seguro (Mensaje de texto / WhatsApp / Llamada), número, horario seguro y **dirección (opcional)**, con la ayuda «Escríbela solo si te parece seguro darla. Solo la verá el equipo de apoyo.». En el panel la dirección queda oculta hasta «Mostrar» (acceso registrado) y nunca se envía al análisis de IA. Tipos de violencia (multiselección, Ley N.º 30364), lugar, descripción opcional.
 
 Paso 3: tipo de apoyo (Psicológico, Legal, Médico, Información general). «Enviar reporte» llama a `POST /api/reports`.
 

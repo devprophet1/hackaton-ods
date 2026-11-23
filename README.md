@@ -7,7 +7,8 @@ Rimay («hablar» en quechua) es una plataforma web para el desafío **Prevenci�
 ## Qué incluye
 
 - **Web pública:** inicio, «Cómo funciona», «Infórmate», reporte en 3 pasos, preguntas frecuentes, «Nosotros», asistente flotante y selector de idioma (español, quechua y aimara; traducciones preliminares).
-- **Seguridad de la víctima:** botón «Salir rápido» siempre visible (también con Esc tres veces), anónimo por defecto, ningún campo obligatorio, nunca se pide DNI y nada del reporte se guarda en el navegador.
+- **Seguridad de la víctima:** botón «Salir rápido» siempre visible (también con Esc tres veces), anónimo por defecto, ningún campo obligatorio (la dirección también es opcional y queda oculta en el panel hasta «Mostrar»), nunca se pide DNI y nada del reporte se guarda en el navegador.
+- **Canales de emergencia con tooltip:** 105 (Policía Nacional del Perú), Línea 100 y Chat 100 (Ministerio de la Mujer), 106 (SAMU) y 113 opción 5 (salud mental del Minsa) indican a qué entidad pertenecen.
 - **Asistente con RAG:** responde con documentos oficiales (OpenRouter + pgvector) y detecta frases de riesgo antes de llamar al modelo.
 - **Panel `/admin`:** bandeja de casos con riesgo primero, contacto enmascarado con acceso registrado, seguimiento (Pendiente, Contactado, Derivado a CEM / Policía / otra entidad, Cerrado) con quién contacta a la persona, análisis de apoyo con IA para decidir el siguiente paso, notas, dashboard y base de conocimiento.
 

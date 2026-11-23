@@ -84,7 +84,7 @@ function seeNow() {
 async function reveal() {
   const id = detail.value.id;
   try {
-    revealed[id] = (await authApi(`/cases/${id}/contact-access`, { method: 'POST' })).value;
+    revealed[id] = await authApi(`/cases/${id}/contact-access`, { method: 'POST' }); // { value, address }
     await loadDetail(true);
   } catch (err) { error.value = err.message; }
 }
@@ -187,9 +187,11 @@ onBeforeUnmount(() => clearInterval(timer));
             <dt>Apoyo pedido</dt><dd>{{ labels(detail.supportTypes, SUPPORT_LABEL) }}</dd>
             <dt>Contacto</dt>
             <dd>
-              {{ methodLabel }}: {{ revealed[detail.id] || detail.contact.masked }}
+              {{ methodLabel }}: {{ revealed[detail.id]?.value || detail.contact.masked }}
               <button v-if="!revealed[detail.id]" class="reveal" type="button" @click="reveal"><AppIcon :icon="Eye" />Mostrar</button>
             </dd>
+            <dt>Dirección</dt>
+            <dd>{{ !detail.contact.hasAddress ? 'No indicada' : revealed[detail.id] ? revealed[detail.id].address : 'Oculta (se ve con «Mostrar»)' }}</dd>
             <dt>Horario seguro</dt><dd>{{ detail.contact.safeSchedule }}</dd>
             <template v-if="detail.status !== 'pendiente' && detail.contactPerson"><dt>Quién la contacta</dt><dd>{{ detail.contactPerson }}</dd></template>
             <template v-if="detail.status === 'derivado' && detail.derivedName"><dt>Derivado a</dt><dd>{{ detail.derivedName }}</dd></template>

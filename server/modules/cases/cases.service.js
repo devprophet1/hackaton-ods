@@ -9,7 +9,7 @@ const DERIVED_LABEL = { cem: 'CEM', policia: 'Policía', otra: 'Otra entidad' };
 const HOUR = 3600 * 1000;
 
 const SELECT = 'id, code, has_risk, status, violence_types, place, support_types, description, contact_person, derived_to, derived_entity, first_contact_at, created_at, ' +
-  'persons(alias, contact_method, contact_value, safe_schedule)';
+  'persons(alias, contact_method, contact_value, safe_schedule, address)';
 
 const one = (v) => (Array.isArray(v) ? v[0] : v) || null;
 const isOpen = (r) => r.status !== 'cerrado';
@@ -35,7 +35,7 @@ function toCase(r) {
     violenceTypes: r.violence_types || [],
     place: r.place,
     supportTypes: r.support_types || [],
-    contact: { method: p.contact_method, masked: mask(p.contact_value), safeSchedule: p.safe_schedule || 'No indicado' },
+    contact: { method: p.contact_method, masked: mask(p.contact_value), safeSchedule: p.safe_schedule || 'No indicado', hasAddress: !!p.address },
     contactPerson: r.contact_person,
     derivedTo: r.derived_to,
     derivedEntity: r.derived_entity,
@@ -97,7 +97,9 @@ export async function getCase(id) {
 export async function contactAccess(id, staff) {
   const row = await getRow(id);
   await addEvent(id, staff.id, 'acceso_contacto', `Datos de contacto vistos por ${staff.full_name}.`);
-  return { value: one(row.persons)?.contact_value || 'No indicado' };
+  const p = one(row.persons) || {};
+  // La dirección (opcional) se entrega junto con el contacto: mismo acceso registrado.
+  return { value: p.contact_value || 'No indicado', address: p.address || null };
 }
 
 // Guarda estado, persona de contacto y derivación en un solo evento del historial.

@@ -4,7 +4,7 @@ import { reactive } from 'vue';
 // nunca se guarda en localStorage ni sessionStorage y se borra al enviar.
 const empty = () => ({
   device: '', danger: '', anon: true,
-  alias: '', medio: 'sms', numero: '', horario: '',
+  alias: '', medio: 'sms', numero: '', horario: '', direccion: '',
   types: [], place: '', description: '', support: [],
 });
 

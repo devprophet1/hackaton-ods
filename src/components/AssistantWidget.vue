@@ -7,6 +7,7 @@ import { api } from '../composables/useApi.js';
 import AppIcon from './AppIcon.vue';
 import RichText from './RichText.vue';
 import RimayLogo from './RimayLogo.vue';
+import EmergencyLink from './EmergencyLink.vue';
 
 const { lang, t } = useI18n();
 const GREET = { es: 'Hola.', qu: 'Allillanchu.', ay: 'Kamisaraki.' };
@@ -115,9 +116,9 @@ function send() {
             <p v-if="m.riskType === 'crisis'">{{ t('Puedes hablar ahora mismo, gratis y a cualquier hora, con alguien que te escuche:') }}</p>
             <p v-else>{{ t('Si estás en peligro ahora, busca ayuda inmediata:') }}</p>
             <div class="risk-links">
-              <a href="tel:105"><AppIcon :icon="Phone" :size="18" />{{ t('Llamar al 105') }}</a>
-              <a href="tel:100"><AppIcon :icon="Phone" :size="18" />{{ t('Línea 100') }}</a>
-              <a v-if="m.riskType === 'crisis'" href="tel:113"><AppIcon :icon="Phone" :size="18" />{{ t('Línea 113, opción 5 (salud mental)') }}</a>
+              <EmergencyLink to="105" pos="top"><AppIcon :icon="Phone" :size="18" />{{ t('Llamar al 105') }}</EmergencyLink>
+              <EmergencyLink to="100" pos="top"><AppIcon :icon="Phone" :size="18" />{{ t('Línea 100') }}</EmergencyLink>
+              <EmergencyLink v-if="m.riskType === 'crisis'" to="113" pos="top"><AppIcon :icon="Phone" :size="18" />{{ t('Línea 113, opción 5 (salud mental)') }}</EmergencyLink>
             </div>
           </div>
         </div>
@@ -147,8 +148,8 @@ function send() {
     <div class="human">
       <AppIcon :icon="Phone" :size="18" />
       <span>{{ t('Hablar con una persona') }}:</span>
-      <a href="tel:100">{{ t('Línea 100') }}</a>
-      <a href="https://chat100.warminan.gob.pe" target="_blank" rel="noopener">Chat 100</a>
+      <EmergencyLink to="100" pos="top">{{ t('Línea 100') }}</EmergencyLink>
+      <EmergencyLink to="chat" pos="top">Chat 100</EmergencyLink>
     </div>
 
     <form class="compose" @submit.prevent="send">
