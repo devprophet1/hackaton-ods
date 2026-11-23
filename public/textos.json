@@ -10,7 +10,7 @@
     "id": 2,
     "contexto": "Texto de la página",
     "es": "¿Estás en peligro ahora?",
-    "qu": "",
+    "qu": "¿Kunanpuni manchakuypichu kachkanki?",
     "ay": ""
   },
   {
@@ -81,7 +81,7 @@
     "contexto": "Texto de la página",
     "es": "También puedes presionar Esc tres veces",
     "qu": "Esc ñit'inata kimsakutitaq ñit'iyta atinki",
-    "ay": ""
+    "ay": "Esc ukxa kimsa kuti limt'arakisma."
   },
   {
     "id": 13,
@@ -94,7 +94,7 @@
     "id": 14,
     "contexto": "Texto de la página",
     "es": "te lleva de inmediato a Google. Úsalo si alguien se acerca. También funciona presionando Esc tres veces.",
-    "qu": "",
+    "qu": "Utqaylla Google nisqaman apasunki. Sichus pipas asuykamun chayqa, llamk'achiy. Esc ñit'inata kimsakutitaq ñit'ispa llamk'an.",
     "ay": ""
   },
   {
@@ -123,14 +123,14 @@
     "contexto": "Texto de la página",
     "es": "Reportar un caso",
     "qu": "Huk kasumanta willakuy",
-    "ay": ""
+    "ay": "Kunas pasawayki uk yatiyaña"
   },
   {
     "id": 19,
     "contexto": "Texto de la página",
     "es": "Anónimo o con contacto seguro",
     "qu": "Sutiykita mana willaspa utaq waqaychasqa tinkiywan",
-    "ay": ""
+    "ay": "Jan sutim yatiyasa jan ukax jan axsarkañ tuqi jawst'asiña"
   },
   {
     "id": 20,
@@ -144,14 +144,14 @@
     "contexto": "Texto de la página",
     "es": "Orientación psicológica y legal",
     "qu": "Yuyay sunqumanta hinallataq kamachikuymanta yanapay",
-    "ay": ""
+    "ay": "Amuyunak tuqita ukhamarak kamachinakata yatiyawi"
   },
   {
     "id": 22,
     "contexto": "Texto de la página",
     "es": "Señales, derechos y plan de seguridad",
     "qu": "Unanchakuna, derechoykikuna, waqaychakunapaq wakichikuy",
-    "ay": ""
+    "ay": "Uñacht'awinaka, derechonakama ukat jark'aqasiñataki wakichawi"
   },
   {
     "id": 23,
@@ -165,7 +165,7 @@
     "contexto": "Texto de la página",
     "es": "Si alguien cercano vive violencia",
     "qu": "Sichus riqsisqayki runa ñak'arichkan chayqa",
-    "ay": ""
+    "ay": "Mä jak'ankir jaqix violencia t'aqhiski ukhaxa"
   },
   {
     "id": 25,
@@ -179,7 +179,7 @@
     "contexto": "Texto de la página",
     "es": "Privacidad, anonimato y seguridad",
     "qu": "Pakay, mana sutiyuq kay, waqaychakuy",
-    "ay": ""
+    "ay": "Jamasat uñjaña, jan sutim yatiyaña ukat jark'aqasiña"
   },
   {
     "id": 27,
@@ -200,14 +200,14 @@
     "contexto": "Texto de la página",
     "es": "Canales oficiales de ayuda",
     "qu": "Yanapanapaq kamachisqa ñankuna",
-    "ay": ""
+    "ay": "Yanapt'añataki oficial thakhinaka"
   },
   {
     "id": 30,
     "contexto": "Texto de la página",
     "es": "Accesibilidad",
     "qu": "Llapapaq chayman yaykuy",
-    "ay": ""
+    "ay": "Taqinitaki apnaqañjama"
   },
   {
     "id": 31,
@@ -242,7 +242,7 @@
     "contexto": "Texto de la página",
     "es": "¿Trabajas en una institución aliada?",
     "qu": "¿Huk yanapakuq wasipichu llamk'anki?",
-    "ay": ""
+    "ay": "¿Mä yanapt'asir institución ukan irnaqta?"
   },
   {
     "id": 36,
@@ -256,14 +256,14 @@
     "contexto": "Texto de la página",
     "es": "Hola. Este es un espacio seguro y confidencial.",
     "qu": "Rimaykullayki. Kayqa waqaychasqa, pakasqa k'itim.",
-    "ay": ""
+    "ay": "Kamisaraki. Akax jan axsarkañ ukhamarak jamasat aruskipañ chiqaawa."
   },
   {
     "id": 38,
     "contexto": "Texto de la página",
     "es": "Una voz segura para quien vive violencia en Villa El Salvador",
     "qu": "Villa El Salvador llaqtapi ñak'ariq runakunapaq waqaychasqa rimay",
-    "ay": ""
+    "ay": "Villa El Salvador ukan violencia t'aqhisirinakataki mä jan axsarkañ arsuñawi"
   },
   {
     "id": 39,
@@ -325,7 +325,7 @@
     "id": 47,
     "contexto": "Texto de la página",
     "es": "Estoy en peligro ahora",
-    "qu": "",
+    "qu": "Kunallan manchakuypi kachkani",
     "ay": ""
   },
   {
@@ -347,14 +347,14 @@
     "contexto": "Texto de la página",
     "es": "Quiero contar lo que pasa",
     "qu": "Imataq karqan chayta willakuyta munani",
-    "ay": ""
+    "ay": "Kunas pasaski uk yatiyañ muntha"
   },
   {
     "id": 51,
     "contexto": "Texto de la página",
     "es": "Anónimo y a tu ritmo, en tres pasos.",
     "qu": "Sutiykita mana willaspa, kikin usuykiman, kimsa puriypi",
-    "ay": ""
+    "ay": "Jan sutim yatiyasa, juma pachamarjama, kimsa lurawinakana."
   },
   {
     "id": 52,
@@ -367,7 +367,7 @@
     "id": 53,
     "contexto": "Texto de la página",
     "es": "El asistente te orienta al instante, sin registrarte.",
-    "qu": "",
+    "qu": "Yanapaqqa mana qillqachikuspayki utqaylla yuyaychasunki.",
     "ay": "Yanapirixa jan qillqayasisa jichhapacha yanapt'ätam"
   },
   {
@@ -388,7 +388,7 @@
     "id": 56,
     "contexto": "Texto de la página",
     "es": "Qué decir y qué evitar si alguien cercano vive violencia.",
-    "qu": "",
+    "qu": "Sichus riqsisqayki runa ñak'arichiyta muchuchkan chayqa, imata ninaykita hinaspa imata mana ninaykita yachay.",
     "ay": ""
   },
   {
@@ -410,14 +410,14 @@
     "contexto": "Texto de la página",
     "es": "La violencia no siempre deja marcas.",
     "qu": "Ñak'arichiyqa manam sapa kuti unanchakunata saqinchikchu",
-    "ay": ""
+    "ay": "Violencia ukax janiw sapa kutis usuchjata uñjaykiti."
   },
   {
     "id": 60,
     "contexto": "Texto de la página",
     "es": "Tipos de violencia",
     "qu": "Ñak'arichiypa laya-kuna",
-    "ay": ""
+    "ay": "Violencia kastanaka"
   },
   {
     "id": 61,
@@ -459,7 +459,7 @@
     "contexto": "Texto de la página",
     "es": "Directorio de ayuda",
     "qu": "Yanapakuqkunapaq sutisuyu",
-    "ay": ""
+    "ay": "Yanapt'añ utanakan sutipanakapa"
   },
   {
     "id": 67,
@@ -473,7 +473,7 @@
     "contexto": "Texto de la página",
     "es": "Canales oficiales",
     "qu": "Kamachisqa ñankuna",
-    "ay": ""
+    "ay": "Oficial thakhinaka"
   },
   {
     "id": 69,
@@ -522,7 +522,7 @@
     "contexto": "Texto de la página",
     "es": "Rimay significa «hablar» en quechua. Demostración para el HackODS UA 2026 con datos ficticios.",
     "qu": "Rimay nisqaqa runasimipi «hablar» ninanmi. HackODS UA 2026 nisqapaq ruwasqa rikuchiy, mana chiqaq willakuykunawan.",
-    "ay": ""
+    "ay": "Rimay ukax quechua arunxa «parlaña» sañ muni. HackODS UA 2026 ukataki, jan chiqap yatiyawinakampi lurata uñacht'awiwa."
   },
   {
     "id": 76,
@@ -543,7 +543,7 @@
     "contexto": "Texto de la página",
     "es": "2. Lo que pasó",
     "qu": "2. Imataq karqan",
-    "ay": ""
+    "ay": "2. Kunas pasäna"
   },
   {
     "id": 79,
@@ -556,7 +556,7 @@
     "id": 80,
     "contexto": "Texto de la página",
     "es": "Puedes salir en cualquier momento. Nada se guarda hasta que pulses «Enviar reporte».",
-    "qu": "",
+    "qu": "Munasqayki pachapi lluqsiyta atinki. «Enviar reporte» nisqata ñit'inaykikama manam imapas waqaychakunchu.",
     "ay": ""
   },
   {
@@ -571,7 +571,7 @@
     "contexto": "Texto de la página",
     "es": "Responde solo si te sientes cómodo/a. Puedes salir en cualquier momento.",
     "qu": "Allinlla sientikuspaykiqa kutichiy. Munasqayki pachapi lluqsiyta atinki.",
-    "ay": ""
+    "ay": "Jumax sumak jikxatassta ukhakix jaysma. Kuna pachansa mistusmawa."
   },
   {
     "id": 83,
@@ -626,7 +626,7 @@
     "id": 90,
     "contexto": "Texto de la página",
     "es": "¿Existe peligro inmediato?",
-    "qu": "",
+    "qu": "¿Kunallan utqaylla manchakuypichu kachkanki?",
     "ay": ""
   },
   {
@@ -661,7 +661,7 @@
     "id": 95,
     "contexto": "Texto de la página",
     "es": "Si no sabes si corres peligro, la Línea 100 puede ayudarte a evaluar tu situación. Es gratuita, atiende las 24 horas y también puedes escribir por el Chat 100.",
-    "qu": "",
+    "qu": "Sichus manchakuypi kasqaykita mana yachankichu chayqa, Línea 100 nisqa imayna kasqaykita yachanaykipaq yanapasunkim. Mana qullqillapaqmi, 24 pachapi yanapan; Chat 100 nisqamanpas qillqayta atinki.",
     "ay": ""
   },
   {
@@ -690,14 +690,14 @@
     "contexto": "Texto de la página",
     "es": "Lo que pasó",
     "qu": "Imataq karqan",
-    "ay": ""
+    "ay": "Kunas pasäna"
   },
   {
     "id": 100,
     "contexto": "Texto de la página",
     "es": "Cuenta solo lo que consideres necesario. Ningún campo es obligatorio.",
     "qu": "Munasqaykillata willakuy. Manam ima tapukuypas hunt'ana kanchu.",
-    "ay": ""
+    "ay": "Kuntix wakiskiriwa siskta ukak yatiyma. Janiw kuna jiskt'awirus jaysañam wakiskiti."
   },
   {
     "id": 101,
@@ -710,7 +710,7 @@
     "id": 102,
     "contexto": "Texto de la página",
     "es": "Si lo desactivas, una persona del equipo de apoyo podrá contactarte.",
-    "qu": "",
+    "qu": "Sichus mana sutiyuq kaq akllanata wañuchinki chayqa, yanapakuq qutumanta huk runa qamwan tinkiyta atinman.",
     "ay": ""
   },
   {
@@ -718,13 +718,13 @@
     "contexto": "Texto de la página",
     "es": "¿Cómo podemos contactarte de forma segura?",
     "qu": "¿Imaynatataq waqaychasqa qamwan rimayta atiyku?",
-    "ay": ""
+    "ay": "¿Kunjamatsa jan axsarasisa jumamp aruskipsna?"
   },
   {
     "id": 104,
     "contexto": "Texto de la página",
     "es": "Solo te contactaremos por este medio y en este horario. El primer mensaje no mencionará el motivo.",
-    "qu": "",
+    "qu": "Kay ñanllawan, kay pachallapim qamwan rimasqayku. Ñawpaq willakuyqa manam imarayku kasqanta ninqachu.",
     "ay": ""
   },
   {
@@ -746,7 +746,7 @@
     "contexto": "Texto de la página",
     "es": "Medio seguro",
     "qu": "Waqaychasqa rimana ñan",
-    "ay": ""
+    "ay": "Jan axsarkañ aruskipañ thakhi"
   },
   {
     "id": 108,
@@ -774,28 +774,28 @@
     "contexto": "Texto de la página",
     "es": "Horario seguro para contactarte",
     "qu": "Waqyanapaq waqaychasqa pacha",
-    "ay": ""
+    "ay": "Jan axsarkañ jawsañ pachanaka"
   },
   {
     "id": 112,
     "contexto": "Texto de la página",
     "es": "Por ejemplo, lunes a viernes de 9 a 11 a. m.",
     "qu": "Kayhinata, lunesmanta vierneskama 9 a 11 a. m.",
-    "ay": ""
+    "ay": "Amuyt'añataki, lunesat vierneskama 9 a 11 a. m."
   },
   {
     "id": 113,
     "contexto": "Texto de la página",
     "es": "¿Qué tipo de violencia deseas registrar?",
     "qu": "¿Ima laya ñak'arichiytataq willakuyta munanki?",
-    "ay": ""
+    "ay": "¿Kuna kasta violencia yatiyañ munta?"
   },
   {
     "id": 114,
     "contexto": "Texto de la página",
     "es": "Puedes marcar más de una. Categorías de la Ley N.º 30364.",
     "qu": "Hukmanta aswanta akllayta atinki. Ley N.º 30364 nisqapa layankuna.",
-    "ay": ""
+    "ay": "Mäta jilaw ajllisma. Ley N.º 30364 ukan kastanakapa."
   },
   {
     "id": 115,
@@ -837,14 +837,14 @@
     "contexto": "Texto de la página",
     "es": "¿Dónde ocurrió?",
     "qu": "¿Maypitaq karqan?",
-    "ay": ""
+    "ay": "¿Kawkhan pasäna?"
   },
   {
     "id": 121,
     "contexto": "Texto de la página",
     "es": "Lugar del incidente",
     "qu": "Karqan k'iti",
-    "ay": ""
+    "ay": "Kawkhan pasäna uka chiqa"
   },
   {
     "id": 122,
@@ -900,7 +900,7 @@
     "contexto": "Texto de la página",
     "es": "No necesitas escribir detalles que te hagan sentir incómodo/a.",
     "qu": "Mana munasqayki imakunataqa ama qillqaychu.",
-    "ay": ""
+    "ay": "Jan wal jikxatasiyañjamäki uka yatiyawinak qillqañax janiw wakiskiti."
   },
   {
     "id": 130,
@@ -935,7 +935,7 @@
     "contexto": "Texto de la página",
     "es": "Según lo que elijas, te mostraremos a dónde acudir.",
     "qu": "Akllasqaykimanhina, mayman rinaykita rikuchisqayku.",
-    "ay": ""
+    "ay": "Kuntix ajllkta ukarjamaw kawkir sarasma uk uñacht'ayapxäma."
   },
   {
     "id": 135,
@@ -1011,7 +1011,7 @@
     "id": 145,
     "contexto": "Texto de la página",
     "es": "Rimay te ayuda a dar el primer paso: contar lo que pasa, recibir orientación y llegar a la ayuda oficial. No reemplaza una denuncia ni la atención profesional.",
-    "qu": "",
+    "qu": "Rimay nisqa ñawpaq rurayniykipi yanapasunki: imapas pasasqanta willakuy, yuyaychayta chaskiy, kamachisqa yanapayman chayay. Manam denuncia nisqata nitaq yachaq runapa yanapayninta rantinchu.",
     "ay": ""
   },
   {
@@ -1033,14 +1033,14 @@
     "contexto": "Texto de la página",
     "es": "Cuentas lo que pasó, a tu ritmo",
     "qu": "Imapas pasasqanta, munasqayki pachapi willakuy",
-    "ay": ""
+    "ay": "Kunas pasäna ukxa juma pachamarjamaw yatiyasma"
   },
   {
     "id": 149,
     "contexto": "Texto de la página",
     "es": "Puedes hacerlo de forma anónima. Ningún campo es obligatorio y no pedimos tu DNI.",
     "qu": "Sutiykita mana willaspa rurayta atinki. Manam ima tapukuypas hunt'ana kanchu; DNI nisqatapas manam mañaykikuchu.",
-    "ay": ""
+    "ay": "Jan sutim yatiyasaw lurasma. Janiw kuna jiskt'awirus jaysañam wakiskiti; DNI ukx janiw mayipksmati."
   },
   {
     "id": 150,
@@ -1061,21 +1061,21 @@
     "contexto": "Texto de la página",
     "es": "Si lo pides, una persona te contacta",
     "qu": "Mañakuspaki, huk runam qamwan tinkinqa",
-    "ay": ""
+    "ay": "Jumax mayitaxa mä jaqiw jumamp aruskipañataki jawst'ätam"
   },
   {
     "id": 153,
     "contexto": "Texto de la página",
     "es": "Alguien capacitado de una institución aliada te escribe por el medio y en el horario que elegiste, y te acompaña hacia el CEM o la comisaría.",
-    "qu": "",
+    "qu": "Huk yanapakuq wasipi yachachisqa runam akllasqayki ñanpi, akllasqayki pachapi qillqasunki, CEM nisqaman utaq comisaría nisqaman kuska risun.",
     "ay": ""
   },
   {
     "id": 154,
     "contexto": "Texto de la página",
     "es": "Información clara para reconocer la violencia, conocer tus derechos y saber a dónde acudir. Si algo de esto te pasa, no es tu culpa.",
-    "qu": "",
-    "ay": ""
+    "qu": "Ñak'arichiyta riqsinaykipaq, derechoykikunata yachanaykipaq, mayman rinaykita yachanaykipaqpas sut'i willakuy. Kay imakunapas qamman pasasuptikiqa, manam qampa huchaykichu.",
+    "ay": "Violencia uñt'añataki, derechonakam yatiñataki, kawkir sarañsa yatiñataki qhana yatiyawi. Ukhamanaka jumaru paschi ukhaxa, janiw juman juchamäkiti."
   },
   {
     "id": 155,
@@ -1117,14 +1117,14 @@
     "contexto": "Texto de la página",
     "es": "Revisa tu celular o decide con quién hablas y a dónde vas.",
     "qu": "Celularykita qhawan, piwan rimasqaykita mayman risqaykitapas kamachin.",
-    "ay": ""
+    "ay": "Celularam uñakipi, khitimpis parlta jan ukax kawkiris sarta uk jupaw amti."
   },
   {
     "id": 161,
     "contexto": "Texto de la página",
     "es": "Te aleja de tu familia y amistades.",
     "qu": "Aylluykimanta, masiykikunamantawan karunchasunki.",
-    "ay": ""
+    "ay": "Familiamampi masinakamampit jayaruchayasiristam."
   },
   {
     "id": 162,
@@ -1145,7 +1145,7 @@
     "contexto": "Texto de la página",
     "es": "Controla tu dinero o te impide trabajar o estudiar.",
     "qu": "Qullqiykita kamachin utaq llamk'ayta, yachakuyta hark'asunki.",
-    "ay": ""
+    "ay": "Qullqim apnaqi jan ukax irnaqañam, yatiqañam jark'i."
   },
   {
     "id": 165,
@@ -1166,7 +1166,7 @@
     "contexto": "Texto de la página",
     "es": "La Ley N.º 30364 reconoce cuatro tipos de violencia contra las mujeres y los integrantes del grupo familiar.",
     "qu": "Ley N.º 30364 nisqaqa warmikunapa, ayllupi kaq runakunapawan tawa laya ñak'arichiyninta riqsin.",
-    "ay": ""
+    "ay": "Ley N.º 30364 ukax warminakarusa ukhamarak familiankirinakarusa kuna pusi kasta violencia utjaspa uk uñt'i."
   },
   {
     "id": 168,
@@ -1179,7 +1179,7 @@
     "id": 169,
     "contexto": "Texto de la página",
     "es": "Controlar, aislar, humillar o amenazar. Puede afectar la salud mental aunque no deje marcas.",
-    "qu": "",
+    "qu": "Kamachiy, sapanchay, p'enqachiy utaq manchachiy. Mana rikukuq unanchakuna kaptinpas yuyay sunqupa qhali kayninta nanachinman.",
     "ay": ""
   },
   {
@@ -1194,7 +1194,7 @@
     "contexto": "Texto de la página",
     "es": "Quitar o controlar el dinero, los bienes o los documentos, o impedir que trabajes.",
     "qu": "Qullqita, imaymana kaqta utaq qillqakunata qichuy utaq kamachiy; llamk'aytapas hark'ay.",
-    "ay": ""
+    "ay": "Qullqim, yänakam, qillqatanakam apaqaña jan ukax apnaqaña, irnaqañam jark'aña."
   },
   {
     "id": 172,
@@ -1221,7 +1221,7 @@
     "id": 175,
     "contexto": "Texto de la página",
     "es": "Pedir medidas de protección, como que el agresor salga de la vivienda o no pueda acercarse a ti.",
-    "qu": "",
+    "qu": "Waqaychanapaq kamachikuykunata mañakuy, ñak'arichiq runa wasimanta lluqsinanpaq utaq qamman mana asuykunanpaq hinata.",
     "ay": ""
   },
   {
@@ -1229,7 +1229,7 @@
     "contexto": "Texto de la página",
     "es": "Ser tratada con respeto y sin que te culpen por lo ocurrido.",
     "qu": "Kuyaywan, yupaychaywan qhawaykachikuy, imapas pasasqanmanta ama huchachasqa kaychu.",
-    "ay": ""
+    "ay": "Jumaru yäqasiñampi uñjapxañapataki, kunas pasawayki ukat jan juchachapxañapataki."
   },
   {
     "id": 177,
@@ -1250,7 +1250,7 @@
     "contexto": "Texto de la página",
     "es": "Pequeños preparativos pueden ayudarte a actuar rápido si la situación empeora.",
     "qu": "Huch'uy wakichikuykuna sasachakuy astawan hatunyaptin utqaylla ruranaykipaq yanapasunkiman.",
-    "ay": ""
+    "ay": "Jisk'a wakichawinakaxa, jan walinak juk'amp utjchi ukhaxa, jank'aki lurañataki yanapt'iristam."
   },
   {
     "id": 180,
@@ -1270,36 +1270,36 @@
     "id": 182,
     "contexto": "Texto de la página",
     "es": "Acuerda una palabra clave con alguien de confianza para pedir ayuda sin que otros lo noten.",
-    "qu": "",
-    "ay": ""
+    "qu": "Yanapayta pakallapi mañakunapaq, iñisqayki runawan pakasqa simita akllay.",
+    "ay": "Atinisma uka jaqimpi mä jamasat aru amtapxam, yanapt'awi mayiñataki jan yaqhanakax yatipañapataki."
   },
   {
     "id": 183,
     "contexto": "Texto de la página",
     "es": "Deja una copia de tus documentos, llaves y algo de dinero con alguien de confianza.",
-    "qu": "",
-    "ay": ""
+    "qu": "Qillqaykikunapa copiantam, llaviykikunata, wakin qullqitawan iñisqayki runaman saqiy.",
+    "ay": "Qillqatanakaman copiap, llavinakam ukat mä juk'a qullqi atinisma uka jaqir imayañataki jaytam."
   },
   {
     "id": 184,
     "contexto": "Texto de la página",
     "es": "Si hay niñas o niños, enséñales a pedir ayuda y a llamar al 105.",
     "qu": "Wawakuna kaptinqa yanapayta mañakuyta, 105 yupayman waqyaytawan yachachiy.",
-    "ay": ""
+    "ay": "Imill wawanakasa yuqall wawanakasa utjchi ukhaxa, yanapt'awi mayiñsa ukhamarak 105 ukar jawsañsa yaticham."
   },
   {
     "id": 185,
     "contexto": "Texto de la página",
     "es": "Si alguien revisa tu celular, borra el historial del navegador después de usar Rimay.",
     "qu": "Sichus pipas celularykita qhawan chayqa, Rimay llamk'achisqaykimanta navegadorpa ñawpaq rikuchisqankunata pichay.",
-    "ay": ""
+    "ay": "Maynix celularam uñakipchi ukhaxa, Rimay apnaqasax navegador ukan historialap chhaqtayam."
   },
   {
     "id": 186,
     "contexto": "Texto de la página",
     "es": "Si una amiga, vecina o familiar vive violencia, tu apoyo puede marcar la diferencia.",
-    "qu": "",
-    "ay": ""
+    "qu": "Sichus masiyki, wasimasiyki utaq aylluyki ñak'arichiyta muchun chayqa, yanapaynikiqa ancha allinmi.",
+    "ay": "Mä masimasa, uta jak'ankir warmisa jan ukax familiamankiriw violencia t'aqhiski ukhaxa, juman yanapt'awimax ancha wakiskiriwa."
   },
   {
     "id": 187,
@@ -1313,14 +1313,14 @@
     "contexto": "Texto de la página",
     "es": "No la presiones para que deje la relación: respeta sus tiempos y decisiones.",
     "qu": "Ama saqinanta kallpachaychu; paypa pachanta, akllasqantapas yupaychay.",
-    "ay": ""
+    "ay": "Jan uka jaqimpi sarnaqäwip jaytañapataki wayt'amti; pachapa ukhamarak amtawinakap yäqam."
   },
   {
     "id": 189,
     "contexto": "Texto de la página",
     "es": "No enfrentes al agresor, porque puede aumentar el riesgo para ella.",
     "qu": "Ñak'arichiq runawan ama maqanakuychu, paypa manchakuyqa astawan hatunyaymanmi.",
-    "ay": ""
+    "ay": "Jan ñanqhachirimp ch'axwamti, ukax juparux juk'amp jan walt'äwir puriyaspawa."
   },
   {
     "id": 190,
@@ -1383,7 +1383,7 @@
     "contexto": "Texto de la página",
     "es": "Emergencias y riesgo inmediato",
     "qu": "Utqaylla manchakuykunapaq yanapay",
-    "ay": ""
+    "ay": "Jank'aki yanapt'awi ukat jan walt'äwi"
   },
   {
     "id": 199,
@@ -1403,8 +1403,8 @@
     "id": 201,
     "contexto": "Texto de la página",
     "es": "Orientación gratuita y confidencial, en español, quechua y aimara",
-    "qu": "",
-    "ay": ""
+    "qu": "Español, quechua, aimara simikunapi mana qullqillapaq, pakasqa yuyaychay",
+    "ay": "Español, quechua ukat aimara arunakana, jan qullqimpi ukat jamasat yatiyawi"
   },
   {
     "id": 202,
@@ -1446,7 +1446,7 @@
     "contexto": "Texto de la página",
     "es": "Presencial, en el CEM más cercano",
     "qu": "Aswan qaylla CEM nisqapi, kikinpi",
-    "ay": ""
+    "ay": "Jak'ankir CEM ukan pachpa chiqana"
   },
   {
     "id": 208,
@@ -1460,7 +1460,7 @@
     "contexto": "Texto de la página",
     "es": "Presentar una denuncia",
     "qu": "Huchachaymanta willakuyta churay",
-    "ay": ""
+    "ay": "Jucha yatiyaña"
   },
   {
     "id": 210,
@@ -1474,14 +1474,14 @@
     "contexto": "Texto de la página",
     "es": "Consulta el canal",
     "qu": "Chay ñanta tapukuy",
-    "ay": ""
+    "ay": "Uka canal tuqit jiskt'asma"
   },
   {
     "id": 212,
     "contexto": "Texto de la página",
     "es": "Emergencias médicas",
     "qu": "Hampinapaq utqaylla yanapay",
-    "ay": ""
+    "ay": "Usutanakar jank'aki yanapt'awi"
   },
   {
     "id": 213,
@@ -1536,15 +1536,15 @@
     "id": 220,
     "contexto": "Texto de la página",
     "es": "No. Rimay te orienta y te conecta con la ayuda. Para denunciar, acude a una comisaría o a la Central Única de Denuncias; el asistente te explica cómo hacerlo.",
-    "qu": "",
-    "ay": ""
+    "qu": "Manam. Rimay yuyaychasunki, yanapaymanpas tinkuchisunki. Denuncia churayta munaspaqa, comisaría nisqaman utaq Central Única de Denuncias nisqaman riy; yanapaqqa imayna ruranaykita willasunki.",
+    "ay": "Janiwa. Rimay ukax yatiyawi churi, yanapt'awiruw puriyätam. Denuncia lurañatakixa mä comisaría jan ukax Central Única de Denuncias ukaru saram; yanapirix kunjam lurañsa yatiyätam."
   },
   {
     "id": 221,
     "contexto": "Texto de la página",
     "es": "¿Para qué sirve el botón Salir rápido?",
     "qu": "¿Imapaqtaq Utqaylla lluqsiy ñit'ina?",
-    "ay": ""
+    "ay": "¿«Salir rápido» ñit'irix kunatakisa?"
   },
   {
     "id": 222,
@@ -1564,8 +1564,8 @@
     "id": 224,
     "contexto": "Texto de la página",
     "es": "No. Es un asistente automático que da orientación general basada en fuentes oficiales. Para hablar con una persona, llama a la Línea 100 o pide que te contactemos.",
-    "qu": "",
-    "ay": ""
+    "qu": "Manam. Kayqa kikinmanta kutichiq yanapaqmi, kamachisqa willakuykunaman hina yuyaychasunki. Huk runawan rimayta munaspaqa Línea 100 nisqaman waqyay utaq qamwan rimanaykupaq mañakuy.",
+    "ay": "Janiwa. Akax mä asistente automático ukawa, oficial yatiyawinakarjamaw amuyt'ayätam. Mä jaqimp parlañatakixa Línea 100 ukaru jawsma jan ukax jawst'apxañapataki mayma."
   },
   {
     "id": 225,
@@ -1600,7 +1600,7 @@
     "contexto": "Texto de la página",
     "es": "Cada pantalla está pensada para no exponer a quien la usa.",
     "qu": "Sapa pantalla llamk'achiq runata mana qhawarichinanpaq wakichisqam.",
-    "ay": ""
+    "ay": "Sapa pantallax apnaqir jaqir jan qhanstayayañataki wakichatawa."
   },
   {
     "id": 230,
@@ -1614,7 +1614,7 @@
     "contexto": "Texto de la página",
     "es": "Pedimos lo mínimo y separamos la identidad del relato.",
     "qu": "Pisi willakuyllata mañayku, sutiwan willakusqatataq sapaqchaspa waqaychayku.",
-    "ay": ""
+    "ay": "Pisi yatiyawinakak mayipxta, sutimp kunas pasatayna uka yatiyawix sapaqat imatawa."
   },
   {
     "id": 232,
@@ -1648,7 +1648,7 @@
     "id": 236,
     "contexto": "Texto de la página",
     "es": "Buscamos trabajar con el Centro de Emergencia Mujer, la Municipalidad de Villa El Salvador y organizaciones locales para atender los casos que llegan a Rimay.",
-    "qu": "",
+    "qu": "Centro de Emergencia Mujer nisqawan, Municipalidad de Villa El Salvador nisqawan, llaqtapi qutukunawan ima llamk'ayta maskhayku Rimay nisqaman chayaq kasukunata yanapanapaq.",
     "ay": ""
   },
   {
@@ -1663,7 +1663,7 @@
     "contexto": "Texto de la página",
     "es": "La Línea 100 atiende en español, quechua y aimara. Estas son algunas palabras que usamos en Rimay.",
     "qu": "Línea 100 nisqapi español, quechua, aimara simikunapi yanapanku. Rimay nisqapi kay simikunata llamk'achiyku.",
-    "ay": ""
+    "ay": "Línea 100 ukax español, quechua ukat aimara arunakana yanapt'i. Aka arunakwa Rimay ukan apnaqapxta."
   },
   {
     "id": 239,
@@ -1712,7 +1712,7 @@
     "contexto": "Texto de la página",
     "es": "No reemplaza la atención profesional ni una denuncia oficial.",
     "qu": "Manam yachaq runakunapa yanapayninta, nitaq kamachisqa huchachaymanta willakuyta rantinchu.",
-    "ay": ""
+    "ay": "Janiw yatxatata jaqinakan yanapt'awiparusa ni denuncia oficial ukarusa lantkiti."
   },
   {
     "id": 246,
@@ -1740,7 +1740,7 @@
     "contexto": "Texto de la página",
     "es": "¿Cómo denuncio?",
     "qu": "¿Imaynatataq huchachaymanta willakuyta churani?",
-    "ay": ""
+    "ay": "¿Kunjamsa jucha yatiyañaxa lurasi?"
   },
   {
     "id": 250,
@@ -1782,7 +1782,7 @@
     "contexto": "Saludo del asistente (va después de \"Hola.\" / \"Allillanchu.\" / \"Kamisaraki.\")",
     "es": "Puedo orientarte sobre qué hacer, a dónde acudir y qué dice la ley. Elige una pregunta o escribe la tuya.",
     "qu": "Imata ruranaykimanta, mayman rinaykimanta, kamachikuypa nisqanmantawan willayta atini. Huk tapukuyta akllay utaq qampa tapukuyniykita qillqay.",
-    "ay": ""
+    "ay": "Kunsa luraña, kawkir saraña ukhamarak kamachix kuns si uka tuqinakat yatiyätam. Mä jiskt'awi ajllim jan ukax jumankiri qillqt'am."
   },
   {
     "id": 256,
@@ -1796,28 +1796,28 @@
     "contexto": "Confirmación",
     "es": "Te contactaremos",
     "qu": "Qamwan tinkisqayku",
-    "ay": ""
+    "ay": "Jumamp aruskipañataki jawst'apxäma"
   },
   {
     "id": 258,
     "contexto": "Confirmación; {medio} se reemplaza por mensaje de texto, WhatsApp o llamada",
     "es": "Una persona del equipo de apoyo te escribirá por {medio} en el horario que indicaste. El primer mensaje no mencionará el motivo.",
     "qu": "Yanapakuq qutumanta huk runam {medio} nisqawan, akllasqayki pachapi qillqasunki. Ñawpaq willakuypiqa manam imarayku kasqanta ninqachu.",
-    "ay": ""
+    "ay": "Yanapir qutunkir mä jaqiw {medio} tuqi, jumax ajllkta uka pachana qillqanïtam. Nayrïr yatiyawix janiw kuna laykusa qillqanitam uk sañkaniti."
   },
   {
     "id": 259,
     "contexto": "Confirmación",
     "es": "Tu reporte anónimo quedó registrado. Ayuda a entender qué está pasando en el distrito.",
-    "qu": "",
-    "ay": ""
+    "qu": "Sutiykita mana willaspa apachisqayki willakuyqa qillqasqañam. Distritupi imapas pasasqanta yachanapaq yanapan.",
+    "ay": "Jan sutim yatiyasaw apaykta uka yatiyawixa qillqantataxiwa. Distrito ukan kunas pasaski uk amuyañataki yanapt'i."
   },
   {
     "id": 260,
     "contexto": "Confirmación",
     "es": "Tu reporte quedó registrado y el equipo de apoyo lo verá en su bandeja.",
-    "qu": "",
-    "ay": ""
+    "qu": "Willakusqaykiqa qillqasqañam, yanapakuq qutuqa rikunqam.",
+    "ay": "Yatiyawimax qillqantataxiwa ukat yanapir qutux uñjaniwa."
   },
   {
     "id": 261,
@@ -1838,7 +1838,7 @@
     "contexto": "Próximos pasos",
     "es": "Línea 100 o Chat 100: orientación gratuita y especializada las 24 horas.",
     "qu": "Línea 100 utaq Chat 100: 24 pachapi mana qullqillapaq yachaqkunapa yanapaynin.",
-    "ay": ""
+    "ay": "Línea 100 jan ukax Chat 100: 24 horas inaki yatiyawi ukat yatxatata yanapt'awi."
   },
   {
     "id": 264,
@@ -1852,7 +1852,7 @@
     "contexto": "Próximos pasos",
     "es": "Acude a la comisaría más cercana o usa la Central Única de Denuncias.",
     "qu": "Aswan qaylla comisaría nisqaman riy utaq Central Única de Denuncias nisqata llamk'achiy.",
-    "ay": ""
+    "ay": "Jak'ankir comisaría ukaru saram jan ukax Central Única de Denuncias apnaqam."
   },
   {
     "id": 266,
@@ -1866,7 +1866,7 @@
     "contexto": "Próximos pasos",
     "es": "Acude al centro de salud más cercano. Si es urgente, llama al 106 (SAMU).",
     "qu": "Aswan qaylla hampina wasiman riy. Utqaylla kaptinqa, 106 yupayman (SAMU) waqyay.",
-    "ay": ""
+    "ay": "Jak'ankir qullañ utar saram. Jank'aki yanapt'awi munaschi ukhaxa, 106 (SAMU) ukaru jawsma."
   },
   {
     "id": 268,
@@ -1908,27 +1908,27 @@
     "contexto": "Respuesta del asistente",
     "es": "Puedes denunciar en la comisaría más cercana o en la Central Única de Denuncias. Si hay riesgo inmediato, llama primero al 105.",
     "qu": "Aswan qaylla comisaría utaq Central Única de Denuncias nisqapi willakuyta churayta atinki. Kunallan hatun manchakuy kaptinqa, ñawpaqta 105 yupayman waqyay.",
-    "ay": ""
+    "ay": "Jak'ankir comisaría jan ukax Central Única de Denuncias ukan denuncia lurasma. Jichha jan walt'äwi utjchi ukhaxa, nayraqata 105 ukar jawsma."
   },
   {
     "id": 274,
     "contexto": "Respuesta del asistente cuando no entiende la pregunta",
     "es": "Puedo orientarte sobre a dónde acudir, qué dice la ley o cómo denunciar. Esta es una respuesta de demostración: en la versión final responderá con información oficial.",
     "qu": "Mayman rinaykimanta, kamachikuypa nisqanmanta, imayna huchachaymanta willakuyta churanaykimantawan yanapayta atini. Kayqa rikuchinapaq kutichiyllam; qhipamanqa kamachisqa willakuykunawan kutichinqa.",
-    "ay": ""
+    "ay": "Kawkir saraña, kamachix kuns si, kunjamsa denuncia luraña uka tuqinakat yatiyätam. Akax uñacht'awi kutichiwikiwa; qhipa versiónanxa oficial yatiyawinakampiw kutichini."
   },
   {
     "id": 275,
     "contexto": "Respuesta del asistente ante una señal de riesgo",
     "es": "Lo que cuentas es serio y tu seguridad es lo primero.",
     "qu": "Willakusqaykiqa ancha chaniyuqmi; ñawpaqtaqa waqaychakuyniyki.",
-    "ay": ""
+    "ay": "Kuntix yatiykta ukax wali llakiskañawa, juman jark'aqasiñamax nayrankiwa."
   },
   {
     "id": 276,
     "contexto": "Respuesta del asistente ante una señal de riesgo",
     "es": "Si estás en peligro ahora, busca ayuda inmediata:",
-    "qu": "",
+    "qu": "Sichus kunan manchakuypi kachkanki, utqaylla yanapayta maskay:",
     "ay": ""
   },
   {
@@ -1963,35 +1963,35 @@
     "id": 281,
     "contexto": "Asistente: tarjeta de ayuda ante crisis emocional (título)",
     "es": "No tienes que pasar por esto a solas.",
-    "qu": "",
-    "ay": ""
+    "qu": "Manam kayta sapallayki muchunaykichu.",
+    "ay": "Janiw sapamakix aka jan walt'äwi t'aqhisiñamäkiti."
   },
   {
     "id": 282,
     "contexto": "Asistente: tarjeta de ayuda ante crisis emocional",
     "es": "Puedes hablar ahora mismo, gratis y a cualquier hora, con alguien que te escuche:",
-    "qu": "",
-    "ay": ""
+    "qu": "Kunallan, mana qullqillapaq, ima pachapipas qamta uyariq runawan rimayta atinki:",
+    "ay": "Jichhapachax inakiw kunapachasa jumaru ist'ir jaqimp parlasma:"
   },
   {
     "id": 283,
     "contexto": "Asistente: tarjeta de ayuda ante crisis emocional (botón; Línea 113 del Minsa)",
     "es": "Línea 113, opción 5 (salud mental)",
-    "qu": "",
+    "qu": "Línea 113, opción 5 (yuyay sunqu qhali kay)",
     "ay": ""
   },
   {
     "id": 284,
     "contexto": "Asistente: barra fija para llamar a la Línea 100 o escribir al Chat 100",
     "es": "Hablar con una persona",
-    "qu": "",
-    "ay": ""
+    "qu": "Huk runawan rimay",
+    "ay": "Mä jaqimp parlaña"
   },
   {
     "id": 285,
     "contexto": "Aviso amarillo corto en celular (va después de «Salir rápido»)",
     "es": "te lleva a Google si alguien se acerca.",
-    "qu": "",
-    "ay": ""
+    "qu": "Sichus pipas asuykamun chayqa Google nisqaman apasunki.",
+    "ay": "Sichus maynix jak'achaschi ukhaxa, Google ukar apätam."
   }
 ]

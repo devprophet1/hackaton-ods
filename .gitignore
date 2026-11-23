@@ -9,3 +9,6 @@ supabase/.temp/
 skills-lock.json
 # Enlaces simbólicos de skills (apuntan a .agents/)
 .claude/skills/frontend-design
+
+# Respuesta de traducción (se importa con npm run i18n:importar; no se sube)
+docs/traducciones/traducido.json
