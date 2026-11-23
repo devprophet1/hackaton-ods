@@ -46,7 +46,7 @@ Las maquetas en `specs/maquetas/` son la referencia visual y de comportamiento. 
 | Backend | Node.js + Express 5, JavaScript con ES modules, monolito modular | Cada módulo en su carpeta (rutas + servicio); ninguno importa servicios internos de otro |
 | Base de datos | Supabase: Postgres + pgvector | Migraciones con Supabase CLI desde la máquina del equipo |
 | Autenticación | Supabase Auth (correo y contraseña) | Solo para el personal del panel |
-| IA | Gemini API (REST): embeddings + generación | Verificado el 23/11/2026: `gemini-2.0-flash` está dado de baja y `text-embedding-004` ya no figura. Se usa `gemini-embedding-001` con `outputDimensionality: 768` y `taskType` `RETRIEVAL_DOCUMENT`/`RETRIEVAL_QUERY` (el vector se normaliza en el backend, como pide Google para dimensiones distintas de 3072) y `gemini-3.6-flash` para generación. Ambos se configuran por variable de entorno |
+| IA | Módulo común `server/common/ai.js` con `embed(texts, kind)` y `chat(systemPrompt, userMessage)`. Proveedor según `AI_PROVIDER`: **OpenRouter** (predeterminado; SDK oficial `openai` con `baseURL` de OpenRouter y encabezados `HTTP-Referer` y `X-Title: Rimay`), **OpenAI** directo o **Gemini** (REST) como alternativas | Verificado el 23/11/2026 en `GET https://openrouter.ai/api/v1/models`: existen `openai/gpt-5.4-mini` (chat) y `openai/text-embedding-3-small` (embeddings). Embeddings con `dimensions: 768`. `gpt-5.4-mini` es de razonamiento: se envía `reasoning.effort = "none"` (el más bajo), salida máxima de 300 tokens y sin `temperature` (no la acepta). Gemini: `gemini-embedding-001` (768 dim., normalizado) y `gemini-3.6-flash`. **Los embeddings no son compatibles entre proveedores: al cambiar `AI_PROVIDER` hay que ejecutar `npm run kb:seed`** |
 | Despliegue | Vercel (un proyecto, un dominio) | Vite genera estáticos; Express corre como Vercel Function en `api/index.js` |
 
 Un solo repositorio y un solo `package.json`. El frontend **nunca** habla directo con Supabase. Todo pasa por el backend, que usa la `service_role key`. El frontend llama siempre a rutas relativas (`/api/...`): mismo dominio, sin CORS.
@@ -89,7 +89,7 @@ rimay/
 │   └── assets/                    ← tokens.css, public.css, admin.css
 ├── server/                        ← backend Express
 │   ├── app.js                     ← crea la app, monta /api/<módulo>, manejo de errores
-│   ├── common/                    ← config, cliente Supabase, guard de auth, cliente Gemini, errores
+│   ├── common/                    ← config, cliente Supabase, guard de auth, proveedor de IA (`ai.js` + `gemini.js`), errores
 │   └── modules/
 │       ├── reports/               ← reports.routes.js + reports.service.js
 │       ├── rag/
@@ -105,7 +105,7 @@ rimay/
 └── knowledge/                     ← documentos fuente del RAG (.md)
 ```
 
-Reglas del monolito modular: un módulo solo expone su `router`; los servicios de un módulo no se importan desde otro. Lo compartido (Supabase, Gemini, guard, errores) vive en `server/common/`.
+Reglas del monolito modular: un módulo solo expone su `router`; los servicios de un módulo no se importan desde otro. Lo compartido (Supabase, proveedor de IA, guard, errores) vive en `server/common/`.
 
 ---
 
@@ -389,19 +389,21 @@ Tokens de la maqueta: blanco `#FFFFFF`, amarillo `#FFD95A`, carbón `#2F2F2F`, L
 ### Ingesta (`kb` y `npm run kb:seed`)
 1. Leer el archivo (`.md`/`.txt`; PDF fuera de alcance por simplicidad).
 2. Dividir en fragmentos de unos 800 caracteres con solapamiento de 100, respetando párrafos.
-3. Generar embeddings con Gemini (`taskType: RETRIEVAL_DOCUMENT`, 768 dimensiones, normalizados) en lotes de hasta 100 con `batchEmbedContents`.
+3. Generar embeddings con `embed(fragmentos, 'document')` del módulo común (768 dimensiones, lotes de hasta 100). Con Gemini se usa `taskType: RETRIEVAL_DOCUMENT` y el vector se normaliza.
 4. Guardar en `kb_chunks`, actualizar `chunk_count` y `status = 'procesado'` (o `'error'`).
 5. `npm run kb:seed` ingesta todos los archivos de `knowledge/` desde la máquina del equipo (sin límite de tiempo de Vercel). Es idempotente: reemplaza los documentos con el mismo `title`.
 6. En Vercel, la subida desde el panel se procesa dentro de la misma petición, sin trabajo en segundo plano, dentro del `maxDuration` de 300 s. Con el límite de 4 MB por archivo alcanza.
 
 ### Consulta (`POST /rag/chat`)
 1. **Detección de riesgo antes del modelo.** Si el mensaje contiene alguna de estas expresiones (sin tildes, en minúsculas): `matar`, `me mata`, `me va a`, `miedo`, `peligro`, `golpea`, `golpe`, `arma`, `cuchillo`, `ahora mismo`, `amenaz`, responder de inmediato con `risk: true` y el texto fijo: «Lo que cuentas es serio y tu seguridad es lo primero. Si estás en peligro ahora, llama al 105 o a la Línea 100.» No llamar al modelo.
-2. Generar el embedding de la pregunta (`taskType: RETRIEVAL_QUERY`, 768 dimensiones, normalizado).
-3. `match_chunks(embedding, 5, 0.5)`.
+2. Generar el embedding de la pregunta con `embed([pregunta], 'query')` (768 dimensiones).
+3. `match_chunks(embedding, 5, umbral)`. El umbral depende del modelo de embeddings: 0,3 con `text-embedding-3-small` (OpenRouter/OpenAI; las preguntas fuera de tema quedan ≤ 0,28) y 0,5 con Gemini. Se puede ajustar con `AI_MIN_SIMILARITY`.
 4. Si no hay fragmentos, responder sin modelo: orientar a la Línea 100 y al Chat 100.
-5. Llamar al modelo con el prompt del sistema, el contexto y la pregunta. Máximo unas 120 palabras de respuesta.
+5. Llamar a `chat(prompt del sistema, contexto + pregunta)`. Máximo unas 120 palabras de respuesta, en texto plano (el backend quita marcas de Markdown porque el widget muestra texto con `{{ }}`).
 6. Devolver `answer`, `sources` (títulos únicos de los documentos usados) y `risk: false`.
 7. No guardar mensajes. No registrar el texto de la pregunta en logs.
+
+**Cambio de proveedor de IA.** Los vectores de un proveedor no sirven con otro (distinto espacio de embeddings). Después de cambiar `AI_PROVIDER` o el modelo de embeddings, ejecutar `npm run check` y luego `npm run kb:seed` para regenerar `kb_chunks`.
 
 ### Prompt del sistema
 
@@ -448,20 +450,35 @@ PORT=3000                                  # solo local
 SUPABASE_URL=
 SUPABASE_SERVICE_ROLE_KEY=
 SUPABASE_ANON_KEY=
-GEMINI_API_KEY=
+AI_PROVIDER=openrouter                     # openrouter | openai | gemini
+AI_REASONING_EFFORT=                       # opcional, por defecto none
+AI_MIN_SIMILARITY=                         # opcional, por defecto 0.3 (0.5 con gemini)
+APP_URL=                                   # opcional, HTTP-Referer para OpenRouter
+OPENROUTER_API_KEY=
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_EMBEDDING_MODEL=openai/text-embedding-3-small
+OPENROUTER_CHAT_MODEL=openai/gpt-5.4-mini
+OPENAI_API_KEY=                            # alternativa
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+OPENAI_CHAT_MODEL=gpt-5.4-mini
+GEMINI_API_KEY=                            # alternativa
 GEMINI_EMBEDDING_MODEL=gemini-embedding-001
 GEMINI_CHAT_MODEL=gemini-3.6-flash
 ```
+
+Solo son obligatorias las variables del proveedor activo.
 
 Comandos (`package.json` único):
 
 | Comando | Qué hace |
 | --- | --- |
+| `npm run check` | Valida variables, embeddings (768 dim.), chat del proveedor activo y Supabase, sin mostrar claves |
 | `npm run dev` | Levanta Vite (5173) y Express (3000) a la vez; Vite hace proxy de `/api` a Express |
 | `npm run build` | `vite build` → `dist/` |
 | `npm run preview` | Sirve `dist/` (usar junto con `npm run dev:api`) |
 | `npm run seed` | Usuarios de demostración, `staff`, casos y reportes de ejemplo |
-| `npm run kb:seed` | Ingesta `knowledge/` |
+| `npm run kb:seed` | Ingesta `knowledge/` (repetir al cambiar de proveedor de IA) |
+| `npm run kb:test -- "pregunta"` | Prueba la búsqueda de la base de conocimiento |
 | `npx supabase link` / `npx supabase db push` | Aplica `supabase/migrations/` al proyecto remoto |
 
 ---
@@ -547,7 +564,7 @@ Verificado en la documentación de Vercel el 23/11/2026.
 | Límite | Valor | Decisión |
 | --- | --- | --- |
 | Cuerpo de la petición | 4,5 MB (20 MiB solo en beta y plan Pro) | `multer` en memoria con límite de 4 MB; `express.json` con límite de 100 kB |
-| Duración máxima | 300 s por defecto y máximo en Hobby (Fluid compute) | `maxDuration: 300`; las llamadas a Gemini llevan timeout propio |
+| Duración máxima | 300 s por defecto y máximo en Hobby (Fluid compute) | `maxDuration: 300`; las llamadas al proveedor de IA llevan timeout propio (60 s) |
 | Trabajo tras responder | No garantizado (solo con `waitUntil`) | No se usa: la ingesta termina antes de responder; la carga inicial se hace con `npm run kb:seed` desde local |
 | Tamaño del bundle | 250 MB | Sin dependencias pesadas; el frontend no entra en la función |
 | Estado en memoria | No persiste entre invocaciones | Nada depende de memoria del proceso (sin colas ni caché local) |

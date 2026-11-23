@@ -1,3 +1,4 @@
+// Implementación de respaldo para Gemini. Úsala solo a través de ai.js.
 import { config } from './config.js';
 import { HttpError } from './errors.js';
 
@@ -31,7 +32,7 @@ function normalize(v) {
 
 // taskType: RETRIEVAL_DOCUMENT o RETRIEVAL_QUERY. Lotes de hasta 100.
 export async function embed(texts, taskType) {
-  const model = config.embeddingModel;
+  const model = config.geminiEmbeddingModel;
   const out = [];
   for (let i = 0; i < texts.length; i += 100) {
     const requests = texts.slice(i, i + 100).map((text) => ({
@@ -47,7 +48,7 @@ export async function embed(texts, taskType) {
 }
 
 export async function generate(systemPrompt, userText) {
-  const json = await call(`${config.chatModel}:generateContent`, {
+  const json = await call(`${config.geminiChatModel}:generateContent`, {
     systemInstruction: { parts: [{ text: systemPrompt }] },
     contents: [{ role: 'user', parts: [{ text: userText }] }],
     generationConfig: { temperature: 0.3, maxOutputTokens: 400 },

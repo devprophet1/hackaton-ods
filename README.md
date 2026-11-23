@@ -8,7 +8,7 @@ Rimay («hablar» en quechua) es una plataforma web para el desafío **Prevenci�
 
 - **Web pública:** inicio, «Cómo funciona», «Infórmate», reporte en 3 pasos, preguntas frecuentes, «Nosotros», asistente flotante y selector de idioma (español, quechua y aimara; traducciones preliminares).
 - **Seguridad de la víctima:** botón «Salir rápido» siempre visible (también con Esc tres veces), anónimo por defecto, ningún campo obligatorio, nunca se pide DNI y nada del reporte se guarda en el navegador.
-- **Asistente con RAG:** responde con documentos oficiales (Gemini + pgvector) y detecta frases de riesgo antes de llamar al modelo.
+- **Asistente con RAG:** responde con documentos oficiales (OpenRouter + pgvector) y detecta frases de riesgo antes de llamar al modelo.
 - **Panel `/admin`:** bandeja de casos con riesgo primero, contacto enmascarado con acceso registrado, asignación, estados, notas, dashboard y base de conocimiento.
 
 ## Tecnologías y arquitectura
@@ -18,24 +18,25 @@ Rimay («hablar» en quechua) es una plataforma web para el desafío **Prevenci�
 | Frontend | Vue 3 + Vite + Vue Router (JavaScript, sin librerías de UI) |
 | Backend | Node.js + Express 5, monolito modular (`reports`, `rag`, `auth`, `cases`, `stats`, `kb`) |
 | Datos | Supabase: Postgres + pgvector + Auth |
-| IA | Gemini API: `gemini-embedding-001` (768 dim.) y `gemini-3.6-flash` |
+| IA | OpenRouter (SDK `openai`): `openai/text-embedding-3-small` (768 dim.) y `openai/gpt-5.4-mini`. OpenAI directo y Gemini quedan como alternativas (`AI_PROVIDER`) |
 | Despliegue | Vercel: estáticos de Vite + Express como una función bajo `/api` |
 
 ```
 Navegador ──► Vercel
               ├─ /*      → dist/ (Vue, rutas resueltas con index.html)
-              └─ /api/*  → api/index.js → server/app.js (Express) ──► Supabase y Gemini
+              └─ /api/*  → api/index.js → server/app.js (Express) ──► Supabase y OpenRouter
 ```
 
 El frontend solo llama a rutas relativas `/api/...`; nunca habla directo con Supabase. La especificación completa está en [specs/rimay-mvp.md](specs/rimay-mvp.md).
 
 ## Instalación local
 
-Requisitos: Node.js 22 o superior, un proyecto de Supabase y una clave de la API de Gemini.
+Requisitos: Node.js 22 o superior, un proyecto de Supabase y una clave de OpenRouter (o de OpenAI o Gemini).
 
 ```bash
 npm install
 cp .env.example .env        # completa las variables (ver abajo)
+npm run check               # primero: valida claves, modelos de IA y Supabase (todo debe salir en ✓)
 npx supabase login
 npx supabase link --project-ref <REF_DEL_PROYECTO>
 npx supabase db push        # aplica supabase/migrations/
@@ -51,10 +52,17 @@ npm run dev                 # Vite en http://localhost:5173 + Express en :3000 (
 | `SUPABASE_URL` | Supabase → Project Settings → API → Project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API → `service_role` (secreta, solo backend) |
 | `SUPABASE_ANON_KEY` | Supabase → Project Settings → API → `anon` |
-| `GEMINI_API_KEY` | Google AI Studio |
-| `GEMINI_EMBEDDING_MODEL` | `gemini-embedding-001` |
-| `GEMINI_CHAT_MODEL` | `gemini-3.6-flash` |
+| `AI_PROVIDER` | `openrouter` (predeterminado), `openai` o `gemini` |
+| `OPENROUTER_API_KEY` | openrouter.ai → Keys (requiere créditos) |
+| `OPENROUTER_BASE_URL` | `https://openrouter.ai/api/v1` |
+| `OPENROUTER_EMBEDDING_MODEL` | `openai/text-embedding-3-small` |
+| `OPENROUTER_CHAT_MODEL` | `openai/gpt-5.4-mini` |
+| `OPENAI_API_KEY`, `OPENAI_EMBEDDING_MODEL`, `OPENAI_CHAT_MODEL` | Alternativa: platform.openai.com (la suscripción de ChatGPT no incluye la API) |
+| `GEMINI_API_KEY`, `GEMINI_EMBEDDING_MODEL`, `GEMINI_CHAT_MODEL` | Alternativa: Google AI Studio |
+| `AI_REASONING_EFFORT`, `AI_MIN_SIMILARITY`, `APP_URL` | Opcionales (ver `.env.example`) |
 | `PORT` | Solo local, por defecto `3000` |
+
+Solo son obligatorias las variables del proveedor activo. **Si cambias `AI_PROVIDER` o el modelo de embeddings, ejecuta `npm run kb:seed`:** los embeddings no son compatibles entre proveedores.
 
 ## Despliegue en Vercel (pasos exactos)
 
@@ -81,9 +89,11 @@ Todo se ejecuta desde la raíz del repositorio, en tu máquina.
    npx vercel env add SUPABASE_URL production
    npx vercel env add SUPABASE_SERVICE_ROLE_KEY production
    npx vercel env add SUPABASE_ANON_KEY production
-   npx vercel env add GEMINI_API_KEY production
-   npx vercel env add GEMINI_EMBEDDING_MODEL production
-   npx vercel env add GEMINI_CHAT_MODEL production
+   npx vercel env add AI_PROVIDER production
+   npx vercel env add OPENROUTER_API_KEY production
+   npx vercel env add OPENROUTER_BASE_URL production
+   npx vercel env add OPENROUTER_EMBEDDING_MODEL production
+   npx vercel env add OPENROUTER_CHAT_MODEL production
    ```
    Cada comando pide el valor. También puedes cargarlas en Vercel → Project → Settings → Environment Variables.
 5. **Desplegar:**

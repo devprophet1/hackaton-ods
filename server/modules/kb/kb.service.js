@@ -1,5 +1,5 @@
 import { db, check } from '../../common/supabase.js';
-import { embed } from '../../common/gemini.js';
+import { embed } from '../../common/ai.js';
 import { HttpError } from '../../common/errors.js';
 
 const SIZE = 800;
@@ -51,7 +51,7 @@ export async function ingest({ text, filename, source, uploadedBy = null, replac
     .insert({ title, source, status: 'procesando', uploaded_by: uploadedBy }).select('id').single());
   try {
     const chunks = chunkText(content);
-    const vectors = await embed(chunks, 'RETRIEVAL_DOCUMENT');
+    const vectors = await embed(chunks, 'document');
     const rows = chunks.map((c, i) => ({ document_id: doc.id, content: c, embedding: vectors[i] }));
     for (let i = 0; i < rows.length; i += 200) check(await db().from('kb_chunks').insert(rows.slice(i, i + 200)));
     check(await db().from('kb_documents')
@@ -66,6 +66,6 @@ export async function ingest({ text, filename, source, uploadedBy = null, replac
 export async function search(query) {
   const q = typeof query === 'string' ? query.trim().slice(0, 1000) : '';
   if (!q) throw new HttpError(400, 'Escribe una pregunta para probar.');
-  const [vector] = await embed([q], 'RETRIEVAL_QUERY');
+  const [vector] = await embed([q], 'query');
   return check(await db().rpc('match_chunks', { query_embedding: vector, match_count: 3, min_similarity: 0 })) || [];
 }

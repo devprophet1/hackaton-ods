@@ -17,12 +17,14 @@
     "seed": "node --env-file-if-exists=.env scripts/seed.js",
     "seed:users": "node --env-file-if-exists=.env scripts/seed.js",
     "kb:seed": "node --env-file-if-exists=.env scripts/kb-seed.js",
-    "kb:test": "node --env-file-if-exists=.env scripts/kb-test.js"
+    "kb:test": "node --env-file-if-exists=.env scripts/kb-test.js",
+    "check": "node --env-file-if-exists=.env scripts/check-env.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.2",
     "express": "^5.3.0",
     "multer": "^2.5.0",
+    "openai": "^7.62.0",
     "vue": "^3.5.46",
     "vue-router": "^5.5.1"
   },

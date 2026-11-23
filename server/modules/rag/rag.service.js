@@ -1,5 +1,5 @@
 import { db, check } from '../../common/supabase.js';
-import { embed, generate } from '../../common/gemini.js';
+import { embed, chat as aiChat, minSimilarity } from '../../common/ai.js';
 
 const RISK_TERMS = ['matar', 'me mata', 'me va a', 'miedo', 'peligro', 'golpea', 'golpe', 'arma', 'cuchillo', 'ahora mismo', 'amenaz'];
 const RISK_ANSWER = 'Lo que cuentas es serio y tu seguridad es lo primero. Si estás en peligro ahora, llama al 105 o a la Línea 100.';
@@ -20,9 +20,13 @@ export const SYSTEM_PROMPT = [
   '   - 105 (Policía) si hay riesgo inmediato; 106 (SAMU) para emergencias médicas.',
   '5. Nunca pidas datos personales ni que la persona repita su relato.',
   '6. Responde en español, con frases cortas, tono cálido y claro. Máximo 120 palabras.',
+  '7. Escribe en texto plano, sin Markdown: sin asteriscos, almohadillas ni negritas. Para listas usa guiones.',
 ].join('\n');
 
 const normalize = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+// El widget muestra texto plano: quita marcas de Markdown que el modelo pueda añadir.
+const plain = (s) => s.replace(/\*\*(.+?)\*\*/g, '$1').replace(/__(.+?)__/g, '$1').replace(/^#{1,6}\s+/gm, '');
 
 export function hasRisk(message) {
   const m = normalize(message);
@@ -37,15 +41,15 @@ export async function chat(message) {
   if (hasRisk(q)) return { answer: RISK_ANSWER, sources: [], risk: true };
 
   // 2-3. Recuperación.
-  const [vector] = await embed([q], 'RETRIEVAL_QUERY');
-  const chunks = check(await db().rpc('match_chunks', { query_embedding: vector, match_count: 5, min_similarity: 0.5 })) || [];
+  const [vector] = await embed([q], 'query');
+  const chunks = check(await db().rpc('match_chunks', { query_embedding: vector, match_count: 5, min_similarity: minSimilarity() })) || [];
 
   // 4. Sin contexto: sin modelo.
   if (!chunks.length) return { answer: NO_CONTEXT, sources: [], risk: false };
 
   // 5. Modelo.
   const context = chunks.map((c, i) => `[${i + 1}] ${c.document_title}\n${c.content}`).join('\n\n');
-  const answer = await generate(SYSTEM_PROMPT, `CONTEXTO:\n${context}\n\nPREGUNTA:\n${q}`);
+  const answer = await aiChat(SYSTEM_PROMPT, `CONTEXTO:\n${context}\n\nPREGUNTA:\n${q}`);
 
   // 6. Fuentes únicas.
   const seen = new Set();
@@ -55,5 +59,5 @@ export async function chat(message) {
     seen.add(c.document_title);
     sources.push({ title: c.document_title, source: c.source });
   }
-  return { answer: answer || NO_CONTEXT, sources, risk: false };
+  return { answer: plain(answer) || NO_CONTEXT, sources, risk: false };
 }
