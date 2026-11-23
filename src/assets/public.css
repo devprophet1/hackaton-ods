@@ -239,6 +239,8 @@
   .compose input{ flex:1; min-width:0; border:1.5px solid var(--line); border-radius:999px; padding:11px 16px; background:var(--surface); color:var(--ink); font:inherit; font-size:.9rem; }
   .compose button{ border:0; background:var(--ink); color:var(--bg); width:44px; height:44px; border-radius:50%; flex:none; display:inline-flex; align-items:center; justify-content:center; }
 
+  .tip .tip-short{ display:none; }
+
   @media (max-width:980px){
     nav.links{ display:none; }
     .tools{ margin-left:auto; }
@@ -250,10 +252,45 @@
     .bar{ padding:14px 16px; gap:10px; }
     .logo span.name{ display:none; }
     main{ padding:0 16px 120px; }
-    .chatbox{ left:12px; right:12px; width:auto; height:min(78vh, 620px); }
+    /* El chat nunca tapa la barra con «Salir rápido» (franja + barra ≈ 230 px arriba). */
+    .chatbox{ left:12px; right:12px; width:auto; height:min(calc(100dvh - 340px), 620px); min-height:300px; }
     .fab .label{ display:none; }
     .fab{ padding:0 18px; }
+
+    /* Mejora 1: la ilustración decorativa no ocupa la primera pantalla; título y «Reportar» quedan a la vista. */
+    .art{ display:none; }
+    .hero{ padding-top:24px; }
+
+    /* Mejora 2: texto de al menos 16 px en celular (los campos a 16 px evitan el zoom automático de iOS).
+       «Salir rápido» (.exit) queda igual a propósito. */
+    .strip, .tip, .tip button, .menu-btn, .seg button, .hello, .kicker, .side .small, .side p, .lede,
+    .need-card span, .need-card .go, .topic span, .channels h2, .channel-row small, .foot, .foot button,
+    .progress li, .reassure, .opt, .pill, .hint, .q p, .alert p, .field label, .switch-row p,
+    .btn, .ref, .next span, .lang-note, .prelim, .staff-link, .staff-link button, .drawer nav button small,
+    .chat-head p, .b, .b .src, .chips button, .human, .learn p, .learn li, .subnav button,
+    select, textarea, input.text, .compose input{ font-size:1rem; }
+    .channel-row div{ font-size:1.05rem; }
+    .side .kicker{ font-size:1rem; }
+
+    /* Mejora 3: áreas táctiles de al menos 44 px (mismos enlaces y textos, solo más área). */
+    .strip a, .tip button, .ico-link, .human a, .foot button, .staff-link button, .lang-note a{ min-height:44px; display:inline-flex; align-items:center; }
+    .menu-btn{ height:44px; min-width:44px; }
+    .logo{ min-height:44px; min-width:44px; }
+    .channel-row a{ min-height:44px; display:inline-flex; align-items:center; }
+    .seg button{ min-height:44px; }
+    .strip{ padding:4px 16px; gap:0 16px; }
+
+    /* Mejora 4: aviso amarillo corto en celular (en escritorio, el texto completo). */
+    .tip{ padding:6px 16px; }
+    .tip .tip-long{ display:none; }
+    .tip .tip-short{ display:block; }
+    .human > span{ flex-basis:100%; }
+    .human{ gap:0 18px; }
   }
+
+  /* Mejora 5: el ✓ de los pasos completados va en la misma línea que su texto. */
+  .progress li{ display:block; }
+  .progress li .ico{ margin-right:4px; vertical-align:-3px; }
   @media (prefers-reduced-motion: reduce){
     .view{ animation:none; } .typing i{ animation:none; opacity:.6; } .switch .thumb{ transition:none; }
   }

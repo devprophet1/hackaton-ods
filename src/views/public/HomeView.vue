@@ -53,7 +53,7 @@ const topics = [
         <span class="kicker">{{ t('Ayuda ahora') }}</span>
         <p class="small">{{ t('Gratuita, las 24 horas') }}</p>
         <h3>{{ t('Línea 100') }}</h3>
-        <p style="font-size:.9rem;">{{ t('Orientación gratuita y confidencial del Ministerio de la Mujer, en español, quechua y aimara.') }}</p>
+        <p>{{ t('Orientación gratuita y confidencial del Ministerio de la Mujer, en español, quechua y aimara.') }}</p>
         <div style="display:flex; flex-wrap:wrap; gap:18px;">
           <a href="tel:100" class="ico-link"><AppIcon :icon="Phone" />{{ t('Llamar') }}</a>
           <a href="https://chat100.warminan.gob.pe" target="_blank" rel="noopener" class="ico-link"><AppIcon :icon="MessageCircle" />{{ t('Escribir al Chat 100') }}</a>
