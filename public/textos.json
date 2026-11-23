@@ -109,14 +109,14 @@
     "contexto": "Texto de la página",
     "es": "Cerrar menú",
     "qu": "Akllanakunata wichq'ay",
-    "ay": "Ajlliñanaka jist'araña"
+    "ay": "Ajlliñanaka jist'aña"
   },
   {
     "id": 17,
     "contexto": "Texto de la página",
     "es": "De tu reporte a la ayuda, paso a paso",
     "qu": "Willakusqaykimanta yanapayman, huknin huknin",
-    "ay": "Yatiyawimatha yanapt'awikama, mayat mayat"
+    "ay": "Yatiyawimata yanapt'awikama, mayat maya"
   },
   {
     "id": 18,
@@ -179,7 +179,7 @@
     "contexto": "Texto de la página",
     "es": "Privacidad, anonimato y seguridad",
     "qu": "Pakay, mana sutiyuq kay, waqaychakuy",
-    "ay": "Imantata, jan sutini ukat jark'aqasiña"
+    "ay": ""
   },
   {
     "id": 27,
@@ -200,7 +200,7 @@
     "contexto": "Texto de la página",
     "es": "Canales oficiales de ayuda",
     "qu": "Yanapanapaq kamachisqa ñankuna",
-    "ay": "Yanapt'awitaki chiqapa thakinaka"
+    "ay": ""
   },
   {
     "id": 30,
@@ -214,7 +214,7 @@
     "contexto": "Texto de la página",
     "es": "Tamaño de texto",
     "qu": "Qillqaq hatun kaynin",
-    "ay": "Qillqatanaka jach'a jisk'apa"
+    "ay": "Qillqata jach'a jisk'apa"
   },
   {
     "id": 32,
@@ -249,7 +249,7 @@
     "contexto": "Texto de la página",
     "es": "Ingresar al panel",
     "qu": "Panelman yaykuy",
-    "ay": ""
+    "ay": "Panelaru mantaña"
   },
   {
     "id": 37,
@@ -277,7 +277,7 @@
     "contexto": "Texto de la página",
     "es": "Ayuda ahora",
     "qu": "Kunallan yanapay",
-    "ay": "Jichhpacha yanapt'awi"
+    "ay": "Jichhapacha yanapt'awi"
   },
   {
     "id": 41,
@@ -368,7 +368,7 @@
     "contexto": "Texto de la página",
     "es": "El asistente te orienta al instante, sin registrarte.",
     "qu": "",
-    "ay": "Yanapirixa jan qillqayasisa jichhpacha yanapt'ätam"
+    "ay": "Yanapirixa jan qillqayasisa jichhapacha yanapt'ätam"
   },
   {
     "id": 54,
@@ -403,7 +403,7 @@
     "contexto": "Texto de la página",
     "es": "Reconoce las señales",
     "qu": "Unanchakunata riqsiy",
-    "ay": ""
+    "ay": "Uñacht'awinak uñt'am"
   },
   {
     "id": 59,
@@ -445,21 +445,21 @@
     "contexto": "Texto de la página",
     "es": "Plan de seguridad",
     "qu": "Waqaychakunapaq wakichikuy",
-    "ay": ""
+    "ay": "Jark'aqasiñataki wakichawi"
   },
   {
     "id": 65,
     "contexto": "Texto de la página",
     "es": "Pasos simples para estar más protegida.",
     "qu": "Aswan waqaychasqa kanaykipaq mana sasa ruraykuna",
-    "ay": "Jark'aqasïñataki jasa lurañanaka"
+    "ay": "Jark'aqasiñataki jasa lurañanaka"
   },
   {
     "id": 66,
     "contexto": "Texto de la página",
     "es": "Directorio de ayuda",
     "qu": "Yanapakuqkunapaq sutisuyu",
-    "ay": "Yanapt'awi sutinaka"
+    "ay": ""
   },
   {
     "id": 67,
@@ -704,7 +704,7 @@
     "contexto": "Texto de la página",
     "es": "Enviar de forma anónima",
     "qu": "Sutiykita mana willaspa apachiy",
-    "ay": ""
+    "ay": "Jan sutimp apayaña"
   },
   {
     "id": 102,
@@ -984,7 +984,7 @@
     "contexto": "Texto de la página",
     "es": "Gracias por confiar en este espacio",
     "qu": "Kay k'itipi iñiwasqaykimanta añay",
-    "ay": ""
+    "ay": "Aka chiqaru atinisitamatxa yuspagara"
   },
   {
     "id": 142,
@@ -1089,7 +1089,7 @@
     "contexto": "Texto de la página",
     "es": "Señales",
     "qu": "Unanchakuna",
-    "ay": ""
+    "ay": "Uñacht'awinaka"
   },
   {
     "id": 157,
@@ -1593,7 +1593,7 @@
     "contexto": "Texto de la página",
     "es": "Seguridad primero",
     "qu": "Ñawpaqtaqa waqaychakuy",
-    "ay": ""
+    "ay": "Nayraqatax jark'aqasiña"
   },
   {
     "id": 229,
