@@ -1958,5 +1958,40 @@
     "es": "Escribiendo",
     "qu": "Qillqachkan",
     "ay": "Qillqaski"
+  },
+  {
+    "id": 281,
+    "contexto": "Asistente: tarjeta de ayuda ante crisis emocional (título)",
+    "es": "No tienes que pasar por esto a solas.",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 282,
+    "contexto": "Asistente: tarjeta de ayuda ante crisis emocional",
+    "es": "Puedes hablar ahora mismo, gratis y a cualquier hora, con alguien que te escuche:",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 283,
+    "contexto": "Asistente: tarjeta de ayuda ante crisis emocional (botón; Línea 113 del Minsa)",
+    "es": "Línea 113, opción 5 (salud mental)",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 284,
+    "contexto": "Asistente: barra fija para llamar a la Línea 100 o escribir al Chat 100",
+    "es": "Hablar con una persona",
+    "qu": "",
+    "ay": ""
+  },
+  {
+    "id": 285,
+    "contexto": "Aviso amarillo corto en celular (va después de «Salir rápido»)",
+    "es": "te lleva a Google si alguien se acerca.",
+    "qu": "",
+    "ay": ""
   }
 ]
