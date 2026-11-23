@@ -3,7 +3,9 @@ import { useRoute } from 'vue-router';
 import { t } from '../composables/useI18n.js';
 import { menuOpen, openMenu } from '../composables/useUi.js';
 import { useGo } from '../composables/useGo.js';
+import { Menu } from 'lucide-vue-next';
 import RimayLogo from './RimayLogo.vue';
+import AppIcon from './AppIcon.vue';
 import QuickExitButton from './QuickExitButton.vue';
 import ExitNotice from './ExitNotice.vue';
 
@@ -32,7 +34,7 @@ const links = [
       </nav>
       <div class="tools">
         <button class="menu-btn" type="button" :aria-expanded="menuOpen" aria-controls="drawer" @click="openMenu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+          <AppIcon :icon="Menu" />
           <span>{{ t('Menú') }}</span>
         </button>
         <QuickExitButton />

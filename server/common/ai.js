@@ -111,10 +111,19 @@ export async function embed(texts, kind = 'document') {
   return vectors;
 }
 
-// Devuelve el texto de la respuesta.
-export async function chat(systemPrompt, userMessage) {
+// Normaliza el historial de la conversación: [{ role: 'user' | 'assistant', content }].
+function cleanHistory(history) {
+  return (Array.isArray(history) ? history : [])
+    .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string' && m.content.trim())
+    .slice(-6)
+    .map((m) => ({ role: m.role, content: m.content.trim().slice(0, 1000) }));
+}
+
+// Devuelve el texto de la respuesta. history: mensajes anteriores de la conversación (solo en memoria).
+export async function chat(systemPrompt, userMessage, history = []) {
   const p = provider();
-  if (p === 'gemini') return gemini.generate(systemPrompt, userMessage);
+  const past = cleanHistory(history);
+  if (p === 'gemini') return gemini.generate(systemPrompt, userMessage, past);
 
   const model = models().chat;
   try {
@@ -122,7 +131,7 @@ export async function chat(systemPrompt, userMessage) {
       // Chat Completions de OpenRouter: max_tokens y reasoning.effort (el más bajo: "none").
       const params = {
         model,
-        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMessage }],
+        messages: [{ role: 'system', content: systemPrompt }, ...past, { role: 'user', content: userMessage }],
         max_tokens: MAX_OUTPUT_TOKENS,
       };
       if (isReasoningModel(model)) params.reasoning = { effort: config.reasoningEffort, exclude: true };
@@ -130,7 +139,8 @@ export async function chat(systemPrompt, userMessage) {
       return (res.choices?.[0]?.message?.content || '').trim();
     }
     // OpenAI directo: API Responses.
-    const params = { model, instructions: systemPrompt, input: userMessage, max_output_tokens: MAX_OUTPUT_TOKENS };
+    const input = [...past, { role: 'user', content: userMessage }];
+    const params = { model, instructions: systemPrompt, input, max_output_tokens: MAX_OUTPUT_TOKENS };
     if (isReasoningModel(model)) params.reasoning = { effort: config.reasoningEffort };
     const res = await client(p).responses.create(params);
     return (res.output_text || '').trim();

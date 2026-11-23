@@ -40,7 +40,7 @@ Las maquetas en `specs/maquetas/` son la referencia visual y de comportamiento. 
 
 | Capa | Tecnología | Notas |
 | --- | --- | --- |
-| Frontend público | Vue 3 + Vite, Composition API (`<script setup>`), JavaScript (sin TypeScript) | Vue Router. Sin librerías de UI: CSS propio con los tokens de la maqueta |
+| Frontend público | Vue 3 + Vite, Composition API (`<script setup>`), JavaScript (sin TypeScript) | Vue Router. Sin librerías de UI: CSS propio con los tokens de la maqueta. Íconos de línea con `lucide-vue-next` (única dependencia visual), siempre a través de `AppIcon.vue` |
 | Frontend admin | La misma app Vue, rutas `/admin/*` con lazy loading | Quien visita la web pública no descarga el código del panel |
 | Estado e idiomas | Composables (`useAuth`, `useI18n`, …) | Sin Pinia ni vue-i18n |
 | Backend | Node.js + Express 5, JavaScript con ES modules, monolito modular | Cada módulo en su carpeta (rutas + servicio); ninguno importa servicios internos de otro |
@@ -272,12 +272,26 @@ Base: `/api`. Respuestas en JSON. Errores con `{ "message": "…" }` en español
 
 `POST /rag/chat`
 ```json
-{ "message": "¿Necesito un abogado para denunciar?" }
+{
+  "message": "¿y qué puedo hacer?",
+  "history": [
+    { "role": "user", "content": "mi pareja me grita y me revisa el celular" },
+    { "role": "assistant", "content": "Lo que cuentas es importante y no es tu culpa…" }
+  ]
+}
 ```
+- `history` es opcional: los últimos 6 mensajes de la conversación, que viven solo en la memoria de la página. El servidor no los guarda ni los registra.
+
 Respuesta:
 ```json
-{ "answer": "…", "sources": [{ "title": "Cómo presentar una denuncia", "source": "Guía Rimay" }], "risk": false }
+{
+  "answer": "…",
+  "sources": [{ "title": "Cómo presentar una denuncia", "source": "Guía Rimay" }],
+  "risk": false,
+  "suggestions": ["¿Qué hace el CEM?", "¿Qué medidas de protección hay?"]
+}
 ```
+- Con riesgo: `{ "risk": true, "riskType": "violencia" | "crisis", "answer": "…", "sources": [], "suggestions": [] }`.
 Ver sección 9 para la lógica.
 
 ### Panel (requieren `Authorization: Bearer <token>`)
@@ -359,10 +373,16 @@ Paso 3: tipo de apoyo (Psicológico, Legal, Médico, Información general). «En
 Confirmación: código devuelto y próximos pasos según el apoyo elegido. Si no es anónimo, primero «Te contactaremos…» con el medio elegido. Si falla la red: mensaje claro con la Línea 100 y opción de reintentar. Nunca perder lo escrito: el borrador vive solo en memoria (estado reactivo del módulo, sobrevive a cambiar de ruta dentro de la app), **nunca** en `localStorage` ni `sessionStorage`, y se borra al enviar con éxito.
 
 ### Asistente flotante
-- Botón «¿Necesitas orientación?» y panel de chat. Preguntas sugeridas: «¿Dónde pido ayuda?», «¿Qué dice la ley?», «¿Cómo denuncio?», «¿Cómo ayudo a alguien?».
-- Llama a `POST /api/rag/chat`. Indicador «escribiendo». Muestra la fuente bajo cada respuesta.
-- Si `risk: true`, mostrar la tarjeta roja con `tel:105` y `tel:100`.
+- Botón «¿Necesitas orientación?» y panel de chat. Al inicio, preguntas sugeridas fijas: «¿Dónde pido ayuda?», «¿Qué dice la ley?», «¿Cómo denuncio?», «¿Cómo ayudo a alguien?». Después, los botones muestran las `suggestions` de la última respuesta. Los botones se envuelven en varias líneas (sin desplazamiento horizontal).
+- Llama a `POST /api/rag/chat` con `message` y `history` (últimos 6 mensajes). La conversación vive solo en la memoria de la página: no se guarda en el servidor ni en `localStorage`/`sessionStorage`, y se pierde al cerrar la pestaña o con «Salir rápido».
+- Indicador «escribiendo». Foco en el campo de texto al abrir el chat y después de cada respuesta. Avatar con el símbolo de Rimay junto a los mensajes del asistente. Fuente bajo cada respuesta.
+- Formato seguro (`RichText.vue`): las URL `https://…` y los números 105, 100, 106 y 113 se convierten en enlaces (`tel:`); las líneas que empiezan con «-», «•» o «1.» se muestran como lista. Los elementos se arman en la plantilla; nunca se inserta HTML del modelo.
+- Si `risk: true`, tarjeta roja con `tel:105` y `tel:100`; si `riskType: "crisis"`, además `tel:113` (Línea 113, opción 5, salud mental del Minsa).
+- Barra fija «Hablar con una persona»: Línea 100 (`tel:100`) y Chat 100.
 - `aria-live="polite"` en la lista de mensajes. Texto siempre con interpolación `{{ }}`, nunca `v-html`.
+
+### Íconos
+`lucide-vue-next`, solo íconos de línea, trazo 1.75, color `currentColor` (funcionan en modo claro y oscuro), 18–20 px en botones y 24 px en tarjetas, siempre con `AppIcon.vue`. Acompañan al texto, no lo reemplazan; los decorativos llevan `aria-hidden="true"` y los botones con solo ícono, `aria-label`. Sin emojis. Dónde: chat (MessageCircle, Send, X, Phone, BookOpen, TriangleAlert), franja (Phone), Salir rápido (LogOut), menú (Menu), «¿Qué necesitas ahora?» (Siren, FileText, MessageCircle, HeartHandshake), temas de «Infórmate» (Eye, Scale, ShieldCheck, BookUser, HeartHandshake), avisos del paso 1 (TriangleAlert rojo, Info amarillo), pasos completados y confirmación (CircleCheck), panel (Inbox, ChartColumn, Library, LogOut, TriangleAlert, Eye, UserPlus, StickyNote, Upload).
 
 ### Contenido informativo
 Copiar tal cual de la maqueta: «Cómo funciona», «Infórmate» (señales, tipos de violencia, derechos, plan de seguridad, cómo ayudar, directorio), preguntas frecuentes y «Nosotros» (con glosario quechua y aimara).
@@ -395,34 +415,43 @@ Tokens de la maqueta: blanco `#FFFFFF`, amarillo `#FFD95A`, carbón `#2F2F2F`, L
 6. En Vercel, la subida desde el panel se procesa dentro de la misma petición, sin trabajo en segundo plano, dentro del `maxDuration` de 300 s. Con el límite de 4 MB por archivo alcanza.
 
 ### Consulta (`POST /rag/chat`)
-1. **Detección de riesgo antes del modelo.** Si el mensaje contiene alguna de estas expresiones (sin tildes, en minúsculas): `matar`, `me mata`, `me va a`, `miedo`, `peligro`, `golpea`, `golpe`, `arma`, `cuchillo`, `ahora mismo`, `amenaz`, responder de inmediato con `risk: true` y el texto fijo: «Lo que cuentas es serio y tu seguridad es lo primero. Si estás en peligro ahora, llama al 105 o a la Línea 100.» No llamar al modelo.
-2. Generar el embedding de la pregunta con `embed([pregunta], 'query')` (768 dimensiones).
-3. `match_chunks(embedding, 5, umbral)`. El umbral depende del modelo de embeddings: 0,3 con `text-embedding-3-small` (OpenRouter/OpenAI; las preguntas fuera de tema quedan ≤ 0,28) y 0,5 con Gemini. Se puede ajustar con `AI_MIN_SIMILARITY`.
-4. Si no hay fragmentos, responder sin modelo: orientar a la Línea 100 y al Chat 100.
-5. Llamar a `chat(prompt del sistema, contexto + pregunta)`. Máximo unas 120 palabras de respuesta, en texto plano (el backend quita marcas de Markdown porque el widget muestra texto con `{{ }}`).
-6. Devolver `answer`, `sources` (títulos únicos de los documentos cuyos fragmentos superaron el umbral) y `risk: false`.
-7. No guardar mensajes. No registrar el texto de la pregunta en logs.
+1. **Detección de riesgo antes del modelo** (sobre el mensaje actual, sin tildes y en minúsculas), sin llamar al modelo:
+   - **Crisis personal** (`quiero morir`, `quitarme la vida`, `no quiero vivir`, `suicid`, `matarme`, `acabar con mi vida`, `hacerme dano`, `quiero desaparecer`…): `risk: true`, `riskType: "crisis"` y un texto fijo que acompaña y ofrece la Línea 113 opción 5, la Línea 100 y el 105.
+   - **Violencia** (`matar`, `me mata`, `me va a`, `miedo`, `peligro`, `golpea`, `golpe`, `arma`, `cuchillo`, `ahora mismo`, `amenaz`): `risk: true`, `riskType: "violencia"` y el texto fijo «Lo que cuentas es serio y tu seguridad es lo primero. Si estás en peligro ahora, llama al 105 o a la Línea 100.»
+2. **Intención por reglas simples** (sin modelo):
+   - `saludo`, `gracias`, `despedida`, `identidad` («¿quién eres?», «¿eres una persona?»): respuesta fija, cálida, de 1 o 2 frases, sin buscar en la base de conocimiento.
+   - `relato` (primera persona: «mi pareja me grita», «me siento mal», «no sé qué hacer»…): enfoque de primera respuesta; usa el RAG solo si aporta.
+   - `pregunta`: flujo RAG.
+3. **Recuperación.** `embed([pregunta], 'query')` y `match_chunks(embedding, 5, 0)`; si el mensaje es de seguimiento («y…», «eso», «ahí», «dónde queda»…), también se busca con los últimos mensajes de la persona más la pregunta y se combinan los resultados. Se usan los fragmentos con similitud ≥ umbral: 0,3 con `text-embedding-3-small` (OpenRouter/OpenAI; las preguntas fuera de tema quedan ≤ 0,28) y 0,5 con Gemini (ajustable con `AI_MIN_SIMILARITY`).
+4. **Sin contexto** (y no es un relato), respuesta fija con opciones, nunca «No tengo información suficiente» a secas: si la similitud máxima es < 0,2, «fuera de tema» (qué puede hacer y 3 opciones); si no, «No tengo ese dato exacto, pero puedo ayudarte con…» (3 opciones y la Línea 100).
+5. **Modelo.** `chat(prompt del sistema, MODO + CONTEXTO + MENSAJE, history)`, con los últimos 6 mensajes. En modo pregunta, si el CONTEXTO no menciona el punto concreto, la respuesta empieza con «No tengo ese dato exacto» y ofrece lo relacionado. Texto plano (el backend quita marcas de Markdown).
+6. **Sugerencias.** El modelo termina con una línea «SUGERENCIAS: a | b | c»; el backend la separa en `suggestions` (si falta, usa sugerencias según el documento más relevante). Las respuestas fijas traen las suyas.
+7. Devolver `answer`, `sources` (títulos únicos de los documentos cuyos fragmentos superaron el umbral), `risk: false` y `suggestions`.
+8. No guardar mensajes ni historial. No registrar el texto de la pregunta ni el historial en logs.
 
 **Cambio de proveedor de IA.** Los vectores de un proveedor no sirven con otro (distinto espacio de embeddings). Después de cambiar `AI_PROVIDER` o el modelo de embeddings, ejecutar `npm run check` y luego `npm run kb:seed` para regenerar `kb_chunks`.
 
 ### Prompt del sistema
 
-```text
-Eres el asistente de orientación de Rimay, una plataforma de apoyo frente a la violencia en Villa El Salvador, Lima, Perú.
+Fuente de verdad: `SYSTEM_PROMPT` en `server/modules/rag/rag.service.js`. Resumen:
 
-Reglas:
-1. Cada afirmación de tu respuesta debe salir del CONTEXTO. Si el CONTEXTO no lo dice, no lo agregues: no completes con conocimiento general, consejos propios ni detalles prácticos (con quién ir, qué llevar, horarios, plazos, costos) que no estén escritos ahí. Si no hay información suficiente, dilo y recomienda la Línea 100. La única excepción son los canales fijos de derivación de la regla 4 (105, Línea 100, Chat 100 y Centro de Emergencia Mujer), que siempre puedes mencionar.
-2. Usa los tipos de violencia de la Ley N.º 30364 (física, psicológica, sexual, económica o patrimonial) solo para explicar; nunca diagnostiques ni califiques el riesgo.
-3. Apoyo psicológico de primera respuesta: escucha sin juzgar, valida lo que siente la persona, pregunta qué necesita, ayúdala a pensar en su seguridad y facilita el contacto con apoyo humano. Nunca ofrezcas terapia ni evaluación clínica.
-4. Deriva siempre a canales oficiales:
-   - Línea 100 (MIMP): gratuita, confidencial, 24 horas, en español, quechua y aimara.
-   - Chat 100: https://chat100.warminan.gob.pe
-   - Centro de Emergencia Mujer más cercano.
-   - Comisaría o Central Única de Denuncias para denunciar.
-   - 105 (Policía) si hay riesgo inmediato; 106 (SAMU) para emergencias médicas.
-5. Nunca pidas datos personales ni que la persona repita su relato.
-6. Responde en español, con frases cortas, tono cálido y claro. Máximo 120 palabras.
-7. Escribe en texto plano, sin Markdown: sin asteriscos, almohadillas ni negritas. Para listas usa guiones.
+```text
+Eres el asistente de orientación de Rimay, una plataforma de apoyo frente a la violencia en Villa El Salvador, Lima, Perú. Conversas como una orientadora que escucha: cercana, tranquila y respetuosa.
+
+Reglas de contenido:
+1. Cada afirmación informativa debe salir del CONTEXTO (si no lo dice, no lo agregues; si falta, «No tengo ese dato exacto…» y ofrece lo que sí puedes explicar). Excepción: los canales fijos de derivación (105, Línea 100, Chat 100 y Centro de Emergencia Mujer).
+2. Tipos de violencia de la Ley N.º 30364 solo para explicar con cuidado («eso puede corresponder a…»); nunca diagnosticar ni calificar el riesgo.
+3. Relato o desahogo: validar («Lo que cuentas es importante y no es tu culpa»), mostrar escucha y terminar con una sola pregunta sobre qué necesita. Nunca terapia ni evaluación clínica.
+4. Nunca culpar ni decir lo que «debería» hacer: ofrecer opciones.
+5. Nunca pedir datos personales ni que repita su relato. Riesgo inmediato → 105.
+6. Usar la CONVERSACIÓN previa para preguntas de seguimiento.
+
+Forma:
+7. Tratar de «tú». Frases cortas y cálidas. 2 a 4 frases; lista con guiones solo si hay pasos u opciones.
+8. Terminar con como máximo una pregunta abierta o un siguiente paso.
+9. No repetir avisos en cada respuesta: la Línea 100 cuando sea útil.
+10. Texto plano, sin Markdown; nunca mencionar «CONTEXTO» ni «MODO».
+11. Última línea: «SUGERENCIAS:» con 2 o 3 preguntas cortas separadas por «|».
 ```
 
 ### Base de conocimiento inicial (`knowledge/`)
@@ -491,6 +520,7 @@ Usar solo estos. No añadir números ni direcciones sin fuente.
 - Línea 100 (MIMP): gratuita, confidencial, 24 horas, todos los días, en español, quechua y aimara. Número `100`.
 - Chat 100: `https://chat100.warminan.gob.pe`.
 - Policía Nacional: `105`. SAMU: `106`.
+- Línea 113 Salud (Minsa), opción 5: salud mental y psicología, gratuita, 24 horas, todos los días. Verificado el 23/11/2026 en https://www.gob.pe/555 y en la nota del Minsa del 17/09/2026 (https://www.gob.pe/institucion/minsa/noticias/1445771). Solo se muestra en la tarjeta de crisis emocional del asistente.
 - Ley N.º 30364: reconoce violencia física, psicológica, sexual y económica o patrimonial.
 - Central Única de Denuncias y Centro de Emergencia Mujer: sin número ni dirección confirmados; mostrar «Consulta el canal oficial» o «Consulta tu CEM».
 

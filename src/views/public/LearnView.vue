@@ -1,5 +1,7 @@
 <script setup>
+import { Eye, Scale, ShieldCheck, BookUser, HeartHandshake } from 'lucide-vue-next';
 import { t } from '../../composables/useI18n.js';
+import AppIcon from '../../components/AppIcon.vue';
 import { openChat } from '../../composables/useUi.js';
 import { useGo } from '../../composables/useGo.js';
 
@@ -63,7 +65,7 @@ const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:
       </div>
 
       <section id="senales">
-        <h3>{{ t('Reconoce las señales') }}</h3>
+        <h3 class="sec-title"><AppIcon :icon="Eye" :size="24" />{{ t('Reconoce las señales') }}</h3>
         <p>{{ t('La violencia no siempre deja marcas visibles. Presta atención si la persona con quien vives o te relacionas:') }}</p>
         <ul class="list"><li v-for="s in signs" :key="s">{{ t(s) }}</li></ul>
         <p>{{ t('Si reconoces alguna de estas situaciones, puedes hablar con alguien hoy mismo.') }}</p>
@@ -71,7 +73,7 @@ const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:
       </section>
 
       <section id="tipos">
-        <h3>{{ t('Tipos de violencia') }}</h3>
+        <h3 class="sec-title"><AppIcon :icon="Scale" :size="24" />{{ t('Tipos de violencia') }}</h3>
         <p>{{ t('La Ley N.º 30364 reconoce cuatro tipos de violencia contra las mujeres y los integrantes del grupo familiar.') }}</p>
         <div class="types">
           <div v-for="[name, text] in types" :key="name"><h4>{{ t(name) }}</h4><p>{{ t(text) }}</p></div>
@@ -80,26 +82,26 @@ const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:
       </section>
 
       <section id="derechos">
-        <h3>{{ t('Tus derechos') }}</h3>
+        <h3 class="sec-title"><AppIcon :icon="Scale" :size="24" />{{ t('Tus derechos') }}</h3>
         <ul class="list"><li v-for="r in rights" :key="r">{{ t(r) }}</li></ul>
         <p class="source">{{ t('Fuente: Ley N.º 30364. Confirma los detalles de tu caso con el CEM o la Línea 100.') }}</p>
       </section>
 
       <section id="plan">
-        <h3>{{ t('Plan de seguridad') }}</h3>
+        <h3 class="sec-title"><AppIcon :icon="ShieldCheck" :size="24" />{{ t('Plan de seguridad') }}</h3>
         <p>{{ t('Pequeños preparativos pueden ayudarte a actuar rápido si la situación empeora.') }}</p>
         <ul class="list"><li v-for="p in plan" :key="p">{{ t(p) }}</li></ul>
       </section>
 
       <section id="ayudar">
-        <h3>{{ t('Cómo ayudar a alguien') }}</h3>
+        <h3 class="sec-title"><AppIcon :icon="HeartHandshake" :size="24" />{{ t('Cómo ayudar a alguien') }}</h3>
         <p>{{ t('Si una amiga, vecina o familiar vive violencia, tu apoyo puede marcar la diferencia.') }}</p>
         <ul class="list"><li v-for="h in help" :key="h">{{ t(h) }}</li></ul>
         <div class="ctas"><button class="btn small outline" type="button" @click="go('/reportar')">{{ t('Reportar como testigo') }}</button></div>
       </section>
 
       <section id="directorio" style="border-bottom:0;">
-        <h3>{{ t('Directorio de ayuda') }}</h3>
+        <h3 class="sec-title"><AppIcon :icon="BookUser" :size="24" />{{ t('Directorio de ayuda') }}</h3>
         <div class="dir-wrap">
           <table class="dir">
             <thead><tr><th>{{ t('Servicio') }}</th><th>{{ t('Para qué') }}</th><th>{{ t('Cómo contactar') }}</th><th>{{ t('Horario') }}</th></tr></thead>

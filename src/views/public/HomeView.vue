@@ -1,22 +1,24 @@
 <script setup>
 import { computed } from 'vue';
+import { Siren, FileText, MessageCircle, HeartHandshake, Eye, Scale, ShieldCheck, BookUser, Phone } from 'lucide-vue-next';
 import { useRouter } from 'vue-router';
 import { useI18n, LANG_NAME } from '../../composables/useI18n.js';
 import { openChat } from '../../composables/useUi.js';
 import { useGo } from '../../composables/useGo.js';
 import LangSwitch from '../../components/LangSwitch.vue';
 import AppCard from '../../components/AppCard.vue';
+import AppIcon from '../../components/AppIcon.vue';
 
 const { lang, t } = useI18n();
 const go = useGo();
 const router = useRouter();
 const langNote = computed(() => (lang.value === 'es' ? '' : t('La Línea 100 te atiende en [IDIOMA], gratis y las 24 horas.', { IDIOMA: LANG_NAME[lang.value] })));
 const topics = [
-  ['senales', 'Reconoce las señales', 'La violencia no siempre deja marcas.'],
-  ['tipos', 'Tipos de violencia', 'Lo que reconoce la Ley N.º 30364.'],
-  ['derechos', 'Tus derechos', 'Atención gratuita y medidas de protección.'],
-  ['plan', 'Plan de seguridad', 'Pasos simples para estar más protegida.'],
-  ['directorio', 'Directorio de ayuda', 'A quién llamar y para qué.'],
+  ['senales', 'Reconoce las señales', 'La violencia no siempre deja marcas.', Eye],
+  ['tipos', 'Tipos de violencia', 'Lo que reconoce la Ley N.º 30364.', Scale],
+  ['derechos', 'Tus derechos', 'Atención gratuita y medidas de protección.', Scale],
+  ['plan', 'Plan de seguridad', 'Pasos simples para estar más protegida.', ShieldCheck],
+  ['directorio', 'Directorio de ayuda', 'A quién llamar y para qué.', BookUser],
 ];
 </script>
 
@@ -53,8 +55,8 @@ const topics = [
         <h3>{{ t('Línea 100') }}</h3>
         <p style="font-size:.9rem;">{{ t('Orientación gratuita y confidencial del Ministerio de la Mujer, en español, quechua y aimara.') }}</p>
         <div style="display:flex; flex-wrap:wrap; gap:18px;">
-          <a href="tel:100">{{ t('Llamar') }}</a>
-          <a href="https://chat100.warminan.gob.pe" target="_blank" rel="noopener">{{ t('Escribir al Chat 100') }}</a>
+          <a href="tel:100" class="ico-link"><AppIcon :icon="Phone" />{{ t('Llamar') }}</a>
+          <a href="https://chat100.warminan.gob.pe" target="_blank" rel="noopener" class="ico-link"><AppIcon :icon="MessageCircle" />{{ t('Escribir al Chat 100') }}</a>
         </div>
       </aside>
     </div>
@@ -62,17 +64,18 @@ const topics = [
     <section class="need" aria-labelledby="needTitle">
       <h2 id="needTitle">{{ t('¿Qué necesitas ahora?') }}</h2>
       <div class="need-grid">
-        <AppCard danger href="tel:105" :title="t('Estoy en peligro ahora')" :text="t('Llama a la Policía. No necesitas llenar nada antes.')" :go="t('Llamar al 105')" />
-        <AppCard :title="t('Quiero contar lo que pasa')" :text="t('Anónimo y a tu ritmo, en tres pasos.')" :go="t('Reportar un caso')" @select="go('/reportar')" />
-        <AppCard :title="t('Tengo dudas sobre qué hacer')" :text="t('El asistente te orienta al instante, sin registrarte.')" :go="t('Abrir el asistente')" @select="openChat" />
-        <AppCard :title="t('Quiero ayudar a alguien')" :text="t('Qué decir y qué evitar si alguien cercano vive violencia.')" :go="t('Ver la guía')" @select="go('/informate', 'ayudar')" />
+        <AppCard danger :icon="Siren" href="tel:105" :title="t('Estoy en peligro ahora')" :text="t('Llama a la Policía. No necesitas llenar nada antes.')" :go="t('Llamar al 105')" />
+        <AppCard :icon="FileText" :title="t('Quiero contar lo que pasa')" :text="t('Anónimo y a tu ritmo, en tres pasos.')" :go="t('Reportar un caso')" @select="go('/reportar')" />
+        <AppCard :icon="MessageCircle" :title="t('Tengo dudas sobre qué hacer')" :text="t('El asistente te orienta al instante, sin registrarte.')" :go="t('Abrir el asistente')" @select="openChat" />
+        <AppCard :icon="HeartHandshake" :title="t('Quiero ayudar a alguien')" :text="t('Qué decir y qué evitar si alguien cercano vive violencia.')" :go="t('Ver la guía')" @select="go('/informate', 'ayudar')" />
       </div>
     </section>
 
     <section class="learn-home" aria-labelledby="learnTitle">
       <h2 id="learnTitle">{{ t('Infórmate') }}</h2>
       <div class="topic-grid">
-        <button v-for="[id, title, text] in topics" :key="id" class="topic" type="button" @click="go('/informate', id)">
+        <button v-for="[id, title, text, icon] in topics" :key="id" class="topic" type="button" @click="go('/informate', id)">
+          <AppIcon :icon="icon" :size="24" class="card-ico" />
           <strong>{{ t(title) }}</strong><span>{{ t(text) }}</span>
         </button>
       </div>

@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { Upload } from 'lucide-vue-next';
 import { useAuth } from '../../composables/useAuth.js';
+import AppIcon from '../../components/AppIcon.vue';
 import { fmt } from '../../composables/adminLabels.js';
 
 const { authApi } = useAuth();
@@ -52,7 +54,7 @@ onMounted(load);
     </div>
     <div class="upload">
       <p>Sube un archivo TXT o Markdown. Se divide en fragmentos, se generan sus embeddings y se guardan en Supabase.</p>
-      <label class="btn" for="fileIn">Subir documento</label>
+      <label class="btn" for="fileIn"><AppIcon :icon="Upload" />Subir documento</label>
       <input id="fileIn" type="file" accept=".txt,.md" hidden :disabled="!!uploading" @change="upload">
     </div>
     <p v-if="error" class="error" role="alert" style="color:var(--danger);">{{ error }}</p>

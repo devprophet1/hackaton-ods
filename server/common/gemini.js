@@ -47,10 +47,11 @@ export async function embed(texts, taskType) {
   return out;
 }
 
-export async function generate(systemPrompt, userText) {
+export async function generate(systemPrompt, userText, history = []) {
+  const past = history.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
   const json = await call(`${config.geminiChatModel}:generateContent`, {
     systemInstruction: { parts: [{ text: systemPrompt }] },
-    contents: [{ role: 'user', parts: [{ text: userText }] }],
+    contents: [...past, { role: 'user', parts: [{ text: userText }] }],
     generationConfig: { temperature: 0.3, maxOutputTokens: 400 },
   });
   return (json.candidates?.[0]?.content?.parts || []).map((p) => p.text || '').join('').trim();

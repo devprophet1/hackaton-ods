@@ -4,13 +4,15 @@ import { onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuth } from '../composables/useAuth.js';
 import { riskPending } from '../composables/adminLabels.js';
+import { Inbox, ChartColumn, Library, LogOut } from 'lucide-vue-next';
 import RimayLogo from '../components/RimayLogo.vue';
+import AppIcon from '../components/AppIcon.vue';
 
 const route = useRoute();
 const router = useRouter();
 const { user, isLoggedIn, logout, authApi } = useAuth();
 const ROLE = { coordinadora: 'Coordinadora', gestora: 'Gestora de casos', admin: 'Administración' };
-const nav = [['admin-cases', '/admin/casos', 'Casos'], ['admin-dashboard', '/admin/dashboard', 'Dashboard'], ['admin-kb', '/admin/conocimiento', 'Base de conocimiento']];
+const nav = [['admin-cases', '/admin/casos', 'Casos', Inbox], ['admin-dashboard', '/admin/dashboard', 'Dashboard', ChartColumn], ['admin-kb', '/admin/conocimiento', 'Base de conocimiento', Library]];
 
 onMounted(async () => {
   if (!isLoggedIn.value) return;
@@ -30,14 +32,14 @@ function out() {
       <aside class="side">
         <div class="logo"><RimayLogo :size="34" /> Rimay</div>
         <nav aria-label="Módulos">
-          <RouterLink v-for="[name, path, label] in nav" :key="name" :to="path" :aria-current="route.name === name ? 'page' : 'false'">
-            {{ label }}
+          <RouterLink v-for="[name, path, label, icon] in nav" :key="name" :to="path" :aria-current="route.name === name ? 'page' : 'false'">
+            <span class="nav-label"><AppIcon :icon="icon" :size="20" />{{ label }}</span>
             <span v-if="name === 'admin-cases' && riskPending" class="count">{{ riskPending }}</span>
           </RouterLink>
         </nav>
         <div class="user">
           <div><strong>{{ user?.fullName }}</strong><span>{{ ROLE[user?.role] || user?.role }}</span></div>
-          <button class="btn ghost" type="button" @click="out">Cerrar sesión</button>
+          <button class="btn ghost" type="button" @click="out"><AppIcon :icon="LogOut" />Cerrar sesión</button>
         </div>
       </aside>
       <main class="content">

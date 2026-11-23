@@ -1,6 +1,8 @@
 <script setup>
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue';
+import { TriangleAlert, Eye, UserPlus, StickyNote } from 'lucide-vue-next';
 import { useAuth } from '../../composables/useAuth.js';
+import AppIcon from '../../components/AppIcon.vue';
 import { TYPE_LABEL, SUPPORT_LABEL, METHOD_LABEL, STATUS_OPTIONS, statusBadge, fmt, ago, labels, riskPending } from '../../composables/adminLabels.js';
 
 const { authApi } = useAuth();
@@ -113,7 +115,7 @@ onBeforeUnmount(() => clearInterval(timer));
         <li v-for="c in cases" :key="c.id">
           <button class="case" :class="{ urgent: open(c) }" type="button" :aria-current="c.id === selectedId" @click="select(c.id)">
             <div class="row"><strong>{{ c.alias }}</strong><span :class="statusBadge(c.status).cls">{{ statusBadge(c.status).label }}</span></div>
-            <div class="row"><small>{{ labels(c.violenceTypes, TYPE_LABEL) }}</small><span v-if="open(c)" class="badge urg">Riesgo</span></div>
+            <div class="row"><small>{{ labels(c.violenceTypes, TYPE_LABEL) }}</small><span v-if="open(c)" class="badge urg"><AppIcon :icon="TriangleAlert" :size="14" />Riesgo</span></div>
             <small>{{ c.assignedTo?.fullName || 'Sin asignar' }}  |  {{ ago(c.createdAt) }}</small>
           </button>
         </li>
@@ -125,7 +127,7 @@ onBeforeUnmount(() => clearInterval(timer));
           <div class="row">
             <h3>{{ detail.alias }}</h3>
             <div style="display:flex; gap:6px; flex-wrap:wrap;">
-              <span v-if="open(detail)" class="badge urg">Marcó peligro inmediato</span>
+              <span v-if="open(detail)" class="badge urg"><AppIcon :icon="TriangleAlert" :size="14" />Marcó peligro inmediato</span>
               <span :class="statusBadge(detail.status).cls">{{ statusBadge(detail.status).label }}</span>
             </div>
           </div>
@@ -138,7 +140,7 @@ onBeforeUnmount(() => clearInterval(timer));
             <dt>Contacto</dt>
             <dd>
               {{ methodLabel }}: {{ revealed[detail.id] || detail.contact.masked }}
-              <button v-if="!revealed[detail.id]" class="reveal" type="button" @click="reveal">Mostrar</button>
+              <button v-if="!revealed[detail.id]" class="reveal" type="button" @click="reveal"><AppIcon :icon="Eye" />Mostrar</button>
             </dd>
             <dt>Horario seguro</dt><dd>{{ detail.contact.safeSchedule }}</dd>
           </dl>
@@ -152,7 +154,7 @@ onBeforeUnmount(() => clearInterval(timer));
 
           <div class="grid2">
             <div class="field" style="margin:0;">
-              <label for="assign">Asignado a</label>
+              <label for="assign" class="lbl-ico"><AppIcon :icon="UserPlus" />Asignado a</label>
               <select id="assign" :value="detail.assignedTo?.id || ''" @change="assign">
                 <option value="">Sin asignar</option>
                 <option v-for="s in staff" :key="s.id" :value="s.id">{{ s.fullName }}</option>
@@ -167,7 +169,7 @@ onBeforeUnmount(() => clearInterval(timer));
           </div>
 
           <textarea v-model="note" placeholder="Nota interna del seguimiento" aria-label="Nota interna"></textarea>
-          <button class="btn ghost" type="button" style="margin-top:10px;" @click="saveNote">Guardar nota</button>
+          <button class="btn ghost" type="button" style="margin-top:10px;" @click="saveNote"><AppIcon :icon="StickyNote" />Guardar nota</button>
 
           <ul class="timeline">
             <li v-for="ev in detail.events" :key="ev.id"><time>{{ fmt(ev.createdAt) }}</time><span>{{ ev.detail }}</span></li>

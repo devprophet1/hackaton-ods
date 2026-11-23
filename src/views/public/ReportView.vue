@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { CircleCheck, MessageCircle } from 'lucide-vue-next';
 import { t } from '../../composables/useI18n.js';
 import { openChat } from '../../composables/useUi.js';
 import { quickExit } from '../../composables/useQuickExit.js';
@@ -7,6 +8,7 @@ import { useGo } from '../../composables/useGo.js';
 import { api } from '../../composables/useApi.js';
 import { draft, resetDraft } from '../../composables/useReportDraft.js';
 import AppAlert from '../../components/AppAlert.vue';
+import AppIcon from '../../components/AppIcon.vue';
 
 const go = useGo();
 const step = ref(1);
@@ -64,6 +66,7 @@ async function submit() {
   <section>
     <!-- Confirmación -->
     <div v-if="done" class="done-wrap">
+      <AppIcon :icon="CircleCheck" :size="40" class="done-ico" />
       <h2>{{ t('Gracias por confiar en este espacio') }}</h2>
       <p>{{ done.anon ? t('Tu reporte anónimo quedó registrado. Ayuda a entender qué está pasando en el distrito.') : t('Tu reporte quedó registrado y el equipo de apoyo lo verá en su bandeja.') }}</p>
       <span class="ref">{{ t('Código de referencia (demo):') }} {{ done.code }}</span>
@@ -73,10 +76,10 @@ async function submit() {
           <strong>{{ t('Te contactaremos') }}</strong>
           <span>{{ t('Una persona del equipo de apoyo te escribirá por {medio} en el horario que indicaste. El primer mensaje no mencionará el motivo.', { medio: t(done.medio).toLowerCase() }) }}</span>
         </li>
-        <li v-for="k in done.support" :key="k"><strong>{{ t(NEXT[k][0]) }}</strong><span>{{ t(NEXT[k][1]) }}</span></li>
+        <li v-for="k in done.support" :key="k"><strong class="next-title"><AppIcon :icon="CircleCheck" :size="18" />{{ t(NEXT[k][0]) }}</strong><span>{{ t(NEXT[k][1]) }}</span></li>
       </ul>
       <div class="ctas">
-        <button class="btn" type="button" @click="openChat">{{ t('Hablar con el asistente') }}</button>
+        <button class="btn" type="button" @click="openChat"><AppIcon :icon="MessageCircle" />{{ t('Hablar con el asistente') }}</button>
         <button class="btn ghost" type="button" @click="go('/')">{{ t('Volver al inicio') }}</button>
       </div>
     </div>
@@ -84,7 +87,7 @@ async function submit() {
     <!-- Reporte en 3 pasos -->
     <div v-else class="flow">
       <ol class="progress">
-        <li v-for="(label, i) in ['1. Tu seguridad', '2. Lo que pasó', '3. Apoyo']" :key="i" :class="{ done: i + 1 < step, current: i + 1 === step }">{{ t(label) }}</li>
+        <li v-for="(label, i) in ['1. Tu seguridad', '2. Lo que pasó', '3. Apoyo']" :key="i" :class="{ done: i + 1 < step, current: i + 1 === step }"><AppIcon v-if="i + 1 < step" :icon="CircleCheck" :size="16" />{{ t(label) }}</li>
       </ol>
       <p class="reassure">{{ t('Puedes salir en cualquier momento. Nada se guarda hasta que pulses «Enviar reporte».') }}</p>
 

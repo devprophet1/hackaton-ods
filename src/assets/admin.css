@@ -120,4 +120,10 @@
     .bars div{ grid-template-columns:120px 1fr 30px; }
     .timeline li{ grid-template-columns:1fr; gap:2px; }
   }
+
+  /* Íconos */
+  .side nav .nav-label{ display:inline-flex; align-items:center; gap:10px; }
+  .badge.urg{ display:inline-flex; align-items:center; gap:4px; }
+  .reveal{ display:inline-flex; align-items:center; gap:4px; vertical-align:middle; }
+  .lbl-ico{ display:inline-flex; align-items:center; gap:6px; }
 }
