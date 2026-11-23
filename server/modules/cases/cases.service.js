@@ -74,11 +74,23 @@ export async function listCases(filter) {
   };
 }
 
+
 async function getRow(id) {
-  const row = check(await db().from('reports').select(SELECT).eq('id', id).eq('is_anonymous', false).maybeSingle());
-  if (!row) throw new HttpError(404, 'Caso no encontrado.');
+  const row = check(
+    await db()
+      .from('reports')
+      .select(SELECT)
+      .eq('id', id)
+      .maybeSingle()
+  );
+
+  if (!row) {
+    throw new HttpError(404, 'Caso no encontrado.');
+  }
+
   return row;
 }
+
 
 async function addEvent(reportId, actorId, type, detail) {
   check(await db().from('case_events').insert({ report_id: reportId, actor_id: actorId, event_type: type, detail }));
