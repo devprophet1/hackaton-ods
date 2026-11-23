@@ -38,7 +38,12 @@ Plataforma de prevención de violencia (ODS 5) para el HackODS UA 2026. Se prese
 - `npm run dev` → Vite (5173) + Express (3000) a la vez, con proxy de `/api`.
 - `npm run build` → `dist/`.
 - `npx supabase link --project-ref <ref>` y `npx supabase db push` → migraciones en el proyecto remoto.
-- `npm run seed` → cuentas de demostración en Supabase Auth, `staff` y datos de ejemplo.
+- `npm run seed` → cuenta de demostración, `staff` y datos de ejemplo.
+
+## Panel: cuenta única
+- Un solo rol, `admin`. Única cuenta con acceso al panel: `admin@rimay.pe` / `rimay2026` («Administradora Rimay»).
+- Lucía Ramos y Sofía Huamán siguen en `staff` para asignar casos, con la cuenta bloqueada.
+- No reintroducir roles distintos (coordinadora, gestora) en código, textos ni datos.
 - `npm run kb:seed` → ingesta los documentos de `knowledge/`.
 - Despliegue: automático en Vercel con cada push a `main` (ver README).
 

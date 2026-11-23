@@ -130,12 +130,15 @@ Todo se ejecuta desde la raíz del repositorio, en tu máquina.
 
 La configuración está en [vercel.json](vercel.json): preset Vite, región `pdx1`, `maxDuration` de 300 s para la función y rewrites de `/api/*` a Express y del resto a `index.html`. Las subidas a la base de conocimiento tienen un máximo de 4 MB (el límite de Vercel es 4,5 MB).
 
-## Cuentas de demostración
+## Cuenta de demostración
+
+Una sola cuenta con acceso al panel `/admin` y un solo rol (`admin`, que hace todo: asignar, cambiar estado, notas, mostrar contacto, dashboard y base de conocimiento):
 
 | Rol | Correo | Contraseña |
 | --- | --- | --- |
-| Coordinadora (Carmen Flores) | `coordinadora@rimay.pe` | `rimay2026` |
-| Gestora (Lucía Ramos) | `gestora@rimay.pe` | `rimay2026` |
+| Administradora (Administradora Rimay) | `admin@rimay.pe` | `rimay2026` |
+
+Lucía Ramos y Sofía Huamán aparecen como personal para asignar casos, pero sus cuentas están bloqueadas y no pueden entrar al panel.
 
 Todos los datos de demostración son ficticios.
 
@@ -144,6 +147,6 @@ Todos los datos de demostración son ficticios.
 1. María entra a Rimay desde su celular. Paso 1: marca «Sí» en peligro inmediato y ve el 105.
 2. Continúa, desactiva el anonimato, elige «Mensaje de texto», de 9 a 11 a. m., y envía.
 3. Pregunta al asistente «¿Necesito un abogado para denunciar?» y recibe una respuesta con fuente.
-4. Se cambia a `/admin/login` como gestora: el caso de María aparece primero, marcado con riesgo.
-5. La gestora muestra el contacto (queda registrado), lo marca como contactado y lo deriva al CEM; el dashboard se actualiza.
+4. Se cambia a `/admin/login` como administradora (`admin@rimay.pe`): el caso de María aparece primero, marcado con riesgo.
+5. La administradora muestra el contacto (queda registrado), lo marca como contactado y lo deriva al CEM; el dashboard se actualiza.
 6. Cierre: «Salir rápido» y el selector de quechua y aimara.

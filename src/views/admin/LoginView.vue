@@ -42,9 +42,8 @@ async function submit() {
       <p class="error" role="alert">{{ error }}</p>
       <button class="btn" type="submit" style="width:100%;" :disabled="busy">Ingresar</button>
       <div class="demo">
-        <b>Cuentas de demostración</b>
-        Coordinadora: <code>coordinadora@rimay.pe</code><br>
-        Gestora: <code>gestora@rimay.pe</code><br>
+        <b>Cuenta de demostración</b>
+        Correo: <code>admin@rimay.pe</code><br>
         Contraseña: <code>rimay2026</code>
       </div>
     </form>

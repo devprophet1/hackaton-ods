@@ -124,7 +124,7 @@ create extension if not exists pgcrypto;
 create table staff (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text not null,
-  role text not null check (role in ('coordinadora','gestora','admin')),
+  role text not null check (role in ('coordinadora','gestora','admin')),  -- desde la migración 000010: solo 'admin'
   institution text default 'CEM Villa El Salvador (demo)',
   created_at timestamptz default now()
 );
@@ -233,7 +233,7 @@ group by t;
 
 **Seed (`npm run seed` → `scripts/seed.js`, idempotente, usa la `service_role key`):**
 - Se hace en Node y no en `seed.sql` porque los casos dependen de los usuarios de Auth y `supabase db push` no ejecuta el seed en el proyecto remoto.
-- Crear dos usuarios en Supabase Auth: `coordinadora@rimay.pe` (Carmen Flores, coordinadora) y `gestora@rimay.pe` (Lucía Ramos, gestora), contraseña `rimay2026`, y sus filas en `staff`. Añadir una tercera gestora sin login: Sofía Huamán.
+- **Un solo rol, `admin`** (migración `20261123000010_rol_unico_admin.sql`: todo `staff` pasa a `admin` y el check de `role` solo acepta `'admin'`). Una sola cuenta con acceso al panel: `admin@rimay.pe` («Administradora Rimay»), contraseña `rimay2026`. Si existe la cuenta antigua `coordinadora@rimay.pe`, el seed le cambia el correo (conserva su id y sus casos asignados). Lucía Ramos (`gestora@rimay.pe`) y Sofía Huamán siguen en `staff` como `admin` para poder asignarles casos, pero con la cuenta bloqueada (sin login).
 - Insertar los 5 casos de demostración de la maqueta del admin (Rosa, Ana, Flor, M., K.) con sus eventos, y unos 20 reportes anónimos distribuidos por tipo para el dashboard.
 - Todos los datos de seed son ficticios.
 
@@ -463,7 +463,7 @@ Archivos: `ley-30364.md`, `linea-100-chat-100.md`, `como-denunciar.md` (título 
 
 Replicar `specs/maquetas/admin.html` conectado a la API. Rutas: `/admin/login`, `/admin/casos`, `/admin/dashboard`, `/admin/conocimiento` (`/admin` redirige a `/admin/casos`). Todas se cargan con `() => import(...)` para que el código y el CSS del panel queden en chunks aparte. Un guard de Vue Router exige token en las rutas del panel (salvo login); si no hay token, o la API responde 401, se borra la sesión y se redirige a `/admin/login`. El panel no muestra «Salir rápido» (no es para víctimas).
 
-- **Login:** correo y contraseña → `POST /api/auth/login`. El composable `useAuth` guarda el token y el usuario en `sessionStorage`. Mostrar las cuentas de demostración en la pantalla. «Cerrar sesión» borra la sesión.
+- **Login:** correo y contraseña → `POST /api/auth/login`. El composable `useAuth` guarda el token y el usuario en `sessionStorage`. Mostrar la cuenta de demostración (`admin@rimay.pe`) en la pantalla. El panel no distingue roles: donde se muestra el rol dice «Administradora». «Cerrar sesión» borra la sesión.
 - **Casos:** filtros (Todos, Con riesgo, Pendientes, Mis casos, Sin asignar, Cerrados); alerta roja de `overdueRisk` con «Ver ahora»; contador de riesgo en el menú; detalle con contacto enmascarado y botón «Mostrar» (`contact-access`), primer mensaje neutro sugerido (distinto si el medio es llamada), asignación, estado, notas e historial. Refrescar la bandeja cada 30 segundos.
 - **Dashboard:** indicadores y gráficos de `GET /stats/dashboard`, con barras en CSS como en la maqueta.
 - **Base de conocimiento:** tabla de documentos, subida de archivos con estado «Procesando…» que se actualiza consultando cada 3 segundos, y «Probar búsqueda» con `POST /kb/search`.
@@ -549,8 +549,8 @@ Trabajar hito por hito. Al terminar cada uno, comprobar su criterio de «listo»
 1. María entra a Rimay desde su celular. Paso 1: marca «Sí» en peligro inmediato y ve el 105.
 2. Continúa, desactiva el anonimato, elige «solo mensaje, de 9 a 11 a. m.» y envía.
 3. Pregunta al asistente «¿Necesito un abogado para denunciar?» y recibe una respuesta con fuente.
-4. Se cambia al panel `/admin/login` como gestora: el caso de María aparece primero, marcado con riesgo.
-5. La gestora muestra el contacto (queda registrado), lo marca como contactado y lo deriva al CEM; el dashboard se actualiza.
+4. Se cambia al panel `/admin/login` como administradora (`admin@rimay.pe`): el caso de María aparece primero, marcado con riesgo.
+5. La administradora muestra el contacto (queda registrado), lo marca como contactado y lo deriva al CEM; el dashboard se actualiza.
 6. Cierre: «Salir rápido» y el selector de quechua y aimara.
 
 ---

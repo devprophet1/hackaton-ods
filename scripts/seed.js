@@ -7,11 +7,13 @@ const H = 3600 * 1000;
 const now = Date.now();
 const ago = (h) => new Date(now - h * H).toISOString();
 
+// Un solo rol («admin») y una sola cuenta con acceso al panel: admin@rimay.pe.
+// previousEmails: si existe la cuenta antigua, se le cambia el correo (conserva su id y sus casos asignados).
+// Lucía y Sofía siguen en staff para poder asignarles casos, pero sus cuentas están bloqueadas (sin login).
 const USERS = [
-  { email: 'coordinadora@rimay.pe', password: 'rimay2026', full_name: 'Carmen Flores', role: 'coordinadora' },
-  { email: 'gestora@rimay.pe', password: 'rimay2026', full_name: 'Lucía Ramos', role: 'gestora' },
-  // Sin login: contraseña aleatoria y cuenta bloqueada.
-  { email: 'sofia.huaman@rimay.pe', password: randomUUID(), full_name: 'Sofía Huamán', role: 'gestora', banned: true },
+  { email: 'admin@rimay.pe', previousEmails: ['coordinadora@rimay.pe'], password: 'rimay2026', full_name: 'Administradora Rimay' },
+  { email: 'gestora@rimay.pe', password: randomUUID(), full_name: 'Lucía Ramos', banned: true },
+  { email: 'sofia.huaman@rimay.pe', password: randomUUID(), full_name: 'Sofía Huamán', banned: true },
 ];
 
 function ok({ data, error }, what) {
@@ -29,18 +31,23 @@ async function findUser(email) {
 
 async function ensureUser(u) {
   let user = await findUser(u.email);
-  const attrs = { password: u.password, email_confirm: true, ban_duration: u.banned ? '876000h' : 'none' };
+  for (const old of u.previousEmails || []) {
+    if (user) break;
+    user = await findUser(old);
+    if (user) console.log(`  ${old} → ${u.email} (mismo usuario)`);
+  }
+  const attrs = { email: u.email, password: u.password, email_confirm: true, ban_duration: u.banned ? '876000h' : 'none' };
   if (user) ok(await db().auth.admin.updateUserById(user.id, attrs), 'updateUser ' + u.email);
   else user = ok(await db().auth.admin.createUser({ email: u.email, ...attrs }), 'createUser ' + u.email).user;
-  ok(await db().from('staff').upsert({ id: user.id, full_name: u.full_name, role: u.role }), 'staff ' + u.email);
-  console.log(`✓ ${u.full_name} <${u.email}>`);
+  ok(await db().from('staff').upsert({ id: user.id, full_name: u.full_name, role: 'admin' }), 'staff ' + u.email);
+  console.log(`✓ ${u.full_name} <${u.email}>${u.banned ? ' (bloqueada, sin acceso al panel)' : ''}`);
   return user.id;
 }
 
 async function main() {
   const ids = [];
   for (const u of USERS) ids.push(await ensureUser(u));
-  const staff = { carmen: ids[0], lucia: ids[1], sofia: ids[2] };
+  const staff = { admin: ids[0], lucia: ids[1], sofia: ids[2] };
 
   const CASES = [
     { code: 'RI-482193', alias: 'Rosa', risk: true, types: ['psicologica', 'fisica'], place: 'Vivienda', support: ['legal', 'psico'],
@@ -48,10 +55,10 @@ async function main() {
       events: [[2, null, 'creado', 'Reporte recibido. Marcó peligro inmediato.']] },
     { code: 'RI-590012', alias: 'Ana', risk: false, types: ['economica'], place: 'Vivienda', support: ['legal'],
       method: 'llamada', value: '912334106', schedule: 'Tardes, de 3 a 5 p. m.', status: 'pendiente', assigned: staff.lucia, created: 5,
-      events: [[5, null, 'creado', 'Reporte recibido.'], [4, staff.carmen, 'asignado', 'Asignado a Lucía Ramos.']] },
+      events: [[5, null, 'creado', 'Reporte recibido.'], [4, staff.admin, 'asignado', 'Asignado a Lucía Ramos.']] },
     { code: 'RI-305774', alias: 'Flor', risk: false, types: ['psicologica'], place: 'Espacio público', support: ['psico'],
-      method: 'whatsapp', value: '955210377', schedule: 'Noches, de 8 a 9 p. m.', status: 'contactado', assigned: staff.carmen, created: 30, firstContact: 27,
-      events: [[30, null, 'creado', 'Reporte recibido.'], [27, staff.carmen, 'estado', 'Estado: Contactado. Acordó llamada de seguimiento.']] },
+      method: 'whatsapp', value: '955210377', schedule: 'Noches, de 8 a 9 p. m.', status: 'contactado', assigned: staff.admin, created: 30, firstContact: 27,
+      events: [[30, null, 'creado', 'Reporte recibido.'], [27, staff.admin, 'estado', 'Estado: Contactado. Acordó llamada de seguimiento.']] },
     { code: 'RI-118450', alias: 'M.', risk: true, types: ['fisica', 'psicologica'], place: 'Vivienda', support: ['legal'],
       method: 'sms', value: '944501238', schedule: 'Mañanas, de 8 a 10 a. m.', status: 'derivado_comisaria', derived: 'comisaria', assigned: staff.lucia, created: 50, firstContact: 49,
       events: [[50, null, 'creado', 'Reporte recibido. Marcó peligro inmediato.'], [49, staff.lucia, 'estado', 'Estado: Contactado (Lucía Ramos).'], [46, staff.lucia, 'estado', 'Estado: Derivado a comisaría (Lucía Ramos).']] },
@@ -92,7 +99,7 @@ async function main() {
   ok(await db().from('case_events').insert(anonRows.map((r) => ({ report_id: r.id, event_type: 'creado', detail: 'Reporte recibido.' }))), 'eventos anónimos');
   ok(await db().from('consents').insert(anonRows.map((r) => ({ report_id: r.id, purpose: 'registro_reporte', granted: true }))), 'consentimientos anónimos');
   console.log(`✓ ${ANON.length} reportes anónimos`);
-  console.log('Listo. Cuentas: coordinadora@rimay.pe / gestora@rimay.pe — contraseña rimay2026');
+  console.log('Listo. Cuenta del panel: admin@rimay.pe — contraseña rimay2026');
 }
 
 main().catch((e) => { console.error('✗', e.message); process.exit(1); });

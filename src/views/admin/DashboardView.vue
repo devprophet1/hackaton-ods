@@ -72,7 +72,7 @@ const week = computed(() => {
         <div class="card">
           <h3>Derivaciones</h3>
           <div class="bars"><div v-for="b in derivBars" :key="b.k"><span>{{ b.k }}</span><span><i :style="{ width: b.w }"></i></span><b>{{ b.v }}</b></div></div>
-          <p class="note">Una derivación se registra cuando la gestora cambia el estado a «Derivado al CEM» o «Derivado a comisaría».</p>
+          <p class="note">Una derivación se registra al cambiar el estado a «Derivado al CEM» o «Derivado a comisaría».</p>
         </div>
       </div>
     </template>

@@ -11,7 +11,6 @@ import AppIcon from '../components/AppIcon.vue';
 const route = useRoute();
 const router = useRouter();
 const { user, isLoggedIn, logout, authApi } = useAuth();
-const ROLE = { coordinadora: 'Coordinadora', gestora: 'Gestora de casos', admin: 'Administración' };
 const nav = [['admin-cases', '/admin/casos', 'Casos', Inbox], ['admin-dashboard', '/admin/dashboard', 'Dashboard', ChartColumn], ['admin-kb', '/admin/conocimiento', 'Base de conocimiento', Library]];
 
 onMounted(async () => {
@@ -38,7 +37,7 @@ function out() {
           </RouterLink>
         </nav>
         <div class="user">
-          <div><strong>{{ user?.fullName }}</strong><span>{{ ROLE[user?.role] || user?.role }}</span></div>
+          <div><strong>{{ user?.fullName }}</strong><span>Administradora</span></div>
           <button class="btn ghost" type="button" @click="out"><AppIcon :icon="LogOut" />Cerrar sesión</button>
         </div>
       </aside>

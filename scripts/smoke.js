@@ -66,8 +66,8 @@ await step('Asistente detecta riesgo sin modelo', async () => {
   assert(r.risk === true, 'no marcó riesgo');
 });
 
-await step('Login como gestora', async () => {
-  const r = await api('POST', '/auth/login', { email: 'gestora@rimay.pe', password: 'rimay2026' });
+await step('Login como admin', async () => {
+  const r = await api('POST', '/auth/login', { email: 'admin@rimay.pe', password: 'rimay2026' });
   token = r.token;
   return `${r.user.fullName} (${r.user.role})`;
 });
