@@ -2049,5 +2049,19 @@
     "es": "Por ejemplo, sector, grupo, manzana y lote",
     "qu": "Kayhinata: sector, grupo, manzana y lote",
     "ay": "Sa'ñäni: sector, grupo, manzana y lote"
+  },
+  {
+    "id": 294,
+    "contexto": "Asistente: subtítulo corto en celular (versión corta del id 245)",
+    "es": "No reemplaza la atención profesional",
+    "qu": "Manam yachaq runakunapa yanapayninta rantinchu.",
+    "ay": "Janiw yatxatata jaqinakan yanapt'awiparusa lantkiti."
+  },
+  {
+    "id": 295,
+    "contexto": "Asistente: barra «Hablar con una persona» en celular (pregunta corta; ver id 284)",
+    "es": "¿Hablar con una persona?",
+    "qu": "¿Huk runawan rimay?",
+    "ay": "¿Mä jaqimp parlaña?"
   }
 ]

@@ -254,6 +254,7 @@
   @media (hover:none){ .has-tip::after{ display:none; } }
   @media (prefers-reduced-motion: reduce){ .has-tip::after{ transition:none; } }
   .tip .tip-short{ display:none; }
+  .chat-head .sub-short, .human-short, .human-sep{ display:none; }
 
   @media (max-width:980px){
     nav.links{ display:none; }
@@ -266,8 +267,6 @@
     .bar{ padding:14px 16px; gap:10px; }
     .logo span.name{ display:none; }
     main{ padding:0 16px 120px; }
-    /* El chat nunca tapa la barra con «Salir rápido» (franja + barra ≈ 230 px arriba). */
-    .chatbox{ left:12px; right:12px; width:auto; bottom:calc(12px + env(safe-area-inset-bottom,0px)); height:min(calc(100dvh - 256px), 640px); min-height:300px; z-index:21; }
     .chat-head .avatar.lg{ display:none; }
     .fab .label{ display:none; }
     .fab{ padding:0 18px; }
@@ -299,17 +298,46 @@
     .tip{ padding:6px 16px; }
     .tip .tip-long{ display:none; }
     .tip .tip-short{ display:block; }
-    .human{ display:grid; grid-template-columns:auto auto 1fr; column-gap:14px; align-items:center; }
-    .human .ico{ grid-column:1; grid-row:1; }
-    .human > span{ grid-column:2 / -1; grid-row:1; }
-    .human a:nth-of-type(1){ grid-column:2; grid-row:2; }
-    .human a:nth-of-type(2){ grid-column:3; grid-row:2; justify-self:start; }
   }
 
   /* Mejora 5: el ✓ de los pasos completados va en la misma línea que su texto. */
   .progress li{ display:block; }
   .progress li .ico{ margin-right:4px; vertical-align:-3px; }
+
+  /* ── Chat en celular: pantalla completa debajo de la barra de «Salir rápido» ───────────────── */
+  @media (max-width:560px){
+    .chatbox{ top:var(--chat-top, 72px); left:0; right:0; bottom:auto; width:100%;
+      height:calc(100dvh - var(--chat-top, 72px)); min-height:0; border:0; border-top:1px solid var(--line);
+      border-radius:0; box-shadow:none; background:var(--bg); z-index:21; }
+    .chat-head{ padding:6px 4px 6px 14px; gap:8px; }
+    .chat-head > div{ min-width:0; }
+    .chat-head h3{ font-size:16px; }
+    .chat-head .sub-long{ display:none; }
+    .chat-head .sub-short{ display:block; font-size:13px; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .chat-head .close{ margin:0; align-self:center; }
+    .msgs{ flex:1 1 auto; min-height:0; padding:12px; gap:8px; overscroll-behavior:contain; }
+    .msgs .b{ font-size:15px; line-height:1.4; max-width:85%; }
+    .msgs .b .src{ font-size:13px; }
+    .chips{ flex-wrap:nowrap; overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:none; padding:8px 12px 0; }
+    .chips::-webkit-scrollbar{ display:none; }
+    .chips button{ flex:none; white-space:nowrap; font-size:14px; padding:4px 12px; min-height:40px; }
+    .human{ display:flex; flex-wrap:nowrap; align-items:center; gap:0 6px; padding:2px 12px 0; font-size:14px; white-space:nowrap; }
+    .human .ico, .human-long{ display:none; }
+    .human-short, .human-sep{ display:inline; }
+    .human a{ min-height:40px; }
+    .compose{ padding:6px 12px calc(8px + env(safe-area-inset-bottom,0px)); }
+    .compose input{ font-size:16px; height:44px; padding:0 16px; }
+    .compose button{ width:44px; height:44px; }
+  }
   @media (prefers-reduced-motion: reduce){
     .view{ animation:none; } .typing i{ animation:none; opacity:.6; } .switch .thumb{ transition:none; }
   }
+}
+
+/* Chat abierto en celular (fuera del anidamiento .pub porque afecta a <html> y <body>):
+   bloquea el desplazamiento de la página, oculta el aviso amarillo y el botón flotante.
+   El botón «Salir rápido» sigue visible. */
+@media (max-width:560px){
+  html.chat-open{ overflow:hidden; overflow-anchor:none; }   /* solo <html>: en <body> rompería la cabecera fija */
+  html.chat-open .pub .tip, html.chat-open .pub .fab{ display:none; }
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, nextTick } from 'vue';
+import { ref, reactive, computed, watch, nextTick, onBeforeUnmount } from 'vue';
 import { MessageCircle, Send, X, Phone, BookOpen, TriangleAlert } from 'lucide-vue-next';
 import { useI18n } from '../composables/useI18n.js';
 import { chatOpen, toggleChat } from '../composables/useUi.js';
@@ -53,7 +53,38 @@ function blocks(text) {
 
 const scroll = async () => { await nextTick(); if (list.value) list.value.scrollTop = list.value.scrollHeight; };
 
-watch(chatOpen, async (open) => { if (open) { await nextTick(); field.value?.focus(); } });
+// Celular (≤ 560 px): el chat ocupa toda la pantalla debajo de la barra de «Salir rápido».
+// Se baja la página lo justo para que la barra quede arriba, se bloquea el desplazamiento
+// (clase chat-open en <html>) y se restaura al cerrar. En escritorio no cambia nada.
+const mobile = window.matchMedia('(max-width: 560px)');
+function placeChat() {
+  const header = document.querySelector('header.top');
+  if (header) document.documentElement.style.setProperty('--chat-top', `${Math.round(header.getBoundingClientRect().bottom)}px`);
+}
+async function mobileLayout(open) {
+  const root = document.documentElement;
+  if (!open || !mobile.matches) {
+    root.classList.remove('chat-open');
+    root.style.removeProperty('--chat-top');
+    window.removeEventListener('resize', placeChat);
+    return;
+  }
+  const strip = document.querySelector('.strip');
+  const stripH = strip ? strip.offsetHeight : 0;
+  if (window.scrollY < stripH) window.scrollTo({ top: stripH, behavior: 'instant' });
+  root.classList.add('chat-open');
+  await nextTick();
+  // Al ocultar el aviso amarillo el navegador puede reajustar el desplazamiento: se vuelve a colocar.
+  if (window.scrollY < stripH) window.scrollTo({ top: stripH, behavior: 'instant' });
+  placeChat();
+  window.addEventListener('resize', placeChat);
+}
+onBeforeUnmount(() => mobileLayout(false));
+
+watch(chatOpen, async (open) => {
+  await mobileLayout(open);
+  if (open) { await nextTick(); field.value?.focus(); }
+});
 
 async function ask(text) {
   const q = text.trim();
@@ -93,7 +124,8 @@ function send() {
       <span class="avatar lg" aria-hidden="true"><RimayLogo :size="26" /></span>
       <div>
         <h3>{{ t('Asistente de orientación') }}</h3>
-        <p>{{ t('No reemplaza la atención profesional ni una denuncia oficial.') }}</p>
+        <p class="sub-long">{{ t('No reemplaza la atención profesional ni una denuncia oficial.') }}</p>
+        <p class="sub-short">{{ t('No reemplaza la atención profesional') }}</p>
       </div>
       <button type="button" class="close" :aria-label="t('Cerrar asistente')" @click="toggleChat"><AppIcon :icon="X" :size="20" /></button>
     </div>
@@ -147,8 +179,10 @@ function send() {
 
     <div class="human">
       <AppIcon :icon="Phone" :size="18" />
-      <span>{{ t('Hablar con una persona') }}:</span>
+      <span class="human-long">{{ t('Hablar con una persona') }}:</span>
+      <span class="human-short">{{ t('¿Hablar con una persona?') }}</span>
       <EmergencyLink to="100" pos="top">{{ t('Línea 100') }}</EmergencyLink>
+      <span class="human-sep" aria-hidden="true">|</span>
       <EmergencyLink to="chat" pos="top">Chat 100</EmergencyLink>
     </div>
 
