@@ -253,7 +253,8 @@
     .logo span.name{ display:none; }
     main{ padding:0 16px 120px; }
     /* El chat nunca tapa la barra con «Salir rápido» (franja + barra ≈ 230 px arriba). */
-    .chatbox{ left:12px; right:12px; width:auto; height:min(calc(100dvh - 340px), 620px); min-height:300px; }
+    .chatbox{ left:12px; right:12px; width:auto; bottom:calc(12px + env(safe-area-inset-bottom,0px)); height:min(calc(100dvh - 256px), 640px); min-height:300px; z-index:21; }
+    .chat-head .avatar.lg{ display:none; }
     .fab .label{ display:none; }
     .fab{ padding:0 18px; }
 
@@ -284,8 +285,11 @@
     .tip{ padding:6px 16px; }
     .tip .tip-long{ display:none; }
     .tip .tip-short{ display:block; }
-    .human > span{ flex-basis:100%; }
-    .human{ gap:0 18px; }
+    .human{ display:grid; grid-template-columns:auto auto 1fr; column-gap:14px; align-items:center; }
+    .human .ico{ grid-column:1; grid-row:1; }
+    .human > span{ grid-column:2 / -1; grid-row:1; }
+    .human a:nth-of-type(1){ grid-column:2; grid-row:2; }
+    .human a:nth-of-type(2){ grid-column:3; grid-row:2; justify-self:start; }
   }
 
   /* Mejora 5: el ✓ de los pasos completados va en la misma línea que su texto. */
