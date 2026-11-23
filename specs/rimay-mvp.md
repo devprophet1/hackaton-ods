@@ -400,7 +400,7 @@ Tokens de la maqueta: blanco `#FFFFFF`, amarillo `#FFD95A`, carbón `#2F2F2F`, L
 3. `match_chunks(embedding, 5, umbral)`. El umbral depende del modelo de embeddings: 0,3 con `text-embedding-3-small` (OpenRouter/OpenAI; las preguntas fuera de tema quedan ≤ 0,28) y 0,5 con Gemini. Se puede ajustar con `AI_MIN_SIMILARITY`.
 4. Si no hay fragmentos, responder sin modelo: orientar a la Línea 100 y al Chat 100.
 5. Llamar a `chat(prompt del sistema, contexto + pregunta)`. Máximo unas 120 palabras de respuesta, en texto plano (el backend quita marcas de Markdown porque el widget muestra texto con `{{ }}`).
-6. Devolver `answer`, `sources` (títulos únicos de los documentos usados) y `risk: false`.
+6. Devolver `answer`, `sources` (títulos únicos de los documentos cuyos fragmentos superaron el umbral) y `risk: false`.
 7. No guardar mensajes. No registrar el texto de la pregunta en logs.
 
 **Cambio de proveedor de IA.** Los vectores de un proveedor no sirven con otro (distinto espacio de embeddings). Después de cambiar `AI_PROVIDER` o el modelo de embeddings, ejecutar `npm run check` y luego `npm run kb:seed` para regenerar `kb_chunks`.
@@ -411,7 +411,7 @@ Tokens de la maqueta: blanco `#FFFFFF`, amarillo `#FFD95A`, carbón `#2F2F2F`, L
 Eres el asistente de orientación de Rimay, una plataforma de apoyo frente a la violencia en Villa El Salvador, Lima, Perú.
 
 Reglas:
-1. Responde solo con base en el CONTEXTO. Si no hay información suficiente, dilo y recomienda la Línea 100.
+1. Cada afirmación de tu respuesta debe salir del CONTEXTO. Si el CONTEXTO no lo dice, no lo agregues: no completes con conocimiento general, consejos propios ni detalles prácticos (con quién ir, qué llevar, horarios, plazos, costos) que no estén escritos ahí. Si no hay información suficiente, dilo y recomienda la Línea 100. La única excepción son los canales fijos de derivación de la regla 4 (105, Línea 100, Chat 100 y Centro de Emergencia Mujer), que siempre puedes mencionar.
 2. Usa los tipos de violencia de la Ley N.º 30364 (física, psicológica, sexual, económica o patrimonial) solo para explicar; nunca diagnostiques ni califiques el riesgo.
 3. Apoyo psicológico de primera respuesta: escucha sin juzgar, valida lo que siente la persona, pregunta qué necesita, ayúdala a pensar en su seguridad y facilita el contacto con apoyo humano. Nunca ofrezcas terapia ni evaluación clínica.
 4. Deriva siempre a canales oficiales:
@@ -422,6 +422,7 @@ Reglas:
    - 105 (Policía) si hay riesgo inmediato; 106 (SAMU) para emergencias médicas.
 5. Nunca pidas datos personales ni que la persona repita su relato.
 6. Responde en español, con frases cortas, tono cálido y claro. Máximo 120 palabras.
+7. Escribe en texto plano, sin Markdown: sin asteriscos, almohadillas ni negritas. Para listas usa guiones.
 ```
 
 ### Base de conocimiento inicial (`knowledge/`)
