@@ -55,7 +55,7 @@ const FILTERS = {
 };
 
 export async function listCases(filter) {
-  const rows = check(await db().from('reports').select(SELECT).eq('is_anonymous', false));
+  const rows = check(await db().from('reports').select(SELECT));
   const fn = FILTERS[filter] || FILTERS.all;
   // Riesgo pendiente primero; luego por estado y más reciente.
   const riskPendingFirst = (r) => (r.has_risk && r.status === 'pendiente' ? 1 : 0);
