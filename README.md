@@ -45,13 +45,21 @@ npm run kb:seed             # ingesta los documentos de knowledge/
 npm run dev                 # Vite en http://localhost:5173 + Express en :3000 (proxy de /api)
 ```
 
+Con `npm run dev` en marcha, en otra terminal:
+
+```bash
+npm run smoke               # prueba de humo del flujo feliz contra http://localhost:5173 (borra lo que crea)
+```
+
+Abre http://localhost:5173 para la web pública y http://localhost:5173/admin para el panel.
+
 ### Variables de entorno
 
 | Variable | Dónde se obtiene |
 | --- | --- |
 | `SUPABASE_URL` | Supabase → Project Settings → API → Project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API → `service_role` (secreta, solo backend) |
-| `SUPABASE_ANON_KEY` | Supabase → Project Settings → API → `anon` |
+| `SUPABASE_ANON_KEY` | Opcional. Supabase → Project Settings → API → `anon` (si falta, el login usa la clave secreta desde el backend) |
 | `AI_PROVIDER` | `openrouter` (predeterminado), `openai` o `gemini` |
 | `OPENROUTER_API_KEY` | openrouter.ai → Keys (requiere créditos) |
 | `OPENROUTER_BASE_URL` | `https://openrouter.ai/api/v1` |
@@ -88,7 +96,6 @@ Todo se ejecuta desde la raíz del repositorio, en tu máquina.
    npx vercel link
    npx vercel env add SUPABASE_URL production
    npx vercel env add SUPABASE_SERVICE_ROLE_KEY production
-   npx vercel env add SUPABASE_ANON_KEY production
    npx vercel env add AI_PROVIDER production
    npx vercel env add OPENROUTER_API_KEY production
    npx vercel env add OPENROUTER_BASE_URL production
@@ -100,9 +107,12 @@ Todo se ejecuta desde la raíz del repositorio, en tu máquina.
    ```bash
    npx vercel deploy --prod
    ```
-6. **Comprobar:** abre `https://<tu-proyecto>.vercel.app/api/health` (debe responder `{"status":"ok"}`), recarga `/informate` y `/admin/casos` (no debe dar 404) e inicia sesión con una cuenta de demostración.
+6. **Comprobar:** abre `https://<tu-proyecto>.vercel.app/api/health` (debe responder `{"status":"ok"}`), recarga `/informate` y `/admin/casos` (no debe dar 404) e inicia sesión con una cuenta de demostración. También puedes ejecutar la prueba de humo contra producción:
+   ```bash
+   npm run smoke -- https://<tu-proyecto>.vercel.app
+   ```
 
-La configuración está en [vercel.json](vercel.json): preset Vite, `maxDuration` de 300 s para la función y rewrites de `/api/*` a Express y del resto a `index.html`. Las subidas a la base de conocimiento tienen un máximo de 4 MB (el límite de Vercel es 4,5 MB).
+La configuración está en [vercel.json](vercel.json): preset Vite, región `pdx1`, `maxDuration` de 300 s para la función y rewrites de `/api/*` a Express y del resto a `index.html`. Las subidas a la base de conocimiento tienen un máximo de 4 MB (el límite de Vercel es 4,5 MB).
 
 ## Cuentas de demostración
 
