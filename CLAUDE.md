@@ -26,13 +26,21 @@ Plataforma de prevención de violencia (ODS 5) para el HackODS UA 2026. Se prese
 - No añadir notificaciones por correo ni SMS.
 - No inventar números de teléfono, direcciones ni horarios oficiales: usa solo la sección 12 del spec.
 
+## Flujo de trabajo con git
+- Se trabaja directo en `main`, sin ramas.
+- Cada push a `main` se despliega en producción (https://hackaton-ods.vercel.app). Antes de cada push, con `npm run dev` en marcha, corre `npm run smoke` en local y sube solo si pasa. Si falla, no hagas push: corrige primero.
+- Después del despliegue, corre `npm run smoke -- https://hackaton-ods.vercel.app`.
+- Commits en español, sin líneas `Co-Authored-By` (ya desactivado en `.claude/settings.json`).
+
 ## Comandos
+- `npm run check` → valida variables, proveedor de IA y Supabase (sin mostrar claves).
+- `npm run smoke [URL]` → prueba de humo del flujo feliz (local por defecto); borra lo que crea.
 - `npm run dev` → Vite (5173) + Express (3000) a la vez, con proxy de `/api`.
 - `npm run build` → `dist/`.
 - `npx supabase link --project-ref <ref>` y `npx supabase db push` → migraciones en el proyecto remoto.
 - `npm run seed` → cuentas de demostración en Supabase Auth, `staff` y datos de ejemplo.
 - `npm run kb:seed` → ingesta los documentos de `knowledge/`.
-- `npx vercel deploy --prod` → despliegue (ver README).
+- Despliegue: automático en Vercel con cada push a `main` (ver README).
 
 ## Si algo no está claro
 Elige la opción más simple que mantenga la demo funcionando y deja una nota `TODO:` explicando la decisión.

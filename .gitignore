@@ -3,3 +3,9 @@ dist/
 .env
 .vercel/
 supabase/.temp/
+
+# Skills de agentes: instalación local (no se suben)
+.agents/
+skills-lock.json
+# Enlaces simbólicos de skills (apuntan a .agents/)
+.claude/skills/frontend-design

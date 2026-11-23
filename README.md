@@ -72,6 +72,22 @@ Abre http://localhost:5173 para la web pública y http://localhost:5173/admin pa
 
 Solo son obligatorias las variables del proveedor activo. **Si cambias `AI_PROVIDER` o el modelo de embeddings, ejecuta `npm run kb:seed`:** los embeddings no son compatibles entre proveedores.
 
+## Flujo de trabajo: directo en `main`
+
+Se trabaja directo en `main`, sin ramas. **Cada push a `main` se despliega automáticamente en producción** (https://hackaton-ods.vercel.app), así que antes de cada push:
+
+```bash
+npm run dev                  # en una terminal
+npm run smoke                # en otra: debe terminar con «✓ Flujo feliz completo.»
+git push origin main         # solo si la prueba de humo pasó
+```
+
+Cuando Vercel termine de desplegar, comprueba producción:
+
+```bash
+npm run smoke -- https://hackaton-ods.vercel.app
+```
+
 ## Despliegue en Vercel (pasos exactos)
 
 Todo se ejecuta desde la raíz del repositorio, en tu máquina.
